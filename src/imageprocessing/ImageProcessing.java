@@ -208,8 +208,7 @@ public class ImageProcessing extends JFrame {
 
         return grayImage;
     }
-
-    //testchange
+    
     /**
      * Reads the file with the handle file into a Java BufferedImage data structure.
      *
