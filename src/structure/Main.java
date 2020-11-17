@@ -2,6 +2,7 @@ package structure;
 
 
 import computergraphics.ShapesMainWindow;
+import imageprocessing.ColorDetection;
 import org.opencv.core.Core;
 import imageprocessing.ImageProcessing;
 import imageprocessing.HoughCirclesRun;
@@ -14,7 +15,10 @@ public class Main {
         ImageProcessing ip =  new ImageProcessing();
         HoughCirclesRun hr = new HoughCirclesRun();
         hr.run(args, ip.getFilePathName());
+        ColorDetection cd = new ColorDetection();
+        cd.detection(args, ip.getFilePathName());
         new ShapesMainWindow();
-        ip.setImgPane3(hr.getEingabe());
+        // ip.setImgPane3(hr.getEingabe());
+        ip.setImgPane3(cd.getImg());
     }
 }
