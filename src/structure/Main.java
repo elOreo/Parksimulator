@@ -14,9 +14,10 @@ public class Main {
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
         ImageProcessing ip =  new ImageProcessing();
         HoughCirclesRun hr = new HoughCirclesRun();
-        hr.run(args, ip.getFilePathName());
+
         ColorDetection cd = new ColorDetection();
         cd.detection(args, ip.getFilePathName());
+        hr.run(args, ip.getFilePathName());
         new ShapesMainWindow();
         // ip.setImgPane3(hr.getEingabe());
         ip.setImgPane3(cd.getImg());
