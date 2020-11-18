@@ -121,8 +121,7 @@ public class ShapeDetection {
             float approxOutputLength = approxOutput.total();
 
 
-            //System.out.println("Dump: " + cnt.dump());
-
+            //Calculation: Mid of shapes:
             double xPrepare = 0;
             double yPrepare = 0;
 
@@ -134,13 +133,6 @@ public class ShapeDetection {
                 double[] xy = rowReturn.get(0, 0);
                 double x = xy[0];
                 double y = xy[1];
-
-                System.out.println(rowReturn.dump());
-                //System.out.println(Arrays.toString(xy));
-                //System.out.println("x: " + xy[0]);
-                //System.out.println("y: " + xy[1]);
-                //double x = 30;
-                //double y = 1;
                 xPrepare = xPrepare+x;
                 yPrepare = yPrepare+y;
                 System.out.println("-----------------------------------------------");
