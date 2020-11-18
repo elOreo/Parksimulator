@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 public class ShapeDetection {
 
+    private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
 
     private Mat img;
 
@@ -126,7 +127,6 @@ public class ShapeDetection {
             double yPrepare = 0;
 
             int rowCounter;
-            System.out.println(".............................");
 
             for(rowCounter = 0; rowCounter < approxOutput.rows(); rowCounter ++){
                 Mat rowReturn = approxOutput.row(rowCounter);
@@ -135,7 +135,6 @@ public class ShapeDetection {
                 double y = xy[1];
                 xPrepare = xPrepare+x;
                 yPrepare = yPrepare+y;
-                System.out.println("-----------------------------------------------");
             }
             float descriptionCoordinateX = (float) xPrepare/rowCounter;
             float descriptionCoordinateY = (float) yPrepare/rowCounter;
@@ -147,22 +146,27 @@ public class ShapeDetection {
                 if (approxOutputLength == 3){
                     //triangle
                     Imgproc.putText(imgMat, "Triangle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    allShapeInfos.add(new ObjectInfo("triangle", descriptionCoordinateX, descriptionCoordinateY));
                 }
                 else if (approxOutputLength == 4){
                     //rectangle
                     Imgproc.putText(imgMat, "Rectangle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    allShapeInfos.add(new ObjectInfo("rectangle", descriptionCoordinateX, descriptionCoordinateY));
                 }
                 else if (approxOutputLength == 5){
                     //pentagon
                     Imgproc.putText(imgMat, "Pentagon", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    allShapeInfos.add(new ObjectInfo("pentagon", descriptionCoordinateX, descriptionCoordinateY));
                 }
                 else if (approxOutputLength == 6){
                     //hexagon
                     Imgproc.putText(imgMat, "Hexagon", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    allShapeInfos.add(new ObjectInfo("hexagon", descriptionCoordinateX, descriptionCoordinateY));
                 }
                 else if (approxOutputLength == 10){
                     //star
                     Imgproc.putText(imgMat, "Star", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    allShapeInfos.add(new ObjectInfo("star", descriptionCoordinateX, descriptionCoordinateY));
                 }
                 else {
                     //undefined
@@ -170,9 +174,11 @@ public class ShapeDetection {
                 }
 
                 img = imgMat;
+
         }
-
-
+        System.out.println("All Shapes: ");
+        for (int x = 0; x < allShapeInfos.size(); x++)
+        System.out.println(allShapeInfos.get(x).getInfo());
     }
 
 
