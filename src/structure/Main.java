@@ -19,7 +19,7 @@ public class Main {
         //ColorDetection cd = new ColorDetection();
         //cd.detection(args, ip.getFilePathName());
         //hr.run(args, ip.getFilePathName());
-        ShapeDetection sd = new ShapeDetection(ip.getFilePathName());
+        ShapeDetection sd = new ShapeDetection(ip.getFilePathName(), false);
         new ShapesMainWindow();
         ip.setImgPane3(sd.getImg());
         // ip.setImgPane3(hr.getEingabe());

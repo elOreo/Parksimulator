@@ -23,6 +23,7 @@ public class ObjectInfo {
     public float getyCoordinate() {
         return yCoordinate;
     }
+
     public String getInfo(){
         String info = "Typ: " + typ + " |x: " + xCoordinate + " |y: " + yCoordinate;
         return info;

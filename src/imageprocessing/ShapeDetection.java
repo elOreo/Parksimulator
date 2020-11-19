@@ -5,20 +5,28 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 
 public class ShapeDetection {
+
 
     private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
 
     private Mat img;
 
+    private static final int RATIO = 3;
+    private static final int KERNEL_SIZE = 3;
+    private int lowThresh = 10;
+
     public Mat getImg() {
         return img;
     }
 
-    public ShapeDetection(String imagePath){
+    public ArrayList<ObjectInfo> getAllShapeInfos() {
+        return allShapeInfos;
+    }
+
+
+    public ShapeDetection(String imagePath, boolean useCanny){
 
         /*
         Loading the image.
@@ -31,6 +39,8 @@ public class ShapeDetection {
         Mat imgGrey = new Mat();
         Imgproc.cvtColor(imgMat, imgGrey, Imgproc.COLOR_BGR2GRAY);
 
+        Mat greyBlur = new Mat();
+        Imgproc.GaussianBlur(imgGrey,greyBlur,new Size(1,1), 0);
 
         /*
         src - input array (multiple-channel, 8-bit or 32-bit floating point).
@@ -41,6 +51,9 @@ public class ShapeDetection {
         */
         Mat imgThresh = new Mat();
         Imgproc.threshold(imgGrey, imgThresh, 240, 255, Imgproc.THRESH_BINARY);
+
+        Mat cannyEdge = new Mat();
+        Imgproc.Canny(greyBlur, cannyEdge, lowThresh, lowThresh* RATIO, KERNEL_SIZE, false);
 
         /*
 
@@ -93,9 +106,19 @@ public class ShapeDetection {
 
         offset - Optional offset by which every contour point is shifted. This is useful if the contours are extracted from the image ROI and then they should be analyzed in the whole image context.
         */
+
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
-        Imgproc.findContours(imgThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        // Canny Edge Detection or Binary
+        if (useCanny == false) {
+            Imgproc.findContours(imgThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        }
+        else {
+            Imgproc.findContours(cannyEdge, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        }
+
+        int undefinedCounter = 0;
 
         /*
         Circle through contours to decide which shape is involved.
@@ -118,7 +141,13 @@ public class ShapeDetection {
              */
             MatOfPoint2f approxOutput = new MatOfPoint2f();
             MatOfPoint2f cnt2f = new MatOfPoint2f(cnt.toArray());
+
+            //uncomment for binary
             Imgproc.approxPolyDP(cnt2f, approxOutput,0.01*Imgproc.arcLength(cnt2f, true), true);
+
+            //uncomment for canny
+
+
             float approxOutputLength = approxOutput.total();
 
 
@@ -138,10 +167,13 @@ public class ShapeDetection {
             }
             float descriptionCoordinateX = (float) xPrepare/rowCounter;
             float descriptionCoordinateY = (float) yPrepare/rowCounter;
-            
+
+            //Mid of Shape
             Point descriptionCoordinates = new Point(descriptionCoordinateX, descriptionCoordinateY);
 
+            //draw contours around the shapes
             Imgproc.drawContours(imgMat, contours, -1, new Scalar(255,0,0));
+            //decide which kind of shape
 
                 if (approxOutputLength == 3){
                     //triangle
@@ -163,22 +195,30 @@ public class ShapeDetection {
                     Imgproc.putText(imgMat, "Hexagon", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("hexagon", descriptionCoordinateX, descriptionCoordinateY));
                 }
-                else if (approxOutputLength == 10){
+                else if (approxOutputLength > 6 && approxOutputLength < 11){
                     //star
                     Imgproc.putText(imgMat, "Star", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("star", descriptionCoordinateX, descriptionCoordinateY));
                 }
                 else {
                     //undefined
-                    Imgproc.putText(imgMat, "Undefined", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    //Imgproc.putText(imgMat, "Undefined", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    undefinedCounter ++;
+                    Imgproc.putText(imgMat, "Circle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    allShapeInfos.add(new ObjectInfo("circle", descriptionCoordinateX, descriptionCoordinateY));
+
                 }
 
                 img = imgMat;
 
         }
+
+        //save shaped and shapecoordinates in list and print them out.
         System.out.println("All Shapes: ");
-        for (int x = 0; x < allShapeInfos.size(); x++)
-        System.out.println(allShapeInfos.get(x).getInfo());
+        for (int x = 0; x < allShapeInfos.size(); x++) {
+            System.out.println(allShapeInfos.get(x).getInfo());
+        }
+        System.out.println("Undefined shapes: "+ undefinedCounter);
     }
 
 
