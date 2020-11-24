@@ -143,7 +143,7 @@ public class ShapeDetection {
             MatOfPoint2f cnt2f = new MatOfPoint2f(cnt.toArray());
 
             //uncomment for binary
-            Imgproc.approxPolyDP(cnt2f, approxOutput,0.01*Imgproc.arcLength(cnt2f, true), true);
+            Imgproc.approxPolyDP(cnt2f, approxOutput,0.02*Imgproc.arcLength(cnt2f, true), true);
 
             //uncomment for canny
 
