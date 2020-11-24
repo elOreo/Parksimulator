@@ -1,13 +1,12 @@
 package structure;
 
 
-import computergraphics.ShapesMainWindow;
-import imageprocessing.ColorDetection;
 import imageprocessing.ShapeDetection;
 import org.opencv.core.Core;
 import imageprocessing.ImageProcessing;
-import imageprocessing.HoughCirclesRun;
-import computergraphics.ShapesMainWindow;
+import computergraphics.StartCodeMainWindowPP;
+
+import javax.swing.*;
 
 public class Main {
 
@@ -20,9 +19,17 @@ public class Main {
         //cd.detection(args, ip.getFilePathName());
         //hr.run(args, ip.getFilePathName());
         ShapeDetection sd = new ShapeDetection(ip.getFilePathName(), false);
-        new ShapesMainWindow();
         ip.setImgPane3(sd.getImg());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new StartCodeMainWindowPP();
+            }
+        });
+        //new StartCodeMainWindowPP();
+
         // ip.setImgPane3(hr.getEingabe());
         //ip.setImgPane3(cd.getImg());
+
     }
 }

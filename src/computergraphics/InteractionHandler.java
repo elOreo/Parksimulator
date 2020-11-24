@@ -1,5 +1,4 @@
 package computergraphics;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -7,10 +6,10 @@ import java.awt.event.*;
  * Java class for handling the keyboard and mouse interaction.
  * Intented to be used for an OpenGL scene renderer.
  * @author Karsten Lehn
- * @version 23.8.2017, 10.9.2017
+ * @version 23.8.2017, 10.9.2017, 22.9.2018
  */
 
-class InteractionHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
+public class InteractionHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 
     // Constant for debugging purposes
     private static final boolean VERBOSE = false;
