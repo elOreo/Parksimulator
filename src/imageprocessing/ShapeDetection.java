@@ -50,7 +50,7 @@ public class ShapeDetection {
         type - thresholding type (see #ThresholdTypes).
         */
         Mat imgThresh = new Mat();
-        Imgproc.threshold(imgGrey, imgThresh, 240, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(imgGrey, imgThresh, 200, 255, Imgproc.THRESH_BINARY);
 
         Mat cannyEdge = new Mat();
         Imgproc.Canny(greyBlur, cannyEdge, lowThresh, lowThresh* RATIO, KERNEL_SIZE, false);
@@ -149,7 +149,7 @@ public class ShapeDetection {
 
 
             float approxOutputLength = approxOutput.total();
-
+            System.out.println(approxOutputLength);
 
             //Calculation: Mid of shapes:
             double xPrepare = 0;
@@ -222,4 +222,8 @@ public class ShapeDetection {
     }
 
 
+    public ArrayList addToShapeInfo(ObjectInfo objectInfo){
+        allShapeInfos.add(objectInfo);
+        return allShapeInfos;
+    }
 }
