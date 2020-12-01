@@ -119,6 +119,15 @@ public class ImageProcessing extends JFrame {
                         Imgcodecs.IMWRITE_PNG_STRATEGY_FIXED));
     }
 
+    public int imageSizeX(){
+        Mat imageMat = Imgcodecs.imread(filePathName);
+        return imageMat.cols();
+    }
+
+    public int imageSizeY(){
+        Mat imageMat = Imgcodecs.imread(filePathName);
+        return imageMat.rows();
+    }
 
     /**
      * Create the JFrame to be displayed, displaying two images.
