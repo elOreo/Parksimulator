@@ -166,15 +166,15 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // END: Allocating vertex array objects and buffers for each object
 
         // Initialize objects to be drawn (see respective sub-methods)
-        initObject0(gl);
-        initObject1(gl);
-        initObject2(gl);
-        initObject3(gl);
-        initObject4(gl);
-        initObject5(gl);
-        initObject6(gl);
-        initObject7(gl);
-        initObject8(gl);
+        initBaum(gl);
+        initHaus(gl);
+        initStamm(gl);
+        initDach(gl);
+        initBusch(gl);
+        initTonne(gl);
+        initDeckel(gl);
+        initTanne(gl);
+        initVogel(gl);
         // END: Preparing scene
 
         // Switch on back face culling
@@ -201,7 +201,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object0
      * @param gl OpenGL context
      */
-    private void initObject0(GL3 gl) {
+    private void initBaum(GL3 gl) {
         // BEGIN: Prepare a sphere for drawing (object 0)
         // create sphere data for rendering a sphere using an index array into a vertex array
         gl.glBindVertexArray(vaoName[0]);
@@ -248,7 +248,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object1
      * @param gl OpenGL context
      */
-    private void initObject1(GL3 gl) {
+    private void initHaus(GL3 gl) {
         // BEGIN: Prepare cube for drawing (object 1)
         gl.glBindVertexArray(vaoName[1]);
         shaderProgram1 = new ShaderProgram(gl);
@@ -292,7 +292,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object2
      * @param gl OpenGL context
      */
-    private void initObject2(GL3 gl) {
+    private void initStamm(GL3 gl) {
         // BEGIN: Prepare cone (frustum) for drawing (object 2)
         // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
         gl.glBindVertexArray(vaoName[2]);
@@ -338,7 +338,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object3
      * @param gl OpenGL context
      */
-    private void initObject3(GL3 gl) {
+    private void initDach(GL3 gl) {
         // BEGIN: Prepare roof for drawing (object 3)
         // create data for rendering a roof using an index array into a vertex array
         gl.glBindVertexArray(vaoName[3]);
@@ -383,7 +383,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object4
      * @param gl OpenGL context
      */
-    private void initObject4(GL3 gl) {
+    private void initBusch(GL3 gl) {
         // BEGIN: Prepare a sphere for drawing (object 4)
         // create sphere data for rendering a sphere using an index array into a vertex array
         gl.glBindVertexArray(vaoName[4]);
@@ -430,7 +430,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object5
      * @param gl OpenGL context
      */
-    private void initObject5(GL3 gl) {
+    private void initTonne(GL3 gl) {
         // BEGIN: Prepare cone (frustum) for drawing (object 5)
         // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
         gl.glBindVertexArray(vaoName[5]);
@@ -476,7 +476,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object6
      * @param gl OpenGL context
      */
-    private void initObject6(GL3 gl) {
+    private void initDeckel(GL3 gl) {
         // BEGIN: Prepare cone (frustum) for drawing (object 6)
         // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
         gl.glBindVertexArray(vaoName[6]);
@@ -522,7 +522,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object7
      * @param gl OpenGL context
      */
-    private void initObject7(GL3 gl) {
+    private void initTanne(GL3 gl) {
         // BEGIN: Prepare cone (frustum) for drawing (object 7)
         // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
         gl.glBindVertexArray(vaoName[7]);
@@ -568,7 +568,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Initializes the GPU for drawing object8
      * @param gl OpenGL context
      */
-    private void initObject8(GL3 gl) {
+    private void initVogel(GL3 gl) {
         // BEGIN: Prepare a sphere for drawing (object 8)
         // create sphere data for rendering a sphere using an index array into a vertex array
         gl.glBindVertexArray(vaoName[8]);
@@ -651,74 +651,74 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         //Tree-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-1.5f, 0.8f, 0f);
-        displayObject0(gl);
+        displayBaum(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-1.5f, -0.2f, 0f);
-        displayObject2(gl);
+        displayStamm(gl);
         pmvMatrix.glPopMatrix();
 
         //House-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(1f, 0f, 0f);
         pmvMatrix.glRotatef(45f, 0f, 1f, 0f);
-        displayObject1(gl);
+        displayHaus(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(1f, 1.2f, 0f);
         pmvMatrix.glRotatef(90f, 0f, 0f, 1f);
         pmvMatrix.glRotatef(45f, 1f, 0f, 0f);
-        displayObject3(gl);
+        displayDach(gl);
         pmvMatrix.glPopMatrix();
 
         //Bush-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-0.5f, -0.3f, 1.2f);
-        displayObject4(gl);
+        displayBusch(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-0.5f, -0.5f, 1f);
-        displayObject4(gl);
+        displayBusch(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-0.5f, -0.5f, 1.4f);
-        displayObject4(gl);
+        displayBusch(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-0.3f, -0.5f, 1.2f);
-        displayObject4(gl);
+        displayBusch(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-0.7f, -0.5f, 1.2f);
-        displayObject4(gl);
+        displayBusch(gl);
         pmvMatrix.glPopMatrix();
 
         //Bin-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(2f, -0.4f, 1f);
-        displayObject5(gl);
+        displayTonne(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(2f, -0.18f, 1f);
-        displayObject6(gl);
+        displayDeckel(gl);
         pmvMatrix.glPopMatrix();
 
         //Tree2-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(2.5f, 0.8f, -1.1f);
-        displayObject7(gl);
+        displayTanne(gl);
         pmvMatrix.glPopMatrix();
 
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(2.5f, -0.2f, -1.1f);
-        displayObject2(gl);
+        displayStamm(gl);
         pmvMatrix.glPopMatrix();
 
         //Bird-Cremer
@@ -726,12 +726,12 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.glRotatef(rotation,0f,1f,0f);
         rotation += delta;
         pmvMatrix.glTranslatef(1f, 1.5f, 1.5f);
-        displayObject8(gl);
+        displayVogel(gl);
         pmvMatrix.glPopMatrix();
 
     }
 
-    private void displayObject0(GL3 gl) {
+    private void displayBaum(GL3 gl) {
         gl.glUseProgram(shaderProgram0.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
         // to the vertex shader
@@ -742,7 +742,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, sphere0.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayObject1(GL3 gl) {
+    private void displayHaus(GL3 gl) {
         gl.glUseProgram(shaderProgram1.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -753,7 +753,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     }
 
-    private void displayObject2(GL3 gl) {
+    private void displayStamm(GL3 gl) {
         gl.glUseProgram(shaderProgram2.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -763,7 +763,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, cone0.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayObject3(GL3 gl) {
+    private void displayDach(GL3 gl) {
         gl.glUseProgram(shaderProgram3.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -773,7 +773,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, Roof.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayObject4(GL3 gl) {
+    private void displayBusch(GL3 gl) {
         gl.glUseProgram(shaderProgram4.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
         // to the vertex shader
@@ -784,7 +784,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, sphere1.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayObject5(GL3 gl) {
+    private void displayTonne(GL3 gl) {
         gl.glUseProgram(shaderProgram5.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -794,7 +794,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, cone1.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayObject6(GL3 gl) {
+    private void displayDeckel(GL3 gl) {
         gl.glUseProgram(shaderProgram6.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -804,7 +804,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, cone2.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayObject7(GL3 gl) {
+    private void displayTanne(GL3 gl) {
         gl.glUseProgram(shaderProgram7.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -814,7 +814,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, cone3.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayObject8(GL3 gl) {
+    private void displayVogel(GL3 gl) {
         gl.glUseProgram(shaderProgram8.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
         // to the vertex shader
