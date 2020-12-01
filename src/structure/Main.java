@@ -1,16 +1,19 @@
 package structure;
 
 
+import computergraphics.ShapesMainWindowPP;
 import imageprocessing.ShapeDetection;
 import org.opencv.core.Core;
 import imageprocessing.ImageProcessing;
-import computergraphics.StartCodeMainWindowPP;
+
+
 
 import javax.swing.*;
 
 public class Main {
 
     public static void main(String[] args) {
+
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
         ImageProcessing ip =  new ImageProcessing();
         //HoughCirclesRun hr = new HoughCirclesRun();
@@ -23,7 +26,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new StartCodeMainWindowPP();
+                new ShapesMainWindowPP();
             }
         });
         //new StartCodeMainWindowPP();

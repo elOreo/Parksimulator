@@ -1,5 +1,4 @@
-#version 410 core
-#extension GL_ARB_explicit_uniform_location : enable
+#version 430 core
 
 // position and color of vertex as input vertex attribute
 layout (location = 0) in vec3 vposition;
@@ -14,6 +13,6 @@ out vec4 vColor;
 void main(void) {
     // Calculation of the model-view-perspective transform
 	gl_Position = pMatrix * mvMatrix * vec4(vposition, 1.0);
-	// The color information is forwaarded to the next stage of the pipline
+	// The color information is forwarded to the next stage of the pipline
 	vColor = vec4(vInColor, 1.0);
 }
