@@ -77,7 +77,7 @@ public class ColorDetection {
 
             }
         }
-        //Imgproc.GaussianBlur(imagemat,imagemat,new Size(5,5), 0);
+        Imgproc.GaussianBlur(imagemat,imagemat,new Size(5,5), 0);
         img = imagemat;
     }
 
