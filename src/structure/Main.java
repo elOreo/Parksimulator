@@ -33,7 +33,7 @@ public class Main {
         //new StartCodeMainWindowPP();
 
         //ip.setImgPane3(hr.getEingabe());
-        ip.setImgPane3(cd.getImg_shapes());
+        ip.setImgPane3(cd.getImg());
         /*
         Bild nur Farben: ColorDetection.getImg()
         Bild nur Formen: ColorDetection.getImg_shapes()
