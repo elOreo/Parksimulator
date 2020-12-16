@@ -5,6 +5,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ShapeDetection {
 
@@ -26,21 +27,38 @@ public class ShapeDetection {
     }
 
 
-    public ShapeDetection(String imagePath, boolean useCanny){
+    public ShapeDetection(boolean useCanny){
 
-        /*
-        Loading the image.
-         */
-        Mat imgMat = Imgcodecs.imread(imagePath);
+        // Loading the image.
+        ColorDetection cd = new ColorDetection();
+        Mat imgMat = cd.getImg_shapes();
 
-        /*
-        Turning image into Greyscale image.
-         */
+
+        //Turning image into Greyscale image.
+
         Mat imgGrey = new Mat();
         Imgproc.cvtColor(imgMat, imgGrey, Imgproc.COLOR_BGR2GRAY);
 
         Mat greyBlur = new Mat();
         Imgproc.GaussianBlur(imgGrey,greyBlur,new Size(1,1), 0);
+        Mat medianGreyBlur = new Mat();
+        Imgproc.medianBlur(imgGrey, medianGreyBlur, 1);
+
+        Mat circles = new Mat();
+
+        //Houghcircle detection for circles.
+        Imgproc.HoughCircles(medianGreyBlur, circles, Imgproc.HOUGH_GRADIENT, 1.0,
+                (double)medianGreyBlur.rows()/16, // change this value to detect circles with different distances to each other
+                100.0, 30.0, 10, 40); // change the last two parameters
+        // (min_radius & max_radius) to detect larger circles
+
+        //Adding detected circles to list
+        for (int x = 0; x < circles.cols(); x++) {
+            double[] c = circles.get(0, x);
+            Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+            allShapeInfos.add(new ObjectInfo("circle", (float) center.x,(float) center.y));
+
+        }
 
         /*
         src - input array (multiple-channel, 8-bit or 32-bit floating point).
@@ -128,9 +146,8 @@ public class ShapeDetection {
 
         int undefinedCounter = 0;
 
-        /*
-        Circle through contours to decide which shape is involved.
-         */
+
+        //Circle through contours to decide which shape is involved.
         for(MatOfPoint cnt : contours){
             //Length of Approx = Count of Vertices in one Shape
             /*
@@ -150,11 +167,7 @@ public class ShapeDetection {
             MatOfPoint2f approxOutput = new MatOfPoint2f();
             MatOfPoint2f cnt2f = new MatOfPoint2f(cnt.toArray());
 
-            //uncomment for binary
             Imgproc.approxPolyDP(cnt2f, approxOutput,0.01*Imgproc.arcLength(cnt2f, true), true);
-
-            //uncomment for canny
-
 
             float approxOutputLength = approxOutput.total();
             System.out.println(approxOutputLength);
@@ -212,8 +225,8 @@ public class ShapeDetection {
                     //undefined
                     //Imgproc.putText(imgMat, "Undefined", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     undefinedCounter ++;
-                    Imgproc.putText(imgMat, "Circle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
-                    allShapeInfos.add(new ObjectInfo("circle", descriptionCoordinateX, descriptionCoordinateY));
+                    //Imgproc.putText(imgMat, "Circle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
+                    allShapeInfos.add(new ObjectInfo("undefined", descriptionCoordinateX, descriptionCoordinateY));
 
                 }
 

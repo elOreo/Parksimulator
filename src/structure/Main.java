@@ -17,12 +17,10 @@ public class Main {
 
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
         ImageProcessing ip =  new ImageProcessing();
-        //HoughCirclesRun hr = new HoughCirclesRun();
 
         //ColorDetection cd = new ColorDetection();
         //cd.detection(args, ip.getFilePathName());
-        //hr.run(args, ip.getFilePathName());
-        ShapeDetection sd = new ShapeDetection(ip.getFilePathName(), false);
+        ShapeDetection sd = new ShapeDetection(false);
         ip.setImgPane3(sd.getImg());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
