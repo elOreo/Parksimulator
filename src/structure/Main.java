@@ -19,11 +19,11 @@ public class Main {
         ImageProcessing ip =  new ImageProcessing();
         //HoughCirclesRun hr = new HoughCirclesRun();
 
-        ColorDetection cd = new ColorDetection();
-        cd.detection(args, ip.getFilePathName());
+        //ColorDetection cd = new ColorDetection();
+        //cd.detection(args, ip.getFilePathName());
         //hr.run(args, ip.getFilePathName());
-        //ShapeDetection sd = new ShapeDetection(ip.getFilePathName(), false);
-        //ip.setImgPane3(sd.getImg());
+        ShapeDetection sd = new ShapeDetection(ip.getFilePathName(), false);
+        ip.setImgPane3(sd.getImg());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -33,7 +33,7 @@ public class Main {
         //new StartCodeMainWindowPP();
 
         //ip.setImgPane3(hr.getEingabe());
-        ip.setImgPane3(cd.getImg());
+        //ip.setImgPane3(cd.getImg());
         /*
         Bild nur Farben: ColorDetection.getImg()
         Bild nur Formen: ColorDetection.getImg_shapes()

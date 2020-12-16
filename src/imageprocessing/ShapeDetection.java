@@ -49,8 +49,16 @@ public class ShapeDetection {
         maxval - maximum value to use with the #THRESH_BINARY and #THRESH_BINARY_INV thresholding types.
         type - thresholding type (see #ThresholdTypes).
         */
+
+        //Histogram Equalization
+
+        Mat eqHisMat = new Mat();
+        Imgproc.equalizeHist(imgGrey, eqHisMat);
+
+        //Threshold binary Matrix
+
         Mat imgThresh = new Mat();
-        Imgproc.threshold(imgGrey, imgThresh, 200, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(eqHisMat, imgThresh, 200, 255, Imgproc.THRESH_BINARY);
 
         Mat cannyEdge = new Mat();
         Imgproc.Canny(greyBlur, cannyEdge, lowThresh, lowThresh* RATIO, KERNEL_SIZE, false);
