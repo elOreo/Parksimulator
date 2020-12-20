@@ -225,17 +225,38 @@ public class ShapeDetection {
                     Imgproc.putText(imgMat, "Star", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("star", descriptionCoordinateX, descriptionCoordinateY));
                 }
-                else {
-                    //undefined
-                    //Imgproc.putText(imgMat, "Undefined", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
-                    undefinedCounter ++;
-                    //Imgproc.putText(imgMat, "Circle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
-                    allShapeInfos.add(new ObjectInfo("undefined", descriptionCoordinateX, descriptionCoordinateY));
-
-                }
 
                 img = imgMat;
 
+                //Overlapping double Object Removal
+                float xLast = 0;
+                float yLast = 0;
+
+                for(int i = 0; i < allShapeInfos.size(); i++){
+                    float xCoord = allShapeInfos.get(i).getxCoordinate();
+                    float yCoord = allShapeInfos.get(i).getyCoordinate();
+
+                    float xDist = xCoord - xLast;
+                    float yDist = yCoord - yLast;
+
+                    if(xDist < 2 && xDist > -2 && yDist < 2 && yDist > -2){
+                        allShapeInfos.remove(i);
+                    }
+
+                    xLast = xCoord;
+                    yLast = yCoord;
+                }
+
+                /* Middle Rectangle Deletion
+                for(int i = 0; i < allShapeInfos.size(); i++){
+                    if(allShapeInfos.get(i).getInfo().equals("rectangle")
+                            && allShapeInfos.get(i).getxCoordinate() > img.cols()/2 -2 && allShapeInfos.get(i).getxCoordinate() < img.cols()/2 +2
+                            && allShapeInfos.get(i).getyCoordinate() > img.rows()/2 -2 && allShapeInfos.get(i).getyCoordinate() < img.rows()/2 +2)
+                    {
+                        allShapeInfos.remove(i);
+                    }
+                }
+                */
         }
 
         //save shaped and shapecoordinates in list and print them out.
