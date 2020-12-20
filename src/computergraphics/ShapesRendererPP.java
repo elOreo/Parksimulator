@@ -977,7 +977,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * @param drawable The OpenGL drawable
      */
     @Override
-    public void display(GLAutoDrawable drawable, ArrayList<ObjectInfo> allShapes) {
+    public void display(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
 
         gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
@@ -985,39 +985,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Background color of the canvas
         gl.glClearColor(1f, 1f, 0.6f, 1.0f);
 
-
-                for(ObjectInfo object : allShapes){
-                    String objTyp = object.getTyp();
-                    float objX = object.getxCoordinate();
-                    float objY = object.getyCoordinate();
-                    if(objTyp.equals("triangle")){
-                        // new triangle object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("rectangle")){
-                        // new rectangle object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("pentagon")){
-                        // new pentagon object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("hexagon")){
-                        // new hexagon object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("star")){
-                        // new star object (poisition: objX, objY)
-                    }
-                    else{
-                        //        pmvMatrix.glPushMatrix();
-                        //        pmvMatrix.glTranslatef(objX, objY, 0f);
-                        //        displayBaum(gl,lightPos);
-                        //        pmvMatrix.glPopMatrix();
-                        //
-                        //        pmvMatrix.glPushMatrix();
-                        //        pmvMatrix.glTranslatef(objX, -0.2f, 0f);
-                        //        displayStamm(gl, lightPos);
-                        //        pmvMatrix.glPopMatrix();
-                    }
-                }
-            }
 
 
         // For monitoring the interaction settings

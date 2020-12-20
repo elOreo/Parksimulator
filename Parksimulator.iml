@@ -18,7 +18,8 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="jogl 2.3.2" level="application" />
-    <orderEntry type="library" exported="" name="opencv-450" level="application" />
+    <orderEntry type="library" exported="" name="Jogl 2.3.2" level="application" />
+    <orderEntry type="library" exported="" name="opencv-440" level="application" />
+    <orderEntry type="library" exported="" name="OBJLoader-3.0.0" level="application" />
   </component>
 </module>

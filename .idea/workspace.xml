@@ -11,6 +11,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="GLSL Shader" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -25,24 +26,27 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/rsc/objekte" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\objekte" />
-      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc" />
-      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\src\computergraphics" />
-      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\shader" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\shader" />
       <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\shader\png" />
       <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\objekte" />
       <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\images" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="computergraphics" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\objekte" />
+      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc" />
+      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\src\computergraphics" />
+      <recent name="C:\Users\chris\Desktop\uni\VCI\Pro\Parksimulator\rsc\shader" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Main">
@@ -119,38 +123,42 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser" timestamp="1608470892574">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1608470892574" />
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1606749755783">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1606749755783" />
-    <state x="527" y="167" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog" timestamp="1605017435939">
+    <state x="527" y="167" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog" timestamp="1608469494459">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="527" y="167" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog/0.0.1536.824@0.0.1536.824" timestamp="1605017435939" />
+    <state x="527" y="167" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog/0.0.1536.824@0.0.1536.824" timestamp="1608469494459" />
     <state x="528" y="282" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1607360901160">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="528" y="282" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1536.824@0.0.1536.824" timestamp="1607360901160" />
-    <state x="549" y="139" key="FileChooserDialogImpl" timestamp="1607959181773">
+    <state x="549" y="139" key="FileChooserDialogImpl" timestamp="1608469486519">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="139" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1607959181773" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1608468054090">
+    <state x="549" y="139" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1608469486519" />
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1608473385751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1608468054090" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1608468054090">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1608473385751" />
+    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1608473385751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1608468054090" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1608468054090">
+    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1608473385751" />
+    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1608473385751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1608468054090" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1608468054090">
+    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1608473385751" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1608473385751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1608468054090" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1608473385751" />
     <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1608466529325">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -171,9 +179,9 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="439" y="117" width="887" height="590" key="NewModule_or_Project.wizard/0.0.1536.824@0.0.1536.824" timestamp="1607959192980" />
-    <state x="277" y="0" key="SettingsEditor" timestamp="1607358549214">
+    <state x="277" y="0" key="SettingsEditor" timestamp="1608473510901">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1607358549214" />
+    <state x="277" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1608473510901" />
   </component>
 </project>
