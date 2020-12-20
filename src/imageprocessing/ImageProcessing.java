@@ -270,19 +270,7 @@ public class ImageProcessing extends JFrame {
         return bufferedImage;
     }
 
-    private Mat circleDetect(Mat imageMat) {
 
-        Mat circleImage = new Mat();
-        Imgproc.cvtColor(imageMat, circleImage, Imgproc.COLOR_BGR2GRAY);
-
-
-        // Show processed image
-
-        imgPanel3.setImage(Mat2BufferedImage(circleImage));
-        pack();
-
-        return circleImage;
-    }
 
     public void setImgPane3(Mat inputMat) {
         imgPanel3.setImage(Mat2BufferedImage(inputMat));

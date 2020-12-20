@@ -13,7 +13,7 @@ public class ColorDetection {
     private Mat img_shapes;
 
 
-    public void detection3(String[] args, String imagepath) {
+    public void detection3(String imagepath) {
         System.out.println(imagepath);
         Mat imagemat = Imgcodecs.imread(imagepath);
 
@@ -82,7 +82,7 @@ public class ColorDetection {
         img = imagemat;
     }
 
-    public void detection2(String[] args, String imagepath) {
+    public void detection2(String imagepath) {
         Mat imagemat = Imgcodecs.imread(imagepath);
         int[][] colors = {{255,255,255},{156,117,31},{251,255,37},{10,7,244},{234,31,47},{0,0,0}};
 
@@ -142,7 +142,7 @@ public class ColorDetection {
         img = imagemat;
     }
 
-    public void detection(String[] args, String imagepath) {
+    public void detection(String imagepath) {
         Mat imagemat = Imgcodecs.imread(imagepath);
 
         for (int x = 0; x < imagemat.cols(); x++) {

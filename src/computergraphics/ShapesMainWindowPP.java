@@ -113,8 +113,5 @@ public class ShapesMainWindowPP extends JFrame {
      * Creates the main window and starts the program
      * @param args Arguments are not used
      */
-    public static void main(String[] args) {
-        new ShapesMainWindowPP();
-    }
 
 }

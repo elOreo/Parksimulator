@@ -20,7 +20,7 @@ public class Main {
 
         //ColorDetection cd = new ColorDetection();
         //cd.detection(args, ip.getFilePathName());
-        ShapeDetection sd = new ShapeDetection(false);
+        ShapeDetection sd = new ShapeDetection(false, ip.getFilePathName());
         ip.setImgPane3(sd.getImg());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -36,6 +36,6 @@ public class Main {
         Bild nur Farben: ColorDetection.getImg()
         Bild nur Formen: ColorDetection.getImg_shapes()
          */
-
+        new ShapesMainWindowPP();
     }
 }
