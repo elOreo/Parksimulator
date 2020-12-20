@@ -36,6 +36,5 @@ public class Main {
         Bild nur Farben: ColorDetection.getImg()
         Bild nur Formen: ColorDetection.getImg_shapes()
          */
-        new ShapesMainWindowPP();
     }
 }

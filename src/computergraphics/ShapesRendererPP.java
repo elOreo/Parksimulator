@@ -31,10 +31,10 @@ package computergraphics;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.PMVMatrix;
-import de.hshl.obj.loader.OBJLoader;
-import de.hshl.obj.loader.Resource;
-import de.hshl.obj.loader.objects.Surface;
-import de.hshl.obj.loader.objects.SurfaceObject;
+//import de.hshl.obj.loader.OBJLoader;
+//import de.hshl.obj.loader.Resource;
+//import de.hshl.obj.loader.objects.Surface;
+//import de.hshl.obj.loader.objects.SurfaceObject;
 import imageprocessing.ObjectInfo;
 
 import java.io.IOException;

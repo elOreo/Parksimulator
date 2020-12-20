@@ -32,6 +32,8 @@ public class ShapeDetection {
         // Loading the image.
         ColorDetection cd = new ColorDetection();
         cd.detection3(imgPath);
+        cd.detection(imgPath);
+        cd.detection2(imgPath);
         Mat imgMat = cd.getImg_shapes();
 
 
