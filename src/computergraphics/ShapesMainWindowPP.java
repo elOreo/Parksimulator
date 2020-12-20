@@ -26,6 +26,7 @@ package computergraphics; /**
  * or implied, of JogAmp Community.
  */
 
+import java.awt.Dimension;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -70,6 +71,9 @@ public class ShapesMainWindowPP extends JFrame {
         // Setting to OpenGL 3
         GLProfile profile = GLProfile.get(GLProfile.GL3);
         GLCapabilities capabilities = new GLCapabilities(profile);
+        // Enabling of multisampling
+        capabilities.setSampleBuffers(true);
+        capabilities.setNumSamples(10);
         // Create the OpenGL rendering canvas
         GLCanvas canvas = new ShapesRendererPP(capabilities);
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
