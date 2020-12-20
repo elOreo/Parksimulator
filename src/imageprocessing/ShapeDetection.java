@@ -59,6 +59,7 @@ public class ShapeDetection {
         for (int x = 0; x < circles.cols(); x++) {
             double[] c = circles.get(0, x);
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+            Imgproc.putText(imgMat, "Circle", center, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
             allShapeInfos.add(new ObjectInfo("circle", (float) center.x,(float) center.y));
 
         }
