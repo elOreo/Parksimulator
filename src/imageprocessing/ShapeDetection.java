@@ -247,16 +247,14 @@ public class ShapeDetection {
                     yLast = yCoord;
                 }
 
-                /* Middle Rectangle Deletion
+                //Middle Rectangle Deletion
                 for(int i = 0; i < allShapeInfos.size(); i++){
-                    if(allShapeInfos.get(i).getInfo().equals("rectangle")
-                            && allShapeInfos.get(i).getxCoordinate() > img.cols()/2 -2 && allShapeInfos.get(i).getxCoordinate() < img.cols()/2 +2
+                    if(allShapeInfos.get(i).getxCoordinate() > img.cols()/2 -2 && allShapeInfos.get(i).getxCoordinate() < img.cols()/2 +2
                             && allShapeInfos.get(i).getyCoordinate() > img.rows()/2 -2 && allShapeInfos.get(i).getyCoordinate() < img.rows()/2 +2)
                     {
                         allShapeInfos.remove(i);
                     }
                 }
-                */
         }
 
         //save shaped and shapecoordinates in list and print them out.
