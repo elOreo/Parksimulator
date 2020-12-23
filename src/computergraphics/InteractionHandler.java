@@ -16,7 +16,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
 
     // Variables for camera distance
     private float eyeZ = 2f;
-    private float eyeZInc = 0.01f;
+    private float eyeZInc = 0.1f;
     // Variables for scene rotation
     private float angleXaxis = 0f;
     private float angleYaxis = 0f;
@@ -145,42 +145,29 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
-            case KeyEvent.VK_CONTROL:
-                ctrlKeyPressed = true;
-                break;
             case KeyEvent.VK_LEFT:
-                if (ctrlKeyPressed) {
-                    xPosition += xPositionInc;
-                } else {
-                    angleYaxis += angleYaxisInc;
-                }
+                xPosition += xPositionInc;
+                break;
+            case KeyEvent.VK_A:
+                xPosition += xPositionInc;
                 break;
             case KeyEvent.VK_RIGHT:
-                if (ctrlKeyPressed) {
-                    xPosition -= xPositionInc;
-                } else {
-                    angleYaxis -= angleYaxisInc;
-                }
+                xPosition -= xPositionInc;
+                break;
+            case KeyEvent.VK_D:
+                xPosition -= xPositionInc;
                 break;
             case KeyEvent.VK_UP:
-                if (ctrlKeyPressed) {
-                    yPosition -= yPositionInc;
-                } else {
-                    angleXaxis += angleXaxisInc;
-                }
+                eyeZ -= eyeZInc;
+                break;
+            case KeyEvent.VK_W:
+                eyeZ -= eyeZInc;
                 break;
             case KeyEvent.VK_DOWN:
-                if (ctrlKeyPressed) {
-                    yPosition += yPositionInc;
-                } else {
-                    angleXaxis -= angleXaxisInc;
-                }
+                eyeZ += eyeZInc;
                 break;
-            case KeyEvent.VK_MINUS:
-                eyeZ = eyeZ - eyeZInc;
-                break;
-            case KeyEvent.VK_PLUS:
-                eyeZ = eyeZ + eyeZInc;
+            case KeyEvent.VK_S:
+                eyeZ += eyeZInc;
                 break;
         }
     }
