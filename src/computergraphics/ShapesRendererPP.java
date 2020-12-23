@@ -30,13 +30,15 @@ package computergraphics;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.PMVMatrix;
-//import de.hshl.obj.loader.OBJLoader;
-//import de.hshl.obj.loader.Resource;
-//import de.hshl.obj.loader.objects.Surface;
-//import de.hshl.obj.loader.objects.SurfaceObject;
+import de.hshl.obj.loader.OBJLoader;
+import de.hshl.obj.loader.Resource;
+import de.hshl.obj.loader.objects.Surface;
+import de.hshl.obj.loader.objects.SurfaceObject;
 import imageprocessing.ObjectInfo;
 
+import java.awt.geom.QuadCurve2D;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -50,9 +52,10 @@ import java.io.File;
 
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
+import imageprocessing.ShapeDetection;
+import jogamp.graph.geom.plane.Crossing;
 
 import static com.jogamp.opengl.GL.*;
-
 
 /**
  * Performs the OpenGL graphics processing using the Programmable Pipeline and the
@@ -79,26 +82,52 @@ import static com.jogamp.opengl.GL.*;
  */
 public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
-
     private static final long serialVersionUID = 1L;
 
     // taking shader source code files from relative path;
     private final String shaderPath = ".\\rsc/shader\\";
-    private final String vertexShader0FileName = "BlinnPhongPoint.vert";
-    private final String fragmentShader0FileName = "BlinnPhongPoint.frag";
+    //Baum
+    private final String vertexShader0FileName = "BlinnPhongPointTex.vert";
+    private final String fragmentShader0FileName = "BlinnPhongPointTex.frag";
+    //Stamm
+    private final String vertexShader2FileName = "BlinnPhongPointTex2.vert";
+    private final String fragmentShader2FileName = "BlinnPhongPointTex2.frag";
+    //Haus
+    private final String vertexShader1FileName = "BlinnPhongPointTex1.vert";
+    private final String fragmentShader1FileName = "BlinnPhongPointTex1.frag";
+    //Dach
+    private final String vertexShader3FileName = "BlinnPhongPointTex3.vert";
+    private final String fragmentShader3FileName = "BlinnPhongPointTex3.frag";
+    //Busch
+    private final String vertexShader4FileName = "BlinnPhongPointTex4.vert";
+    private final String fragmentShader4FileName = "BlinnPhongPointTex4.frag";
+    //Tonne
+    private final String vertexShader5FileName = "BlinnPhongPointTex5.vert";
+    private final String fragmentShader5FileName = "BlinnPhongPointTex5.frag";
+    //Deckel
+    private final String vertexShader6FileName = "BlinnPhongPointTex6.vert";
+    private final String fragmentShader6FileName = "BlinnPhongPointTex6.frag";
+    //Tanne
+    private final String vertexShader7FileName = "BlinnPhongPointTex7.vert";
+    private final String fragmentShader7FileName = "BlinnPhongPointTex7.frag";
+    //Vogel
+    private final String vertexShader8FileName = "BlinnPhongPointTex8.vert";
+    private final String fragmentShader8FileName = "BlinnPhongPointTex8.frag";
 
-    private static final Path objFile = Paths.get("./rsc/objekte/untitled.obj");
+
+    //private static final Path objFile = Paths.get("./rsc/objekte/untitled.obj");
 
     // taking texture files from relative path
     private final String texturePath = ".\\rsc/shader\\";
     final String textureFileName0 = "BaumShade.png";
     final String textureFileName1 = "HausShade.png";
-    final String textureFileName2 = "GelbGruenPalette2.png";
-    final String textureFileName3 = "TanneShade.png";
+    final String textureFileName2 = "HausShade.png";
+    final String textureFileName3 = "Dach.png";
     final String textureFileName4 = "BuschShade.png";
-    final String textureFileName5 = "BuschShade.png";
-    final String textureFileName6 = "BuschShade.png";
-    final String textureFileName7 = "BuschShade.png";
+    final String textureFileName5 = "Tonne.png";
+    final String textureFileName6 = "Tonne.png";
+    final String textureFileName7 = "TanneShade.png";
+    final String textureFileName8 = "HausShade.png";
 
     private ShaderProgram shaderProgram0;
     private ShaderProgram shaderProgram1;
@@ -117,7 +146,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private int[] iboName;	// Names of index buffer objects
 
     // Define Materials
-    private Material material0, material1, material2, material3, material4, material5, material6;
+    private Material material0, material1, material2, material3, material4, material5, material6, material7;
 
     // Define light sources
     private LightSource light0;
@@ -129,9 +158,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     // Object for handling keyboard and mouse interaction
     private InteractionHandler interactionHandler;
+
     // Projection model view matrix tool
     private PMVMatrix pmvMatrix;
-
 
     //Cremer
     float rotation = 0.2f;
@@ -149,7 +178,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         this.addGLEventListener(this);
         createAndRegisterInteractionHandler();
     }
-
 
     /**
      * Helper method for creating an interaction handler object and registering it
@@ -203,14 +231,14 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         if (vboName[0] < 1)
             System.err.println("Error allocating vertex buffer object (VBO).");
 
-
         // create index buffer objects for noOfObjects objects (IBO)
         iboName = new int[noOfObjects];
         gl.glGenBuffers(noOfObjects, iboName, 0);
         if (iboName[0] < 1)
             System.err.println("Error allocating index buffer object.");
-
         // END: Allocating vertex array objects and buffers for each object
+
+
 
         // Specify light parameters
         float[] lightPosition = {0.0f, 3.0f, 3.0f, 1.0f};
@@ -242,18 +270,16 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         interactionHandler.setEyeZ(5.5f);
 
         // Switch on back face culling
-        gl.glEnable(GL.GL_CULL_FACE);
+        //gl.glEnable(GL.GL_CULL_FACE);
         gl.glCullFace(GL.GL_BACK);
 //        gl.glCullFace(GL.GL_FRONT);
         // Switch on depth test
         gl.glEnable(GL.GL_DEPTH_TEST);
 
         // defining polygon drawing mode
-//        gl.glPolygonMode(GL.GL_FRONT_AND_BACK, gl.GL_FILL);
-        gl.glPolygonMode(GL.GL_BACK, gl.GL_LINE);
+        gl.glPolygonMode(GL.GL_FRONT_AND_BACK, gl.GL_FILL);
+        //gl.glPolygonMode(GL.GL_BACK, gl.GL_LINE);
         // END: Preparing scene
-
-
     }
 
     /**
@@ -262,7 +288,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      */
     private void initBaum(GL3 gl) {
             // BEGIN: Prepare a sphere for drawing (object 0)
-            // create sphere data for rendering a sphere using an index array into a vertex array
             gl.glBindVertexArray(vaoName[0]);
             shaderProgram0 = new ShaderProgram(gl);
             // Shader for object 0
@@ -298,13 +323,16 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // Pointer for the vertex shader to the normal information per vertex
             gl.glEnableVertexAttribArray(2);
             gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
             // END: Prepare sphere for drawing
 
             // Blätter (not final)
-            float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.8f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.5f, 0.0f, 1.0f};
-            float[] matSpecular = {0.5f, 0.7f, 0.5f, 1.0f};
+            float[] matEmission = {0.1f, 0.1f, 0.1f, 1.0f};
+            float[] matAmbient =  {0.1f, 0.1f, 0.1f, 1.0f};
+            float[] matDiffuse =  {0.1f, 0.1f, 0.1f, 1.0f};
+            float[] matSpecular = {0.1f, 0.1f, 0.1f, 1.0f};
             float matShininess = 200.0f;
 
             material0 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
@@ -333,343 +361,352 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             texture.enable(gl);
             // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE1);
+            gl.glActiveTexture(GL_TEXTURE0);
             // Use texture as 2D texture (might have to go to "display()")
             gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
             // END: Prepare cube for drawing
         }
-
-
 
     /**
      * Initializes the GPU for drawing object1
      * @param gl OpenGL context
      */
     private void initHaus(GL3 gl) {
-        // BEGIN: Prepare cube for drawing (object 1)
-        gl.glBindVertexArray(vaoName[1]);
-        shaderProgram1 = new ShaderProgram(gl);
-        // Shader for object 1
-        shaderProgram1.loadShaderAndCreateProgram(shaderPath,
-                vertexShader0FileName, fragmentShader0FileName);
+            // BEGIN: Prepare cube for drawing (object 1)
+            gl.glBindVertexArray(vaoName[1]);
+            shaderProgram1 = new ShaderProgram(gl);
+            // Shader for object 1
+            shaderProgram1.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader1FileName, fragmentShader1FileName);
 
-        float[] color1 = {0.7f, 0.7f, 0.7f};
-        float[] cubeVertices = Box.makeBoxVertices(1.8f, 1.3f, 1.4f, color1);
-        int[] cubeIndices = Box.makeBoxIndicesForTriangleStrip();
+            float[] color1 = {0.7f, 0.7f, 0.7f};
+            float[] cubeVertices = House.makeBoxVertices(1.8f, 1.3f, 1.4f, color1);
+            int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[1]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, cubeVertices.length * 4,
-                FloatBuffer.wrap(cubeVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[1]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, cubeVertices.length * 4,
+                    FloatBuffer.wrap(cubeVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[1]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, cubeIndices.length * 4,
-                IntBuffer.wrap(cubeIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[1]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, cubeIndices.length * 4,
+                    IntBuffer.wrap(cubeIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and order vertex buffer object data for the vertex shader
-        // The vertex buffer contains: position (3), color (3), normals (3)
-        // Defining input for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare cube for drawing
+            // Activate and order vertex buffer object data for the vertex shader
+            // The vertex buffer contains: position (3), color (3), normals (3)
+            // Defining input for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare cube for drawing
 
-        // Fassade (not final)
-        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {0.4f, 0.4f, 0.4f, 1.0f};
-        float[] matDiffuse =  {0.4f, 0.4f, 0.4f, 1.0f};
-        float[] matSpecular = {0.4f, 0.4f, 0.4f, 1.0f};
-        float matShininess = 100.0f;
+            // Fassade (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
 
-        material1 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName1);
-            texture = TextureIO.newTexture(textureFile, true);
+            material1 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName1);
+                texture = TextureIO.newTexture(textureFile, true);
+
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName1);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE1);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing
         }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName1);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
-
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE0);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-    }
 
     /**
      * Initializes the GPU for drawing object2
      * @param gl OpenGL context
      */
     private void initStamm(GL3 gl) {
-        // BEGIN: Prepare cone (frustum) for drawing (object 2)
-        // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
-        gl.glBindVertexArray(vaoName[2]);
-        shaderProgram2 = new ShaderProgram(gl);
-        // Shader for object 2
-        shaderProgram2.loadShaderAndCreateProgram(shaderPath,
-                vertexShader0FileName, fragmentShader0FileName);
+            // BEGIN: Prepare cone (frustum) for drawing (object 2)
+            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+            gl.glBindVertexArray(vaoName[2]);
+            shaderProgram2 = new ShaderProgram(gl);
+            // Shader for object 2
+            shaderProgram2.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader2FileName, fragmentShader2FileName);
 
-        float[] color2 = {0.6f, 0.2f, 0f};
-        cone0 = new Cone(64);
-        float[] coneVertices = cone0.makeVertices(0.2f, 0.2f, 1f, color2);
-        int[] coneIndices = cone0.makeIndicesForTriangleStrip();
+            float[] color2 = {0.6f, 0.2f, 0f};
+            cone0 = new Cone(64);
+            float[] coneVertices = cone0.makeVertices(0.2f, 0.2f, 1f, color2);
+            int[] coneIndices = cone0.makeIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[2]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
-                FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[2]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
+                    FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[2]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
-                IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[2]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
+                    IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and arrange vertex buffer object data for the vertex shader
-        // Defining input for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare cone (frustum) for drawing
+            // Activate and arrange vertex buffer object data for the vertex shader
+            // Defining input for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare cone (frustum) for drawing
 
-        // Wood (not final)
-        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {0.3f, 0.0f, 0.0f, 1.0f};
-        float[] matDiffuse =  {0.3f, 0.0f, 0.0f, 1.0f};
-        float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
-        float matShininess = 200.0f;
+            // Wood (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
 
-        material2 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+            material2 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName1);
-            texture = TextureIO.newTexture(textureFile, true);
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName2);
+                texture = TextureIO.newTexture(textureFile, true);
 
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName2);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE2);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing
         }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName1);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
-
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE0);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-    }
 
     /**
      * Initializes the GPU for drawing object3
      * @param gl OpenGL context
      */
     private void initDach(GL3 gl) {
-        // BEGIN: Prepare cube for drawing (object 3)
-        gl.glBindVertexArray(vaoName[3]);
-        shaderProgram3 = new ShaderProgram(gl);
-        // Shader for object 1
-        shaderProgram3.loadShaderAndCreateProgram(shaderPath,
-                vertexShader0FileName, fragmentShader0FileName);
+            // BEGIN: Prepare cube for drawing (object 3)
+            gl.glBindVertexArray(vaoName[3]);
+            shaderProgram3 = new ShaderProgram(gl);
+            // Shader for object 1
+            shaderProgram3.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader3FileName, fragmentShader3FileName);
 
 
-        float[] color3 = {0.8f, 0.2f, 0f};
-        float[] roofVertices = Roof.makeVertices(1.9f, 1.9f, 1.7f, color3);
-        int[] roofIndices = Roof.makeIndicesForTriangleStrip();
+            float[] color3 = {0.8f, 0.2f, 0f};
+            float[] roofVertices = House.makeVertices(1.9f, 1.9f, 1.7f, color3);
+            int[] roofIndices = House.makeIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[3]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, roofVertices.length * 4,
-                FloatBuffer.wrap(roofVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[3]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, roofVertices.length * 4,
+                    FloatBuffer.wrap(roofVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[3]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, roofIndices.length * 4,
-                IntBuffer.wrap(roofIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[3]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, roofIndices.length * 4,
+                    IntBuffer.wrap(roofIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and arrange vertex buffer object data for the vertex shader
-        // Defining input for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare roof for drawing
+            // Activate and arrange vertex buffer object data for the vertex shader
+            // Defining input for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare roof for drawing
 
 
-        // Fassade (not final)
-        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {1f, 0.0f, 0.0f, 1.0f};
-        float[] matDiffuse =  {0.9f, 0.1f, 0.1f, 1.0f};
-        float[] matSpecular = {1f, 0.0f, 0.0f, 1.0f};
-        float matShininess = 100.0f;
+            // Fassade (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
 
-        material3 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+            material3 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName3);
-            texture = TextureIO.newTexture(textureFile, true);
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName3);
+                texture = TextureIO.newTexture(textureFile, true);
 
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName3);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE3);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing
         }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName3);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
-
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE0);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-
-
-    }
 
     /**
      * Initializes the GPU for drawing object4
      * @param gl OpenGL context
      */
     private void initBusch(GL3 gl) {
-        // BEGIN: Prepare a sphere for drawing (object 4)
-        // create sphere data for rendering a sphere using an index array into a vertex array
-        gl.glBindVertexArray(vaoName[4]);
-        shaderProgram4 = new ShaderProgram(gl);
-        // Shader for object 4
-        shaderProgram4.loadShaderAndCreateProgram(shaderPath,
-                vertexShader0FileName, fragmentShader0FileName);
+            // BEGIN: Prepare a sphere for drawing (object 4)
+            // create sphere data for rendering a sphere using an index array into a vertex array
+            gl.glBindVertexArray(vaoName[4]);
+            shaderProgram4 = new ShaderProgram(gl);
+            // Shader for object 4
+            shaderProgram4.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader4FileName, fragmentShader4FileName);
 
 
-        float[] color4 = {0.7f, 0.7f, 0.7f};
-        sphere1 = new Sphere(64, 64);
-        float[] sphereVertices = sphere1.makeVertices(0.2f, color4);
-        int[] sphereIndices = sphere1.makeIndicesForTriangleStrip();
+            float[] color4 = {0.7f, 0.7f, 0.7f};
+            sphere1 = new Sphere(64, 64);
+            float[] sphereVertices = sphere1.makeVertices(0.2f, color4);
+            int[] sphereIndices = sphere1.makeIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[4]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, sphereVertices.length * 4,
-                FloatBuffer.wrap(sphereVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[4]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, sphereVertices.length * 4,
+                    FloatBuffer.wrap(sphereVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[4]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, sphereIndices.length * 4,
-                IntBuffer.wrap(sphereIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[4]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, sphereIndices.length * 4,
+                    IntBuffer.wrap(sphereIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and order vertex buffer object data for the vertex shader
-        // Defining input variables for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare sphere for drawing
+            // Activate and order vertex buffer object data for the vertex shader
+            // Defining input variables for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare sphere for drawing
 
-        // Busch (not final)
-        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {0.1f, 1f, 0.0f, 1.0f};
-        float[] matDiffuse =  {0.0f, 0.8f, 0.0f, 1.0f};
-        float[] matSpecular = {0.5f, 0.7f, 0.5f, 1.0f};
-        float matShininess = 100.0f;
+            // Busch (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
 
-        material4 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+            material4 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName4);
-            texture = TextureIO.newTexture(textureFile, true);
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName4);
+                texture = TextureIO.newTexture(textureFile, true);
 
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName4);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE4);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing
         }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName4);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
-
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE0);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-    }
 
 
     /**
@@ -677,298 +714,345 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * @param gl OpenGL context
      */
     private void initTonne(GL3 gl) {
-        // BEGIN: Prepare cone (frustum) for drawing (object 5)
-        // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
-        gl.glBindVertexArray(vaoName[5]);
-        shaderProgram5 = new ShaderProgram(gl);
-        // Shader for object 5
-        shaderProgram5.loadShaderAndCreateProgram(shaderPath,
-                vertexShader0FileName, fragmentShader0FileName);
+            // BEGIN: Prepare cone (frustum) for drawing (object 5)
+            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+            gl.glBindVertexArray(vaoName[5]);
+            shaderProgram5 = new ShaderProgram(gl);
+            // Shader for object 5
+            shaderProgram5.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader5FileName, fragmentShader5FileName);
 
 
-        float[] color5 = {0.3f, 0.3f, 0.3f};
-        cone1 = new Cone(64);
-        float[] coneVertices = cone1.makeVertices(0.15f, 0.1f, 0.4f, color5);
-        int[] coneIndices = cone1.makeIndicesForTriangleStrip();
+            float[] color5 = {0.3f, 0.3f, 0.3f};
+            cone1 = new Cone(64);
+            float[] coneVertices = cone1.makeVertices(0.15f, 0.1f, 0.4f, color5);
+            int[] coneIndices = cone1.makeIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[5]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
-                FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[5]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
+                    FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[5]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
-                IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[5]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
+                    IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and arrange vertex buffer object data for the vertex shader
-        // Defining input for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare cone (frustum) for drawing
+            // Activate and arrange vertex buffer object data for the vertex shader
+            // Defining input for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare cone (frustum) for drawing
 
-        // Tonne (not final)
-        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
-        float[] matDiffuse =  {0.1f, 0.1f, 0.1f, 1.0f};
-        float[] matSpecular = {0.3f, 0.3f, 0.3f, 1.0f};
-        float matShininess = 100.0f;
+            // Tonne (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
 
-        material5 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+            material5 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName5);
-            texture = TextureIO.newTexture(textureFile, true);
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName5);
+                texture = TextureIO.newTexture(textureFile, true);
 
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName5);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE5);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing*/
         }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName5);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
 
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE0);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-    }
 
     /**
      * Initializes the GPU for drawing object6
      * @param gl OpenGL context
      */
     private void initDeckel(GL3 gl) {
-        // BEGIN: Prepare cone (frustum) for drawing (object 6)
-        // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
-        gl.glBindVertexArray(vaoName[6]);
-        shaderProgram6 = new ShaderProgram(gl);
-        // Shader for object 6
-        shaderProgram6.loadShaderAndCreateProgram(shaderPath,
-                vertexShader0FileName, fragmentShader0FileName);
+            // BEGIN: Prepare cone (frustum) for drawing (object 6)
+            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+            gl.glBindVertexArray(vaoName[6]);
+            shaderProgram6 = new ShaderProgram(gl);
+            // Shader for object 6
+            shaderProgram6.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader6FileName, fragmentShader6FileName);
 
-        float[] color6 = {0.3f, 0.3f, 0.3f};
-        cone2 = new Cone(64);
-        float[] coneVertices = cone2.makeVertices(0.1f, 0.17f, 0.08f, color6);
-        int[] coneIndices = cone2.makeIndicesForTriangleStrip();
+            float[] color6 = {0.3f, 0.3f, 0.3f};
+            cone2 = new Cone(64);
+            float[] coneVertices = cone2.makeVertices(0.1f, 0.17f, 0.08f, color6);
+            int[] coneIndices = cone2.makeIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[6]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
-                FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[6]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
+                    FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[6]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
-                IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[6]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
+                    IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and arrange vertex buffer object data for the vertex shader
-        // Defining input for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare cone (frustum) for drawing
+            // Activate and arrange vertex buffer object data for the vertex shader
+            // Defining input for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare cone (frustum) for drawing
 
 
-        // Deckel (not final)
-        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
-        float[] matDiffuse =  {0.1f, 0.1f, 0.1f, 1.0f};
-        float[] matSpecular = {0.3f, 0.3f, 0.3f, 1.0f};
-        float matShininess = 100.0f;
+            // Deckel (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
 
-        material5 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+            material5 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName5);
-            texture = TextureIO.newTexture(textureFile, true);
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName6);
+                texture = TextureIO.newTexture(textureFile, true);
 
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName6);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE6);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing
         }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName5);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
 
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE0);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-    }
 
     /**
      * Initializes the GPU for drawing object7
      * @param gl OpenGL context
      */
     private void initTanne(GL3 gl) {
-        // BEGIN: Prepare cone (frustum) for drawing (object 7)
-        // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
-        gl.glBindVertexArray(vaoName[7]);
-        shaderProgram7 = new ShaderProgram(gl);
-        // Shader for object 7
-        shaderProgram7.loadShaderAndCreateProgram(shaderPath,
-                vertexShader0FileName, fragmentShader0FileName);
+            // BEGIN: Prepare cone (frustum) for drawing (object 7)
+            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+            gl.glBindVertexArray(vaoName[7]);
+            shaderProgram7 = new ShaderProgram(gl);
+            // Shader for object 7
+            shaderProgram7.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader7FileName, fragmentShader7FileName);
 
-        float[] color7 = {0f, 0.6f, 0f};
-        cone3 = new Cone(64);
-        float[] coneVertices = cone3.makeVertices(0.001f, 0.6f, 1.4f, color7);
-        int[] coneIndices = cone3.makeIndicesForTriangleStrip();
+            float[] color7 = {0f, 0.6f, 0f};
+            cone3 = new Cone(64);
+            float[] coneVertices = cone3.makeVertices(0.001f, 0.6f, 1.4f, color7);
+            int[] coneIndices = cone3.makeIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[7]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
-                FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[7]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, coneVertices.length * 4,
+                    FloatBuffer.wrap(coneVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[7]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
-                IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[7]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, coneIndices.length * 4,
+                    IntBuffer.wrap(coneIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and arrange vertex buffer object data for the vertex shader
-        // Defining input for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare cone (frustum) for drawing
+            // Activate and arrange vertex buffer object data for the vertex shader
+            // Defining input for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare cone (frustum) for drawing
 
-        // Blätter (not final)
-        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {0.0f, 0.4f, 0.0f, 1.0f};
-        float[] matDiffuse =  {0.1f, 0.4f, 0.1f, 1.0f};
-        float[] matSpecular = {0.0f, 0.4f, 0.0f, 1.0f};
-        float matShininess = 100.0f;
+            // Blätter (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
 
-        material6 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+            material6 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName6);
-            texture = TextureIO.newTexture(textureFile, true);
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName7);
+                texture = TextureIO.newTexture(textureFile, true);
 
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName7);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE7);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing
         }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName6);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
-
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE1);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-
-
-    }
 
     /**
      * Initializes the GPU for drawing object8
      * @param gl OpenGL context
      */
     private void initVogel(GL3 gl) {
-        // BEGIN: Prepare a sphere for drawing (object 8)
-        // create sphere data for rendering a sphere using an index array into a vertex array
-        gl.glBindVertexArray(vaoName[8]);
-        // Shader program for object 8
-        shaderProgram8 = new ShaderProgram(gl);
-        // Shader for object 8
-        String vertexShader8FileName = "O8_Basic.vert";
-        String fragmentShader8FileName = "O8_Basic.frag";
-        shaderProgram8.loadShaderAndCreateProgram(shaderPath,
-                vertexShader8FileName, fragmentShader8FileName);
+            // BEGIN: Prepare a sphere for drawing (object 8)
+            // create sphere data for rendering a sphere using an index array into a vertex array
+            gl.glBindVertexArray(vaoName[8]);
+            // Shader program for object 8
+            shaderProgram8 = new ShaderProgram(gl);
+            // Shader for object 8
+            shaderProgram8.loadShaderAndCreateProgram(shaderPath,
+                    vertexShader8FileName, fragmentShader8FileName);
 
-        float[] color8 = {0f, 0.0f, 1f};
-        sphere2 = new Sphere(64, 64);
-        float[] sphereVertices = sphere2.makeVertices(0.1f, color8);
-        int[] sphereIndices = sphere2.makeIndicesForTriangleStrip();
+            float[] color8 = {0f, 0.0f, 1f};
+            sphere2 = new Sphere(64, 64);
+            float[] sphereVertices = sphere2.makeVertices(0.1f, color8);
+            int[] sphereIndices = sphere2.makeIndicesForTriangleStrip();
 
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[8]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, sphereVertices.length * 4,
-                FloatBuffer.wrap(sphereVertices), GL.GL_STATIC_DRAW);
+            // activate and initialize vertex buffer object (VBO)
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[8]);
+            // floats use 4 bytes in Java
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, sphereVertices.length * 4,
+                    FloatBuffer.wrap(sphereVertices), GL.GL_STATIC_DRAW);
 
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[8]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, sphereIndices.length * 4,
-                IntBuffer.wrap(sphereIndices), GL.GL_STATIC_DRAW);
+            // activate and initialize index buffer object (IBO)
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[8]);
+            // integers use 4 bytes in Java
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, sphereIndices.length * 4,
+                    IntBuffer.wrap(sphereIndices), GL.GL_STATIC_DRAW);
 
-        // Activate and order vertex buffer object data for the vertex shader
-        // Defining input variables for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // END: Prepare sphere for drawing
-    }
+            // Activate and order vertex buffer object data for the vertex shader
+            // Defining input variables for vertex shader
+            // Pointer for the vertex shader to the position information per vertex
+            gl.glEnableVertexAttribArray(0);
+            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+            // Pointer for the vertex shader to the color information per vertex
+            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+            // Pointer for the vertex shader to the normal information per vertex
+            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+            // Pointer for the vertex shader to the texture coordinates information per vertex
+            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+            // END: Prepare sphere for drawing
 
+            // Vogel (not final)
+            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
+            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float matShininess = 200.0f;
+
+            material7 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+
+            // Load and prepare texture
+            Texture texture = null;
+            try {
+                File textureFile = new File(texturePath+textureFileName8);
+                texture = TextureIO.newTexture(textureFile, true);
+
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (texture != null)
+                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName8);
+            else
+                System.err.println("Error loading textue.");
+            System.out.println("  Texture height: " + texture.getImageHeight());
+            System.out.println("  Texture width: " + texture.getImageWidth());
+            System.out.println("  Texture object: " + texture.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+            texture.enable(gl);
+            // Activate texture in slot 0 (might have to go to "display()")
+            gl.glActiveTexture(GL_TEXTURE8);
+            // Use texture as 2D texture (might have to go to "display()")
+            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            // END: Prepare cube for drawing
+        }
 
 
     /**
@@ -980,20 +1064,50 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     public void display(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
 
-        gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Background color of the canvas
-        gl.glClearColor(1f, 1f, 0.6f, 1.0f);
+        gl.glClearColor(1f, 0.5f, 1f, 1.0f);
+
+        /*class StructureGenerator {
+            public StructureGenerator(ArrayList<ObjectInfo> allShapes, int imgX, int imgY){
+                //Generate Flor (x * y) with Colordetection as texture
+                // ...........
+
+                //Generate Objects (Out of allShapes Arraylist)
+
+                for(ObjectInfo object : allShapes){
+                    String objTyp = object.getTyp();
+                    float objX = object.getxCoordinate();
+                    float objY = object.getyCoordinate();
+                    if(objTyp.equals("triangle")){
+                        // new triangle object (poisition: objX, objY)
+                    }
+                    else if(objTyp.equals("rectangle")){
+                        // new rectangle object (poisition: objX, objY)
+                    }
+                    else if(objTyp.equals("pentagon")){
+                        // new pentagon object (poisition: objX, objY)
+                    }
+                    else if(objTyp.equals("hexagon")){
+                        // new hexagon object (poisition: objX, objY)
+                    }
+                    else if(objTyp.equals("star")){
+                        // new star object (poisition: objX, objY)
+                    }
+                }
+            }
+        }*/
 
 
-
-        // For monitoring the interaction settings
-/*        System.out.println("Camera: z = " + interactionHandler.getEyeZ() + ", " +
+     /*   // For monitoring the interaction settings
+        System.out.println("Camera: z = " + interactionHandler.getEyeZ() + ", " +
                 "x-Rot: " + interactionHandler.getAngleXaxis() +
                 ", y-Rot: " + interactionHandler.getAngleYaxis() +
                 ", x-Translation: " + interactionHandler.getxPosition()+
                 ", y-Translation: " + interactionHandler.getyPosition());// definition of translation of model (Model/Object Coordinates --> World Coordinates)
-*/
+     */
+
         // Using the PMV-Tool for geometric transforms
         pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
         pmvMatrix.glLoadIdentity();
@@ -1006,10 +1120,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
 
         // Transform for the complete scene
-//        pmvMatrix.glTranslatef(1f, 0.2f, 0f);
+        //pmvMatrix.glTranslatef(1f, 0.2f, 0f);
 
         // Position of one light for all shapes
         float[] lightPos = {0f, 3f, 0f};
+
 
 
         //Tree-Cremer
@@ -1095,6 +1210,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     }
 
+
     private void displayBaum(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram0.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
@@ -1139,7 +1255,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glUniform1f(11, material1.getShininess());
         gl.glBindVertexArray(vaoName[1]);
         // Draws the elements in the order defined by the index buffer object (IBO)
-        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, Box.noOfIndicesForBox(), GL.GL_UNSIGNED_INT, 0);
+        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, House.noOfIndicesForBox(), GL.GL_UNSIGNED_INT, 0);
 
     }
 
@@ -1187,7 +1303,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glBindVertexArray(vaoName[3]);
 
         // Draws the elements in the order defined by the index buffer object (IBO)
-        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, Roof.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
+        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, House.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
     private void displayBusch(GL3 gl, float[] lightPos) {
@@ -1283,17 +1399,25 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private void displayVogel(GL3 gl) {
         gl.glUseProgram(shaderProgram8.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
-        // to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
         gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+        gl.glUniformMatrix4fv(2, 1, false, pmvMatrix.glGetMvitMatrixf());
+        // transfer parameters of light source
+        gl.glUniform4fv(3, 1, light0.getPosition(), 0);
+        gl.glUniform4fv(4, 1, light0.getAmbient(), 0);
+        gl.glUniform4fv(5, 1, light0.getDiffuse(), 0);
+        gl.glUniform4fv(6, 1, light0.getSpecular(), 0);
+        // transfer material parameters
+        gl.glUniform4fv(7, 1, material7.getEmission(), 0);
+        gl.glUniform4fv(8, 1, material7.getAmbient(), 0);
+        gl.glUniform4fv(9, 1, material7.getDiffuse(), 0);
+        gl.glUniform4fv(10, 1, material7.getSpecular(), 0);
+        gl.glUniform1f(11, material7.getShininess());
         gl.glBindVertexArray(vaoName[8]);
         // Draws the elements in the order defined by the index buffer object (IBO)
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, sphere2.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
 
     }
-
-
-
 
 
     /**

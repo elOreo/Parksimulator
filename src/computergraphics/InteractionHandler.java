@@ -37,6 +37,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private final float mouseRotationFactor = 0.1f;
     private final float mouseTranslationFactor = 0.1f;
     private final float mouseWheelScrollFactor = 10f;
+    private final float pressLeftKey = 0.3f;
 
     /**
      * Standard constructor for creation of the interaction handler.
