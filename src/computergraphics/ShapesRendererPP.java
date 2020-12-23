@@ -32,10 +32,10 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.PMVMatrix;
-import de.hshl.obj.loader.OBJLoader;
-import de.hshl.obj.loader.Resource;
-import de.hshl.obj.loader.objects.Surface;
-import de.hshl.obj.loader.objects.SurfaceObject;
+//import de.hshl.obj.loader.OBJLoader;
+//import de.hshl.obj.loader.Resource;
+//import de.hshl.obj.loader.objects.Surface;
+//import de.hshl.obj.loader.objects.SurfaceObject;
 import imageprocessing.ObjectInfo;
 
 import java.awt.geom.QuadCurve2D;
@@ -166,14 +166,20 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     float rotation = 0.2f;
     float delta = 1.0f;
 
+    //Objectlist from shapedetection
+
+    private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
 
     /**
      * Create the canvas with the requested OpenGL capabilities
      * @param capabilities The capabilities of the canvas, including the OpenGL profile
      */
-    public ShapesRendererPP(GLCapabilities capabilities) {
+    public ShapesRendererPP(GLCapabilities capabilities, ArrayList<ObjectInfo> allShapeInfos) {
+
         // Create the canvas with the requested OpenGL capabilities
         super(capabilities);
+
+        this.allShapeInfos = allShapeInfos;
         // Add this object as an OpenGL event listener
         this.addGLEventListener(this);
         createAndRegisterInteractionHandler();
@@ -218,7 +224,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         // BEGIN: Preparing scene
         // BEGIN: Allocating vertex array objects and buffers for each object
-        int noOfObjects = 20;
+        int noOfObjects = allShapeInfos.size() + 10;
         // create vertex array objects for noOfObjects objects (VAO)
         vaoName = new int[noOfObjects];
         gl.glGenVertexArrays(noOfObjects, vaoName, 0);
@@ -297,7 +303,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color0 = {0.7f, 0.7f, 0.7f};
             sphere0 = new Sphere(64, 64);
-            float[] sphereVertices = sphere0.makeVertices(0.7f, color0);
+            float[] sphereVertices = sphere0.makeVertices(10.0f, color0);
             int[] sphereIndices = sphere0.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -467,7 +473,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color2 = {0.6f, 0.2f, 0f};
             cone0 = new Cone(64);
-            float[] coneVertices = cone0.makeVertices(0.2f, 0.2f, 1f, color2);
+            float[] coneVertices = cone0.makeVertices(8.0f, 8.0f, 5f, color2);
             int[] coneIndices = cone0.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -1126,7 +1132,22 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         float[] lightPos = {0f, 3f, 0f};
 
 
+        for(ObjectInfo shape : allShapeInfos){
+            if(shape.getTyp().equals("circle")){
+                //Tree-Cremer
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                displayBaum(gl,lightPos);
+                pmvMatrix.glPopMatrix();
 
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                displayStamm(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+            }
+        }
+
+        /*
         //Tree-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-1.5f, 0.8f, 0f);
@@ -1208,6 +1229,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         displayVogel(gl);
         pmvMatrix.glPopMatrix();
 
+
+         */
     }
 
 

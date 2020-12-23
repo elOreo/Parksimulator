@@ -25,7 +25,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ShapesMainWindowPP();
+                new ShapesMainWindowPP(sd.getAllShapeInfos());
             }
         });
         //new StartCodeMainWindowPP();

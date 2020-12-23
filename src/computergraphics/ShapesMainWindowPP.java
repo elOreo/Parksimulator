@@ -31,12 +31,14 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import imageprocessing.ObjectInfo;
 import structure.Main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 /**
  * Top-level class of the application displaying the OpenGL component.
@@ -63,19 +65,21 @@ public class ShapesMainWindowPP extends JFrame {
     private static final int CANVAS_WIDTH = 800;  // width of the drawable
     private static final int CANVAS_HEIGHT = 600; // height of the drawable
     private static final int FPS = 60; // animator's target frames per second
+    private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
 
 
-    public ShapesMainWindowPP() {
+    public ShapesMainWindowPP(ArrayList<ObjectInfo> allShapeInfos) {
         // Setup an OpenGL context for the Canvas
         // Setup OpenGL to use the programmable pipeline
         // Setting to OpenGL 3
+        this.allShapeInfos = allShapeInfos;
         GLProfile profile = GLProfile.get(GLProfile.GL3);
         GLCapabilities capabilities = new GLCapabilities(profile);
         // Enabling of multisampling
         capabilities.setSampleBuffers(true);
-        capabilities.setNumSamples(20);
+        capabilities.setNumSamples(allShapeInfos.size() + 10);
         // Create the OpenGL rendering canvas
-        GLCanvas canvas = new ShapesRendererPP(capabilities);
+        GLCanvas canvas = new ShapesRendererPP(capabilities, allShapeInfos);
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         // Create an animator that drives the canvas display() at the specified
