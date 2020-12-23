@@ -110,6 +110,7 @@ public class ShapesMainWindowPP extends JFrame {
 
         // OpenGL: request focus for canvas
         canvas.requestFocusInWindow();
+        canvas.requestFocusInWindow();
 
     }
 

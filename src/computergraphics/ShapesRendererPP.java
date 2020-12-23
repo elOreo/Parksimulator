@@ -473,7 +473,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color2 = {0.6f, 0.2f, 0f};
             cone0 = new Cone(64);
-            float[] coneVertices = cone0.makeVertices(8.0f, 8.0f, 5f, color2);
+            float[] coneVertices = cone0.makeVertices(4.0f, 4.0f, 10f, color2);
             int[] coneIndices = cone0.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -1141,13 +1141,29 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 pmvMatrix.glPopMatrix();
 
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+10f, 0f);
                 displayStamm(gl, lightPos);
                 pmvMatrix.glPopMatrix();
             }
         }
 
-        /*
+       /* for(ObjectInfo shape : allShapeInfos){
+            if(shape.getTyp().equals("star")){
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+
+                displayHaus(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+
+                displayDach(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+            }
+        }
+
+
         //Tree-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-1.5f, 0.8f, 0f);
