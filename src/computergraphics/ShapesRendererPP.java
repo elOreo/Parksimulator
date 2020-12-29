@@ -278,7 +278,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
         // Start parameter settings for the interaction handler might be called here
-        interactionHandler.setEyeZ(5.5f);
+        interactionHandler.setEyeZ(10.5f);
 
         // Switch on back face culling
         //gl.glEnable(GL.GL_CULL_FACE);
@@ -303,7 +303,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 vertexShader9FileName, fragmentShader9FileName);
         House plane = new House(allShapeInfos, 64, 64);
         float[] color9 = {0.5f, 0.7f, 0f};
-        float[] cubeVertices = House.makeBoxVertices(1700f, 1000f, 0.01f, color9);
+        float[] cubeVertices = House.makeBoxVertices(3000f, 3000f, 0.001f, color9);
         int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
 
         // activate and initialize vertex buffer object (VBO)
@@ -336,10 +336,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // END: Prepare cube for drawing
 
         // Fassade (not final)
-        float[] matEmission = {0.1f, 0.1f, 0.1f, 0.1f};
-        float[] matAmbient =  {0.1f, 0.0f, 0.1f, 0.1f};
-        float[] matDiffuse =  {0.1f, 0.0f, 0.1f, 0.1f};
-        float[] matSpecular = {0.0f, 0.0f, 0.0f,0.0f};
+        float[] matEmission = {0.2f, 0.2f, 0.2f, 1.1f};
+        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.1f};
+        float[] matDiffuse =  {0.2f, 0.2f, 0.2f, 1.1f};
+        float[] matSpecular = {0.1f, 0.1f, 0.1f,1.0f};
         float matShininess = 200.0f;
 
 
@@ -424,7 +424,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             float[] matEmission = {0.1f, 0.9f, 0.1f, 1.0f};
             float[] matAmbient =  {0.1f, 0.9f, 0.1f, 1.0f};
             float[] matDiffuse =  {0.1f, 0.9f, 0.1f, 1.0f};
-            float[] matSpecular = {0.1f, 0.9f, 0.1f, 1.0f};
+            float[] matSpecular = {0.1f, 0.1f, 0.1f, 1.0f};
             float matShininess = 200.0f;
 
             material0 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
@@ -644,7 +644,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
             float[] color3 = {0.8f, 0.2f, 0f};
-            float[] roofVertices = House.makeVertices(38f, 40f, 34f, color3);
+            float[] roofVertices = House.makeVertices(38f, 39f, 40f, color3);
             int[] roofIndices = House.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -677,10 +677,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
             // Dachpfannen (not final)
-            float[] matEmission = {0.5f, 0f, 0.5f, 1.0f};
-            float[] matAmbient =  {0.5f, 0f, 0.5f, 1.0f};
-            float[] matDiffuse =  {0.5f, 0f, 0.5f, 1.0f};
-            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matEmission = {0.6f, 0f, 0.1f, 1.0f};
+            float[] matAmbient =  {0.6f, 0f, 0.1f, 1.0f};
+            float[] matDiffuse =  {0.6f, 0f, 0.1f, 1.0f};
+            float[] matSpecular = {0.1f, 0.1f, 0.1f, 1.0f};
             float matShininess = 200.0f;
 
             material3 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
@@ -1159,37 +1159,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Background color of the canvas
-        gl.glClearColor(1f, 0.5f, 1f, 1.0f);
+        gl.glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 
-        /*class StructureGenerator {
-            public StructureGenerator(ArrayList<ObjectInfo> allShapes, int imgX, int imgY){
-                //Generate Flor (x * y) with Colordetection as texture
-                // ...........
-
-                //Generate Objects (Out of allShapes Arraylist)
-
-                for(ObjectInfo object : allShapes){
-                    String objTyp = object.getTyp();
-                    float objX = object.getxCoordinate();
-                    float objY = object.getyCoordinate();
-                    if(objTyp.equals("triangle")){
-                        // new triangle object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("rectangle")){
-                        // new rectangle object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("pentagon")){
-                        // new pentagon object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("hexagon")){
-                        // new hexagon object (poisition: objX, objY)
-                    }
-                    else if(objTyp.equals("star")){
-                        // new star object (poisition: objX, objY)
-                    }
-                }
-            }
-        }*/
 
 
      /*   // For monitoring the interaction settings
@@ -1204,99 +1175,111 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
         pmvMatrix.glLoadIdentity();
         // Setting the camera position, based on user input
-        pmvMatrix.gluLookAt(0f, 45f, 150f,
-                             100f, 0f, 0f,
-                            0f, 1f, 0f);
+        /*pmvMatrix.gluLookAt(0f, 0f, 0f,
+                             0f, 0f, 0f,
+                            0f, 0f, 0f);*/
         pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
 
         // Transform for the complete scene
-        //pmvMatrix.glTranslatef(1f, 0.2f, 0f);
+        pmvMatrix.glTranslatef(0f, 0f, -100f);
 
         // Position of one light for all shapes
         float[] lightPos = {0f, 3f, 0f};
 
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(500f, 500f, 0f);
-        displayPlane(gl,lightPos);
-        pmvMatrix.glPopMatrix();
+
 
         //Trees
         for(ObjectInfo shape : allShapeInfos){
             if(shape.getTyp().equals("circle")){
-                //Tree-Cremer
+
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 40f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
                 displayBaum(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 15f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
                 pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                 displayStamm(gl, lightPos);
                 pmvMatrix.glPopMatrix();
             }
         }
+
         //Haus
         for(ObjectInfo shape : allShapeInfos){
             if(shape.getTyp().equals("rectangle")){
-                //Tree-Cremer
+
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 15f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
                 displayHaus(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 42f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 27f);
                 pmvMatrix.glRotatef(-90f, 0f, 1f, 0f);
                 displayDach(gl, lightPos);
-                pmvMatrix.glPopMatrix();
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glRotatef(rotation,0f,0f,1f);
-                rotation += delta;
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 50f);
-                displayVogel(gl);
                 pmvMatrix.glPopMatrix();
 
             }
         }
 
+        //Mülltonne
         for(ObjectInfo shape : allShapeInfos){
             if(shape.getTyp().equals("pentagon")){
-                //Tree-Cremer
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 4f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -10f);
                 pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                 displayTonne(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 8.8f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -5.5f);
                 pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                 displayDeckel(gl, lightPos);
                 pmvMatrix.glPopMatrix();
 
             }
         }
+
+        //Tanne
         for(ObjectInfo shape : allShapeInfos){
             if(shape.getTyp().equals("triangle")){
-                //Tree-Cremer
+
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 40f);
-            pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
+                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                 displayTanne(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 15f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
                 pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                 displayStamm(gl, lightPos);
                 pmvMatrix.glPopMatrix();
 
             }
         }
+
+        //Vogel
+        for(ObjectInfo shape : allShapeInfos) {
+            if (shape.getTyp().equals("hexagon")) {
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glRotatef(rotation, 0f, 0f, 1f);
+                rotation += delta;
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 30f);
+                displayVogel(gl);
+                pmvMatrix.glPopMatrix();
+
+            }
+        }
+
+        pmvMatrix.glPushMatrix();
+        pmvMatrix.glTranslatef(0,0,-15);
+        displayPlane(gl, lightPos);
+        pmvMatrix.glPopMatrix();
 
        /* for(ObjectInfo shape : allShapeInfos){
             if(shape.getTyp().equals("star")){
@@ -1647,7 +1630,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         pmvMatrix.glMatrixMode(PMVMatrix.GL_PROJECTION);
         pmvMatrix.glLoadIdentity();
-        pmvMatrix.gluPerspective(45f, (float) width/ (float) height, 0.01f, 10000f);
+        pmvMatrix.gluPerspective(45f, (float) width/ (float) height, 0.1f, 10000f);
 
     }
 
