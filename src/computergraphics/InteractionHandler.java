@@ -15,8 +15,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private static final boolean VERBOSE = false;
 
     // Variables for camera distance
-    private float eyeZ = 2f;
-    private float eyeZInc = 0.01f;
+    private float eyeZ = 10f;
+    private float eyeZInc = 0.1f;
     // Variables for scene rotation
     private float angleXaxis = 0f;
     private float angleYaxis = 0f;
@@ -25,8 +25,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     // Variables for scene translation
     private float xPosition = 0f;
     private float yPosition = 0f;
-    private float xPositionInc = 0.1f;
-    private float yPositionInc= 0.1f;
+    private float xPositionInc = 1f;
+    private float yPositionInc= 1f;
     // Variables for keyboard control
     private boolean ctrlKeyPressed = false;
     // Variables for mouse control
@@ -37,6 +37,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private final float mouseRotationFactor = 0.1f;
     private final float mouseTranslationFactor = 0.1f;
     private final float mouseWheelScrollFactor = 10f;
+    private final float pressLeftKey = 0.3f;
 
     /**
      * Standard constructor for creation of the interaction handler.
@@ -144,42 +145,29 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
-            case KeyEvent.VK_CONTROL:
-                ctrlKeyPressed = true;
-                break;
             case KeyEvent.VK_LEFT:
-                if (ctrlKeyPressed) {
-                    xPosition += xPositionInc;
-                } else {
-                    angleYaxis += angleYaxisInc;
-                }
+                xPosition += xPositionInc;
+                break;
+            case KeyEvent.VK_A:
+                xPosition += xPositionInc;
                 break;
             case KeyEvent.VK_RIGHT:
-                if (ctrlKeyPressed) {
-                    xPosition -= xPositionInc;
-                } else {
-                    angleYaxis -= angleYaxisInc;
-                }
+                xPosition -= xPositionInc;
+                break;
+            case KeyEvent.VK_D:
+                xPosition -= xPositionInc;
                 break;
             case KeyEvent.VK_UP:
-                if (ctrlKeyPressed) {
-                    yPosition -= yPositionInc;
-                } else {
-                    angleXaxis += angleXaxisInc;
-                }
+                eyeZ -= eyeZInc;
+                break;
+            case KeyEvent.VK_W:
+                eyeZ -= eyeZInc;
                 break;
             case KeyEvent.VK_DOWN:
-                if (ctrlKeyPressed) {
-                    yPosition += yPositionInc;
-                } else {
-                    angleXaxis -= angleXaxisInc;
-                }
+                eyeZ += eyeZInc;
                 break;
-            case KeyEvent.VK_MINUS:
-                eyeZ = eyeZ - eyeZInc;
-                break;
-            case KeyEvent.VK_PLUS:
-                eyeZ = eyeZ + eyeZInc;
+            case KeyEvent.VK_S:
+                eyeZ += eyeZInc;
                 break;
         }
     }

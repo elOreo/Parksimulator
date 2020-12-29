@@ -1,6 +1,6 @@
 #version 430 core
 
-// Algorithm based on algorithm from
+// Algorithm based on algorithmen from
 // Sellers, Graham, Wright, Richard S., Haemel, Nicholas (2014).
 // OpenGL Super Bible. 6th edition. Addison Wesley.
 
@@ -8,8 +8,10 @@
 // To use this shader set for generating a directional light source,
 // put the light source very far away from the objects to be lit
 
+// Puts a texture on the surfaces of the object
+
 // Author: Karsten Lehn
-// Version: 25.10.2017, 16.9.2019
+// Version: 12.11.2017, 16.9.2019
 
 // Parameters of light source as uniform variables from application
 layout (location = 4) uniform vec4 lightSourceAmbient;
@@ -22,7 +24,10 @@ layout (location = 9) uniform vec4 materialDiffuse;
 layout (location = 10) uniform vec4 materialSpecular;
 layout (location = 11) uniform float materialShininess;
 
-in vec4 vColor;
+// predefined type for texture usage
+layout (binding = 0) uniform sampler2D tex;
+
+//in vec4 vColor;
 out vec4 FragColor;
 
 // Input from vertex shader
@@ -31,6 +36,7 @@ in VS_OUT
     vec3 N;
     vec3 L;
     vec3 V;
+    vec2 vUV;
 } fs_in;
 
 void main(void)
@@ -51,6 +57,5 @@ void main(void)
     vec3 specular = pow(max(dot(N, H), 0.0), materialShininess) * specularAlbedo;
 
     // Write final color to the framebuffer
-    FragColor = vec4(emissiv + ambient + diffuse + specular, 1.0);
+    FragColor = (vec4(emissiv + ambient + diffuse, 1.0) * texture(tex, fs_in.vUV)) + vec4(specular, 1.0);
 }
-

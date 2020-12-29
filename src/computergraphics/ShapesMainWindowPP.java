@@ -31,12 +31,15 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import imageprocessing.ObjectInfo;
+import org.opencv.core.Mat;
 import structure.Main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 /**
  * Top-level class of the application displaying the OpenGL component.
@@ -60,22 +63,26 @@ public class ShapesMainWindowPP extends JFrame {
     private static final long serialVersionUID = 1L;
     // Define constants for the top-level container
     private static String TITLE = "Shapes start Code Main Window - Programmable Pipeline";
-    private static final int CANVAS_WIDTH = 800;  // width of the drawable
-    private static final int CANVAS_HEIGHT = 600; // height of the drawable
+    private static final int CANVAS_WIDTH = 1280;  // width of the drawable
+    private static final int CANVAS_HEIGHT = 720; // height of the drawable
     private static final int FPS = 60; // animator's target frames per second
+    private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
+    private Mat planeTexture;
 
 
-    public ShapesMainWindowPP() {
+    public ShapesMainWindowPP(ArrayList<ObjectInfo> allShapeInfos, Mat planeTexture) {
         // Setup an OpenGL context for the Canvas
         // Setup OpenGL to use the programmable pipeline
         // Setting to OpenGL 3
+        this.planeTexture = planeTexture;
+        this.allShapeInfos = allShapeInfos;
         GLProfile profile = GLProfile.get(GLProfile.GL3);
         GLCapabilities capabilities = new GLCapabilities(profile);
         // Enabling of multisampling
         capabilities.setSampleBuffers(true);
-        capabilities.setNumSamples(10);
+        capabilities.setNumSamples(allShapeInfos.size() + 10);
         // Create the OpenGL rendering canvas
-        GLCanvas canvas = new ShapesRendererPP(capabilities);
+        GLCanvas canvas = new ShapesRendererPP(capabilities, allShapeInfos, planeTexture);
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         // Create an animator that drives the canvas display() at the specified
@@ -105,6 +112,7 @@ public class ShapesMainWindowPP extends JFrame {
         animator.start(); // start the animation loop	// TODO Auto-generated constructor stub
 
         // OpenGL: request focus for canvas
+        canvas.requestFocusInWindow();
         canvas.requestFocusInWindow();
 
     }

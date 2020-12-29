@@ -20,12 +20,14 @@ public class Main {
 
         //ColorDetection cd = new ColorDetection();
         //cd.detection(args, ip.getFilePathName());
-        ShapeDetection sd = new ShapeDetection(false, ip.getFilePathName());
+        String filePathName = ip.getFilePathName();
+        ColorDetection cd = new ColorDetection(filePathName);
+        ShapeDetection sd = new ShapeDetection(false, filePathName);
         ip.setImgPane3(sd.getImg());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ShapesMainWindowPP();
+                new ShapesMainWindowPP(sd.getAllShapeInfos(), cd.getImg());
             }
         });
         //new StartCodeMainWindowPP();
