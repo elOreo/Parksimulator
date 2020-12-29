@@ -30,10 +30,7 @@ public class ShapeDetection {
     public ShapeDetection(boolean useCanny, String imgPath){
 
         // Loading the image.
-        ColorDetection cd = new ColorDetection();
-        cd.detection3(imgPath);
-        cd.detection(imgPath);
-        cd.detection2(imgPath);
+        ColorDetection cd = new ColorDetection(imgPath);
         Mat imgMat = cd.getImg_shapes();
 
 

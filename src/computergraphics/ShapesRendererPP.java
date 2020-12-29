@@ -27,6 +27,7 @@ package computergraphics;
  * authors and should not be interpreted as representing official policies, either expressed
  * or implied, of JogAmp Community.
  */
+import org.opencv.core.*;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -36,6 +37,7 @@ import com.jogamp.opengl.util.PMVMatrix;
 //import de.hshl.obj.loader.Resource;
 //import de.hshl.obj.loader.objects.Surface;
 //import de.hshl.obj.loader.objects.SurfaceObject;
+import imageprocessing.ColorDetection;
 import imageprocessing.ObjectInfo;
 
 import java.awt.geom.QuadCurve2D;
@@ -83,6 +85,11 @@ import static com.jogamp.opengl.GL.*;
 public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     private static final long serialVersionUID = 1L;
+
+    //Plane Texture Mat from Color Detection
+    private Mat planeTexture;
+    private int planeTextureWidth = planeTexture.cols();
+    private int planeTextureHeight = planeTexture.rows();
 
     // taking shader source code files from relative path;
     private final String shaderPath = ".\\rsc/shader\\";
@@ -178,11 +185,12 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      * Create the canvas with the requested OpenGL capabilities
      * @param capabilities The capabilities of the canvas, including the OpenGL profile
      */
-    public ShapesRendererPP(GLCapabilities capabilities, ArrayList<ObjectInfo> allShapeInfos) {
+    public ShapesRendererPP(GLCapabilities capabilities, ArrayList<ObjectInfo> allShapeInfos, Mat planeTexture) {
 
         // Create the canvas with the requested OpenGL capabilities
         super(capabilities);
 
+        this.planeTexture = planeTexture;
         this.allShapeInfos = allShapeInfos;
         // Add this object as an OpenGL event listener
         this.addGLEventListener(this);

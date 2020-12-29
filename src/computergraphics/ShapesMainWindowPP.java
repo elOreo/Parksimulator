@@ -32,6 +32,7 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import imageprocessing.ObjectInfo;
+import org.opencv.core.Mat;
 import structure.Main;
 
 import javax.swing.*;
@@ -66,12 +67,14 @@ public class ShapesMainWindowPP extends JFrame {
     private static final int CANVAS_HEIGHT = 720; // height of the drawable
     private static final int FPS = 60; // animator's target frames per second
     private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
+    private Mat planeTexture;
 
 
-    public ShapesMainWindowPP(ArrayList<ObjectInfo> allShapeInfos) {
+    public ShapesMainWindowPP(ArrayList<ObjectInfo> allShapeInfos, Mat planeTexture) {
         // Setup an OpenGL context for the Canvas
         // Setup OpenGL to use the programmable pipeline
         // Setting to OpenGL 3
+        this.planeTexture = planeTexture;
         this.allShapeInfos = allShapeInfos;
         GLProfile profile = GLProfile.get(GLProfile.GL3);
         GLCapabilities capabilities = new GLCapabilities(profile);
@@ -79,7 +82,7 @@ public class ShapesMainWindowPP extends JFrame {
         capabilities.setSampleBuffers(true);
         capabilities.setNumSamples(allShapeInfos.size() + 10);
         // Create the OpenGL rendering canvas
-        GLCanvas canvas = new ShapesRendererPP(capabilities, allShapeInfos);
+        GLCanvas canvas = new ShapesRendererPP(capabilities, allShapeInfos, planeTexture);
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
         // Create an animator that drives the canvas display() at the specified
