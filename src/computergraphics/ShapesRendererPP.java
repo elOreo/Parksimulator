@@ -28,34 +28,18 @@ package computergraphics;
  * or implied, of JogAmp Community.
  */
 import org.opencv.core.*;
-
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.PMVMatrix;
-//import de.hshl.obj.loader.OBJLoader;
-//import de.hshl.obj.loader.Resource;
-//import de.hshl.obj.loader.objects.Surface;
-//import de.hshl.obj.loader.objects.SurfaceObject;
-import imageprocessing.ColorDetection;
 import imageprocessing.ObjectInfo;
-
-import java.awt.geom.QuadCurve2D;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-
 import java.io.File;
-
-
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
-import imageprocessing.ShapeDetection;
-import jogamp.graph.geom.plane.Crossing;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import static com.jogamp.opengl.GL.*;
 
@@ -88,7 +72,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     //Plane Texture Mat from Color Detection
     private Mat planeTexture;
-   // private int planeTextureWidth = planeTexture.cols();
+
+
+
    // private int planeTextureHeight = planeTexture.rows();
 
     // taking shader source code files from relative path;
@@ -191,6 +177,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         super(capabilities);
 
         this.planeTexture = planeTexture;
+
+
         this.allShapeInfos = allShapeInfos;
         // Add this object as an OpenGL event listener
         this.addGLEventListener(this);
@@ -220,6 +208,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     @Override
     public void init(GLAutoDrawable drawable) {
         GL3 gl = drawable.getGL().getGL3();
+
 
         System.err.println("Chosen GLCapabilities: " + drawable.getChosenGLCapabilities());
         System.err.println("INIT GL IS: " + gl.getClass().getName());
@@ -302,7 +291,13 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     }
 
     private void initPlane(GL3 gl) {
+        int planeTextureWidth =  planeTexture.cols();
+        int planeTextureHeight = planeTexture.rows();
 
+        float planeTextureWidthf = planeTextureWidth;
+        float planeTextureHeightf = planeTextureHeight;
+      //  System.out.println("planeTextureWidthf "+planeTextureWidthf);
+    //    System.out.println("planeTextureHeightf "+planeTextureHeightf);
         // BEGIN: Prepare cube for drawing (object 1)
         gl.glBindVertexArray(vaoName[9]);
         shaderProgram9 = new ShaderProgram(gl);
@@ -311,7 +306,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 vertexShader9FileName, fragmentShader9FileName);
         House plane = new House(allShapeInfos, 64, 64);
         float[] color9 = {0.5f, 0.7f, 0f};
-        float[] cubeVertices = House.makeBoxVertices(3000f, 3000f, 0.001f, color9);
+        float[] cubeVertices = House.makeBoxVertices(planeTextureWidthf, planeTextureHeightf, 0.001f, color9);
         int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
 
         // activate and initialize vertex buffer object (VBO)
