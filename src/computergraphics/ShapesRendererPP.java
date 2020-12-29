@@ -1178,9 +1178,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
         pmvMatrix.glLoadIdentity();
         // Setting the camera position, based on user input
-        /*pmvMatrix.gluLookAt(0f, 0f, 0f,
-                             0f, 0f, 0f,
-                            0f, 0f, 0f);*/
+        pmvMatrix.gluLookAt(50f, -700f, 300f,
+                             50f, 0f, 0f,
+                            0f, 1f, 0f);
         pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
