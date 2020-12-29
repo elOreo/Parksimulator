@@ -114,6 +114,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private final String vertexShader8FileName = "BlinnPhongPointTex8.vert";
     private final String fragmentShader8FileName = "BlinnPhongPointTex8.frag";
 
+    private final String vertexShader9FileName = "BlinnPhongPointTex8.vert";
+    private final String fragmentShader9FileName = "BlinnPhongPointTex8.frag";
 
     //private static final Path objFile = Paths.get("./rsc/objekte/untitled.obj");
 
@@ -128,6 +130,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     final String textureFileName6 = "Tonne.png";
     final String textureFileName7 = "TanneShade.png";
     final String textureFileName8 = "HausShade.png";
+    final String textureFileName9 = "BuschShade.png";
 
     private ShaderProgram shaderProgram0;
     private ShaderProgram shaderProgram1;
@@ -138,6 +141,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private ShaderProgram shaderProgram6;
     private ShaderProgram shaderProgram7;
     private ShaderProgram shaderProgram8;
+    private ShaderProgram shaderProgram9;
 
 
     // Pointers (names) for data transfer and handling on GPU
@@ -146,7 +150,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private int[] iboName;	// Names of index buffer objects
 
     // Define Materials
-    private Material material0, material1, material2, material3, material4, material5, material6, material7;
+    private Material material0, material1, material2, material3, material4, material5, material6, material7, material9;
 
     // Define light sources
     private LightSource light0;
@@ -265,6 +269,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         initDeckel(gl);
         initTanne(gl);
         initVogel(gl);
+        initPlane(gl);
         // END: Preparing scene
 
 
@@ -288,6 +293,87 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // END: Preparing scene
     }
 
+    private void initPlane(GL3 gl) {
+
+        // BEGIN: Prepare cube for drawing (object 1)
+        gl.glBindVertexArray(vaoName[9]);
+        shaderProgram9 = new ShaderProgram(gl);
+        // Shader for object 1
+        shaderProgram9.loadShaderAndCreateProgram(shaderPath,
+                vertexShader9FileName, fragmentShader9FileName);
+        House plane = new House(allShapeInfos, 64, 64);
+        float[] color9 = {0.5f, 0.7f, 0f};
+        float[] cubeVertices = House.makeBoxVertices(1700f, 1000f, 0.01f, color9);
+        int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
+
+        // activate and initialize vertex buffer object (VBO)
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[9]);
+        // floats use 4 bytes in Java
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, cubeVertices.length * 4,
+                FloatBuffer.wrap(cubeVertices), GL.GL_STATIC_DRAW);
+
+        // activate and initialize index buffer object (IBO)
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[9]);
+        // integers use 4 bytes in Java
+        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, cubeIndices.length * 4,
+                IntBuffer.wrap(cubeIndices), GL.GL_STATIC_DRAW);
+
+        // Activate and order vertex buffer object data for the vertex shader
+        // The vertex buffer contains: position (3), color (3), normals (3)
+        // Defining input for vertex shader
+        // Pointer for the vertex shader to the position information per vertex
+        gl.glEnableVertexAttribArray(0);
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+        // Pointer for the vertex shader to the color information per vertex
+        gl.glEnableVertexAttribArray(1);
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+        // Pointer for the vertex shader to the normal information per vertex
+        gl.glEnableVertexAttribArray(2);
+        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+        // Pointer for the vertex shader to the texture coordinates information per vertex
+        gl.glEnableVertexAttribArray(3);
+        gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+        // END: Prepare cube for drawing
+
+        // Fassade (not final)
+        float[] matEmission = {0.1f, 0.1f, 0.1f, 0.1f};
+        float[] matAmbient =  {0.1f, 0.0f, 0.1f, 0.1f};
+        float[] matDiffuse =  {0.1f, 0.0f, 0.1f, 0.1f};
+        float[] matSpecular = {0.0f, 0.0f, 0.0f,0.0f};
+        float matShininess = 200.0f;
+
+
+        material9 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+
+        // Load and prepare texture
+        Texture texture = null;
+        try {
+            File textureFile = new File(texturePath+textureFileName1);
+            texture = TextureIO.newTexture(textureFile, true);
+
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (texture != null)
+            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName1);
+        else
+            System.err.println("Error loading textue.");
+        System.out.println("  Texture height: " + texture.getImageHeight());
+        System.out.println("  Texture width: " + texture.getImageWidth());
+        System.out.println("  Texture object: " + texture.getTextureObject(gl));
+        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+        texture.enable(gl);
+        // Activate texture in slot 0 (might have to go to "display()")
+        gl.glActiveTexture(GL_TEXTURE1);
+        // Use texture as 2D texture (might have to go to "display()")
+        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+        // END: Prepare cube for drawing
+    }
     /**
      * Initializes the GPU for drawing object0
      * @param gl OpenGL context
@@ -303,7 +389,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color0 = {0.7f, 0.7f, 0.7f};
             sphere0 = new Sphere(64, 64);
-            float[] sphereVertices = sphere0.makeVertices(10.0f, color0);
+            float[] sphereVertices = sphere0.makeVertices(20.0f, color0);
             int[] sphereIndices = sphere0.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -335,10 +421,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare sphere for drawing
 
             // Blätter (not final)
-            float[] matEmission = {0.1f, 0.1f, 0.1f, 1.0f};
-            float[] matAmbient =  {0.1f, 0.1f, 0.1f, 1.0f};
-            float[] matDiffuse =  {0.1f, 0.1f, 0.1f, 1.0f};
-            float[] matSpecular = {0.1f, 0.1f, 0.1f, 1.0f};
+            float[] matEmission = {0.1f, 0.9f, 0.1f, 1.0f};
+            float[] matAmbient =  {0.1f, 0.9f, 0.1f, 1.0f};
+            float[] matDiffuse =  {0.1f, 0.9f, 0.1f, 1.0f};
+            float[] matSpecular = {0.1f, 0.9f, 0.1f, 1.0f};
             float matShininess = 200.0f;
 
             material0 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
@@ -385,8 +471,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             shaderProgram1.loadShaderAndCreateProgram(shaderPath,
                     vertexShader1FileName, fragmentShader1FileName);
 
-            float[] color1 = {0.7f, 0.7f, 0.7f};
-            float[] cubeVertices = House.makeBoxVertices(1.8f, 1.3f, 1.4f, color1);
+           float[] color9 = {0.8f, 0.2f, 0f};
+            float[] cubeVertices = House.makeBoxVertices(36f, 26f, 28f, color9);
             int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -419,14 +505,15 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cube for drawing
 
             // Fassade (not final)
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matEmission = {0.8f, 0.8f, 0.8f, 1.0f};
+            float[] matAmbient =  {0.8f, 0.8f, 0.8f, 1.0f};
+            float[] matDiffuse =  {0.8f, 0.8f, 0.8f, 1.0f};
             float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
             float matShininess = 200.0f;
 
 
-            material1 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+
+        material1 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
             // Load and prepare texture
             Texture texture = null;
@@ -473,7 +560,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color2 = {0.6f, 0.2f, 0f};
             cone0 = new Cone(64);
-            float[] coneVertices = cone0.makeVertices(4.0f, 4.0f, 10f, color2);
+            float[] coneVertices = cone0.makeVertices(4.0f, 4.0f, 30f, color2);
             int[] coneIndices = cone0.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -505,9 +592,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cone (frustum) for drawing
 
             // Wood (not final)
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matEmission = {0.3f, 0.1f, 0.3f, 1.0f};
+            float[] matAmbient =  {0.3f, 0.1f, 0.3f, 1.0f};
+            float[] matDiffuse =  {0.3f, 0.1f, 0.3f, 1.0f};
             float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
             float matShininess = 200.0f;
 
@@ -557,7 +644,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
             float[] color3 = {0.8f, 0.2f, 0f};
-            float[] roofVertices = House.makeVertices(1.9f, 1.9f, 1.7f, color3);
+            float[] roofVertices = House.makeVertices(38f, 40f, 34f, color3);
             int[] roofIndices = House.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -589,10 +676,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare roof for drawing
 
 
-            // Fassade (not final)
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            // Dachpfannen (not final)
+            float[] matEmission = {0.5f, 0f, 0.5f, 1.0f};
+            float[] matAmbient =  {0.5f, 0f, 0.5f, 1.0f};
+            float[] matDiffuse =  {0.5f, 0f, 0.5f, 1.0f};
             float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
             float matShininess = 200.0f;
 
@@ -731,7 +818,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color5 = {0.3f, 0.3f, 0.3f};
             cone1 = new Cone(64);
-            float[] coneVertices = cone1.makeVertices(0.15f, 0.1f, 0.4f, color5);
+            float[] coneVertices = cone1.makeVertices(3f, 2f, 8f, color5);
             int[] coneIndices = cone1.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -817,7 +904,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color6 = {0.3f, 0.3f, 0.3f};
             cone2 = new Cone(64);
-            float[] coneVertices = cone2.makeVertices(0.1f, 0.17f, 0.08f, color6);
+            float[] coneVertices = cone2.makeVertices(2f, 3.4f, 1.6f, color6);
             int[] coneIndices = cone2.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -850,9 +937,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
             // Deckel (not final)
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
+            float[] matEmission = {0.1f, 0.10f, 0.10f, 1.0f};
+            float[] matAmbient =  {0.1f, 0.10f, 0.10f, 1.0f};
+            float[] matDiffuse =  {0.1f, 0.10f, 0.10f, 1.0f};
             float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
             float matShininess = 200.0f;
 
@@ -904,7 +991,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color7 = {0f, 0.6f, 0f};
             cone3 = new Cone(64);
-            float[] coneVertices = cone3.makeVertices(0.001f, 0.6f, 1.4f, color7);
+            float[] coneVertices = cone3.makeVertices(0.001f, 16f, 32f, color7);
             int[] coneIndices = cone3.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -935,12 +1022,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
             // END: Prepare cone (frustum) for drawing
 
-            // Blätter (not final)
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
-            float matShininess = 200.0f;
+        float[] matEmission = {0.1f, 0.9f, 0.1f, 1.0f};
+        float[] matAmbient =  {0.1f, 0.9f, 0.1f, 1.0f};
+        float[] matDiffuse =  {0.1f, 0.9f, 0.1f, 1.0f};
+        float[] matSpecular = {0.1f, 0.9f, 0.1f, 1.0f};
+        float matShininess = 200.0f;
 
             material6 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
@@ -990,7 +1076,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color8 = {0f, 0.0f, 1f};
             sphere2 = new Sphere(64, 64);
-            float[] sphereVertices = sphere2.makeVertices(0.1f, color8);
+            float[] sphereVertices = sphere2.makeVertices(2f, color8);
             int[] sphereIndices = sphere2.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -1118,9 +1204,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
         pmvMatrix.glLoadIdentity();
         // Setting the camera position, based on user input
-        pmvMatrix.gluLookAt(0f, 0f, interactionHandler.getEyeZ(),
-                            0f, 0f, 0f,
-                            0f, 1.0f, 0f);
+        pmvMatrix.gluLookAt(0f, 45f, 150f,
+                             100f, 0f, 0f,
+                            0f, 1f, 0f);
         pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
@@ -1131,19 +1217,84 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Position of one light for all shapes
         float[] lightPos = {0f, 3f, 0f};
 
+        pmvMatrix.glPushMatrix();
+        pmvMatrix.glTranslatef(500f, 500f, 0f);
+        displayPlane(gl,lightPos);
+        pmvMatrix.glPopMatrix();
 
+        //Trees
         for(ObjectInfo shape : allShapeInfos){
             if(shape.getTyp().equals("circle")){
                 //Tree-Cremer
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 40f);
                 displayBaum(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+10f, 0f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 15f);
+                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                 displayStamm(gl, lightPos);
                 pmvMatrix.glPopMatrix();
+            }
+        }
+        //Haus
+        for(ObjectInfo shape : allShapeInfos){
+            if(shape.getTyp().equals("rectangle")){
+                //Tree-Cremer
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 15f);
+                displayHaus(gl,lightPos);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 42f);
+                pmvMatrix.glRotatef(-90f, 0f, 1f, 0f);
+                displayDach(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glRotatef(rotation,0f,0f,1f);
+                rotation += delta;
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 50f);
+                displayVogel(gl);
+                pmvMatrix.glPopMatrix();
+
+            }
+        }
+
+        for(ObjectInfo shape : allShapeInfos){
+            if(shape.getTyp().equals("pentagon")){
+                //Tree-Cremer
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 4f);
+                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                displayTonne(gl,lightPos);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 8.8f);
+                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                displayDeckel(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+
+            }
+        }
+        for(ObjectInfo shape : allShapeInfos){
+            if(shape.getTyp().equals("triangle")){
+                //Tree-Cremer
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 40f);
+            pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                displayTanne(gl,lightPos);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 15f);
+                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                displayStamm(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+
             }
         }
 
@@ -1249,7 +1400,29 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
          */
     }
 
+    private void displayPlane(GL3 gl, float[] lightPos) {
+        gl.glUseProgram(shaderProgram1.getShaderProgramID());
+        // Transfer the PVM-Matrix (model-view and projection matrix)
+        // to the vertex shader
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+        gl.glUniformMatrix4fv(2, 1, false, pmvMatrix.glGetMvitMatrixf());
+        // transfer parameters of light source
+        gl.glUniform4fv(3, 1, light0.getPosition(), 0);
+        gl.glUniform4fv(4, 1, light0.getAmbient(), 0);
+        gl.glUniform4fv(5, 1, light0.getDiffuse(), 0);
+        gl.glUniform4fv(6, 1, light0.getSpecular(), 0);
+        // transfer material parameters
+        gl.glUniform4fv(7, 1, material9.getEmission(), 0);
+        gl.glUniform4fv(8, 1, material9.getAmbient(), 0);
+        gl.glUniform4fv(9, 1, material9.getDiffuse(), 0);
+        gl.glUniform4fv(10, 1, material9.getSpecular(), 0);
+        gl.glUniform1f(11, material9.getShininess());
+        gl.glBindVertexArray(vaoName[9]);
+        // Draws the elements in the order defined by the index buffer object (IBO)
+        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, House.noOfIndicesForBox(), GL.GL_UNSIGNED_INT, 0);
 
+    }
     private void displayBaum(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram0.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)

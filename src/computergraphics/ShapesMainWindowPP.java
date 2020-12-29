@@ -62,8 +62,8 @@ public class ShapesMainWindowPP extends JFrame {
     private static final long serialVersionUID = 1L;
     // Define constants for the top-level container
     private static String TITLE = "Shapes start Code Main Window - Programmable Pipeline";
-    private static final int CANVAS_WIDTH = 800;  // width of the drawable
-    private static final int CANVAS_HEIGHT = 600; // height of the drawable
+    private static final int CANVAS_WIDTH = 1280;  // width of the drawable
+    private static final int CANVAS_HEIGHT = 720; // height of the drawable
     private static final int FPS = 60; // animator's target frames per second
     private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
 

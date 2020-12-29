@@ -16,7 +16,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
 
     // Variables for camera distance
     private float eyeZ = 2f;
-    private float eyeZInc = 0.1f;
+    private float eyeZInc = 0.01f;
     // Variables for scene rotation
     private float angleXaxis = -100f;
     private float angleYaxis = 0f;
