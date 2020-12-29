@@ -88,8 +88,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     //Plane Texture Mat from Color Detection
     private Mat planeTexture;
-    private int planeTextureWidth = planeTexture.cols();
-    private int planeTextureHeight = planeTexture.rows();
+   // private int planeTextureWidth = planeTexture.cols();
+   // private int planeTextureHeight = planeTexture.rows();
 
     // taking shader source code files from relative path;
     private final String shaderPath = ".\\rsc/shader\\";
