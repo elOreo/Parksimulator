@@ -111,6 +111,7 @@ public class ShapesMainWindowPP extends JFrame {
         this.setVisible(true);
         animator.start(); // start the animation loop	// TODO Auto-generated constructor stub
 
+
         // OpenGL: request focus for canvas
         canvas.requestFocusInWindow();
         canvas.requestFocusInWindow();

@@ -27,6 +27,8 @@ package computergraphics;
  * authors and should not be interpreted as representing official policies, either expressed
  * or implied, of JogAmp Community.
  */
+import de.hshl.obj.loader.OBJLoader;
+import de.hshl.obj.loader.Resource;
 import org.opencv.core.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -35,6 +37,8 @@ import imageprocessing.ObjectInfo;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.File;
 import com.jogamp.opengl.util.texture.Texture;
@@ -42,6 +46,8 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import static com.jogamp.opengl.GL.*;
+
+
 
 /**
  * Performs the OpenGL graphics processing using the Programmable Pipeline and the
@@ -110,7 +116,18 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private final String vertexShader9FileName = "BlinnPhongPointTex8.vert";
     private final String fragmentShader9FileName = "BlinnPhongPointTex8.frag";
 
-    //private static final Path objFile = Paths.get("./rsc/objekte/untitled.obj");
+    final String vertexShaderFileName = "Basic.vert";
+    final String fragmentShaderFileName = "Basic.frag";
+    private static final Path objFile = Paths.get("./rsc/objekte/bird2.obj");
+
+    final String vertexShaderFileName1 = "Basic.vert";
+    final String fragmentShaderFileName1 = "Basic.frag";
+    private static final Path objFile1 = Paths.get("./rsc/objekte/windrad.obj");
+
+    final String vertexShaderFileName2 = "Basic.vert";
+    final String fragmentShaderFileName2 = "Basic.frag";
+    private static final Path objFile2 = Paths.get("./rsc/objekte/rad.obj");
+
 
     // taking texture files from relative path
     private final String texturePath = ".\\rsc/shader\\";
@@ -135,6 +152,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private ShaderProgram shaderProgram7;
     private ShaderProgram shaderProgram8;
     private ShaderProgram shaderProgram9;
+    private ShaderProgram shaderProgram10;
+    private ShaderProgram shaderProgram11;
+    private ShaderProgram shaderProgram12;
 
 
     // Pointers (names) for data transfer and handling on GPU
@@ -161,7 +181,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     //Cremer
     float rotation = 0.2f;
-    float delta = 1.0f;
+    float rotation2 = 0.9f;
+    float alpha = 0.01f;
+    float[] verticies;
 
     //Objectlist from shapedetection
 
@@ -218,7 +240,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
         // Verify if VBO-Support is available
-        if(!gl.isExtensionAvailable("GL_ARB_vertex_buffer_object"))
+        if (!gl.isExtensionAvailable("GL_ARB_vertex_buffer_object"))
             System.out.println("Error: VBO support is missing");
         else
             System.out.println("VBO support is available");
@@ -246,7 +268,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // END: Allocating vertex array objects and buffers for each object
 
 
-
         // Specify light parameters
         float[] lightPosition = {0.0f, 3.0f, 3.0f, 1.0f};
         float[] lightAmbientColor = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -267,6 +288,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         initTanne(gl);
         initVogel(gl);
         initPlane(gl);
+
+        initBird(gl);
+        initWindrad(gl);
+        initRad(gl);
+
         // END: Preparing scene
 
 
@@ -288,6 +314,115 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, gl.GL_FILL);
         //gl.glPolygonMode(GL.GL_BACK, gl.GL_LINE);
         // END: Preparing scene
+    }
+
+    private void initBird(GL3 gl){
+        // Loading the vertex and fragment shaders and creation of the shader program.
+        shaderProgram10 = new ShaderProgram(gl);
+        shaderProgram10.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName, fragmentShaderFileName);
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[10]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[10]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+        //End Birdinit
+    }
+
+    private void initWindrad(GL3 gl){
+        // Loading the vertex and fragment shaders and creation of the shader program.
+        shaderProgram11 = new ShaderProgram(gl);
+        shaderProgram11.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName1, fragmentShaderFileName1);
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile1)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[11]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[11]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+        //End Birdinit
+    }
+
+
+    private void initRad(GL3 gl){
+        // Loading the vertex and fragment shaders and creation of the shader program.
+        shaderProgram12 = new ShaderProgram(gl);
+        shaderProgram12.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName2, fragmentShaderFileName2);
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile2)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[12]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[12]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+        //End Birdinit
     }
 
     private void initPlane(GL3 gl) {
@@ -1182,6 +1317,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f);
      //   pmvMatrix.glTranslatef(0, 0, 0f);
+
         pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 0f, 0f, 1f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 0f, 1f);
         pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 105f);
@@ -1271,9 +1407,32 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glRotatef(rotation, 0f, 0f, 1f);
-                rotation += delta;
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 30f);
-                displayVogel(gl);
+                rotation += alpha;
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 10f);
+                pmvMatrix.glRotatef(180f, 1f, 0f, 0f);
+                pmvMatrix.glRotatef(-90f, 0f, 0f, 1f);
+                displayBird(gl);
+                pmvMatrix.glPopMatrix();
+
+            }
+        }
+
+        //Windmühle
+        for(ObjectInfo shape : allShapeInfos) {
+            if (shape.getTyp().equals("star")) {
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -3f);
+                displayWindrad(gl);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
+                //pmvMatrix.glRotatef(rotation2, 0f, 0f, 0f);
+                //rotation2 += alpha;
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+1, 0f);
+                displayRad(gl);
                 pmvMatrix.glPopMatrix();
 
             }
@@ -1384,6 +1543,62 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
          */
+    }
+
+        private void displayBird(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[10]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram10.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
+    }
+
+
+    private void displayWindrad(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[11]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram11.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
+    }
+
+
+    private void displayRad(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[12]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram12.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
     }
 
     private void displayPlane(GL3 gl, float[] lightPos) {
@@ -1662,6 +1877,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         shaderProgram6.deleteShaderProgram();
         shaderProgram7.deleteShaderProgram();
         shaderProgram8.deleteShaderProgram();
+        shaderProgram10.deleteShaderProgram();
+        shaderProgram11.deleteShaderProgram();
+        shaderProgram12.deleteShaderProgram();
+
 
 
         // deactivate VAO and VBO
