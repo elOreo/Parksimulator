@@ -20,13 +20,13 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     // Variables for scene rotation
     private float angleXaxis = 0f;
     private float angleYaxis = 0f;
-    private float angleXaxisInc = 1f;
-    private float angleYaxisInc = 1f;
+    private float angleXaxisInc = 10f;
+    private float angleYaxisInc = 10f;
     // Variables for scene translation
     private float xPosition = 0f;
     private float yPosition = 0f;
-    private float xPositionInc = 1f;
-    private float yPositionInc= 1f;
+    private float xPositionInc = 10f;
+    private float yPositionInc= 10f;
     // Variables for keyboard control
     private boolean ctrlKeyPressed = false;
     // Variables for mouse control
@@ -158,16 +158,16 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                 xPosition -= xPositionInc;
                 break;
             case KeyEvent.VK_UP:
-                eyeZ -= eyeZInc;
+                yPosition -= yPositionInc;
                 break;
             case KeyEvent.VK_W:
-                eyeZ -= eyeZInc;
+                yPosition -= yPositionInc;
                 break;
             case KeyEvent.VK_DOWN:
-                eyeZ += eyeZInc;
+                yPosition += yPositionInc;
                 break;
             case KeyEvent.VK_S:
-                eyeZ += eyeZInc;
+                yPosition += yPositionInc;
                 break;
         }
     }
@@ -297,12 +297,12 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         lastMouseLocation = currentMouseLocation;
         // holding the left mouse button rotates the scene
         if (leftMouseButtonPressed) {
-            angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
+           angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
             angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
         }
         // holding the right mouse button translates the scene
         if (rightMouseButtonPressed) {
-            xPosition += xPositionInc * mouseTranslationFactor * -deltaX;
+           xPosition += xPositionInc * mouseTranslationFactor * -deltaX;
             yPosition += yPositionInc * mouseTranslationFactor * +deltaY;
         }
     }

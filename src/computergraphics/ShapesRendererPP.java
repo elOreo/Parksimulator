@@ -275,7 +275,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
         // Start parameter settings for the interaction handler might be called here
-        interactionHandler.setEyeZ(10.5f);
+        interactionHandler.setEyeZ(1.0f);
 
         // Switch on back face culling
         //gl.glEnable(GL.GL_CULL_FACE);
@@ -362,7 +362,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             e.printStackTrace();
         }
         if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName1);
+            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName9);
         else
             System.err.println("Error loading textue.");
         System.out.println("  Texture height: " + texture.getImageHeight());
@@ -1178,13 +1178,13 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
         pmvMatrix.glLoadIdentity();
         // Setting the camera position, based on user input
-        pmvMatrix.gluLookAt(50f, -700f, 300f,
-                             50f, 0f, 0f,
-                            0f, 1f, 0f);
-        pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 0f);
-        pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
-        pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
-
+        pmvMatrix.gluLookAt(0.0f, -0.99f, 0.01f,
+                0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f);
+     //   pmvMatrix.glTranslatef(0, 0, 0f);
+        pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 0f, 0f, 1f);
+        pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 0f, 1f);
+        pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 105f);
         // Transform for the complete scene
         pmvMatrix.glTranslatef(0f, 0f, -100f);
 
@@ -1617,6 +1617,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     }
 
+    private void collision(){
+
+
+    }
 
     /**
      * Implementation of the OpenGL EventListener (GLEventListener) method
