@@ -1297,7 +1297,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Background color of the canvas
-        gl.glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+        gl.glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
 
 
 
