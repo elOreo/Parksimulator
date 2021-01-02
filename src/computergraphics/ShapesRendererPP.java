@@ -120,13 +120,17 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     final String fragmentShaderFileName = "Basic.frag";
     private static final Path objFile = Paths.get("./rsc/objekte/bird2.obj");
 
-    final String vertexShaderFileName1 = "Basic.vert";
-    final String fragmentShaderFileName1 = "Basic.frag";
+    final String vertexShaderFileName1 = "Basic2.vert";
+    final String fragmentShaderFileName1 = "Basic2.frag";
     private static final Path objFile1 = Paths.get("./rsc/objekte/windrad.obj");
 
-    final String vertexShaderFileName2 = "Basic.vert";
-    final String fragmentShaderFileName2 = "Basic.frag";
+    final String vertexShaderFileName2 = "Basic3.vert";
+    final String fragmentShaderFileName2 = "Basic3.frag";
     private static final Path objFile2 = Paths.get("./rsc/objekte/rad.obj");
+
+    final String vertexShaderFileName3 = "Basic4.vert";
+    final String fragmentShaderFileName3 = "Basic4.frag";
+    private static final Path objFile3 = Paths.get("./rsc/objekte/bank.obj");
 
 
     // taking texture files from relative path
@@ -155,6 +159,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private ShaderProgram shaderProgram10;
     private ShaderProgram shaderProgram11;
     private ShaderProgram shaderProgram12;
+    private ShaderProgram shaderProgram13;
 
 
     // Pointers (names) for data transfer and handling on GPU
@@ -181,7 +186,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     //Cremer
     float rotation = 0.2f;
-    float rotation2 = 0.9f;
     float alpha = 0.01f;
     float[] verticies;
 
@@ -289,9 +293,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         initVogel(gl);
         initPlane(gl);
 
+        //Alias Objects
         initBird(gl);
         initWindrad(gl);
         initRad(gl);
+        initBank(gl);
 
         // END: Preparing scene
 
@@ -314,6 +320,43 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, gl.GL_FILL);
         //gl.glPolygonMode(GL.GL_BACK, gl.GL_LINE);
         // END: Preparing scene
+    }
+
+
+    private void initBank(GL3 gl){
+        // Loading the vertex and fragment shaders and creation of the shader program.
+        shaderProgram13 = new ShaderProgram(gl);
+        shaderProgram13.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName3, fragmentShaderFileName3);
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile3)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[13]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[13]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+        //End Birdinit
     }
 
     private void initBird(GL3 gl){
@@ -1419,7 +1462,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         //Windmühle
         for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("star")) {
+            if (shape.getTyp().equals("")) {
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
@@ -1433,6 +1476,18 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 //rotation2 += alpha;
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+1, 0f);
                 displayRad(gl);
+                pmvMatrix.glPopMatrix();
+
+            }
+        }
+
+        //Bank
+        for(ObjectInfo shape : allShapeInfos) {
+            if (shape.getTyp().equals("star")) {
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                displayBank(gl);
                 pmvMatrix.glPopMatrix();
 
             }
@@ -1543,6 +1598,25 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
          */
+    }
+
+
+    private void displayBank(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[13]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram10.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
     }
 
         private void displayBird(GL3 gl) {
