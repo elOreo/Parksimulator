@@ -236,7 +236,7 @@ public class ShapeDetection {
                     float xDist = xCoord - xLast;
                     float yDist = yCoord - yLast;
 
-                    if(xDist < 2 && xDist > -2 && yDist < 2 && yDist > -2){
+                    if(xDist < 4 && xDist > -4 && yDist < 4 && yDist > -4){
                         allShapeInfos.remove(i);
                     }
 
