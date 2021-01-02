@@ -162,6 +162,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private ShaderProgram shaderProgram13;
 
 
+    private float planeTextureWidthf;
+    private float planeTextureHeightf;
+
     // Pointers (names) for data transfer and handling on GPU
     private int[] vaoName;  // Names of vertex array objects
     private int[] vboName;	// Names of vertex buffer objects
@@ -472,8 +475,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         int planeTextureWidth =  planeTexture.cols();
         int planeTextureHeight = planeTexture.rows();
 
-        float planeTextureWidthf = planeTextureWidth;
-        float planeTextureHeightf = planeTextureHeight;
+        planeTextureWidthf = planeTextureWidth;
+        planeTextureHeightf = planeTextureHeight;
       //  System.out.println("planeTextureWidthf "+planeTextureWidthf);
     //    System.out.println("planeTextureHeightf "+planeTextureHeightf);
         // BEGIN: Prepare cube for drawing (object 1)
@@ -1466,7 +1469,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -3f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -10f);
                 displayWindrad(gl);
                 pmvMatrix.glPopMatrix();
 
@@ -1474,7 +1477,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
                 //pmvMatrix.glRotatef(rotation2, 0f, 0f, 0f);
                 //rotation2 += alpha;
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+1, 0f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+1, -7f);
                 displayRad(gl);
                 pmvMatrix.glPopMatrix();
 
@@ -1494,7 +1497,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         }
 
         pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(0,0,-15);
+        pmvMatrix.glTranslatef(planeTextureWidthf/2,planeTextureHeightf/2,-15);
         displayPlane(gl, lightPos);
         pmvMatrix.glPopMatrix();
 
