@@ -29,6 +29,8 @@ package computergraphics;
  */
 import de.hshl.obj.loader.OBJLoader;
 import de.hshl.obj.loader.Resource;
+import de.hshl.obj.loader.objects.Surface;
+import de.hshl.obj.loader.objects.SurfaceObject;
 import org.opencv.core.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -118,7 +120,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     final String vertexShaderFileName = "Basic.vert";
     final String fragmentShaderFileName = "Basic.frag";
-    private static final Path objFile = Paths.get("./rsc/objekte/bird2.obj");
+    private static final Path objFile = Paths.get("./rsc/objekte/bird.obj");
 
     final String vertexShaderFileName1 = "Basic2.vert";
     final String fragmentShaderFileName1 = "Basic2.frag";
@@ -145,6 +147,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     final String textureFileName7 = "TanneShade.png";
     final String textureFileName8 = "HausShade.png";
     final String textureFileName9 = "BuschShade.png";
+
 
     private ShaderProgram shaderProgram0;
     private ShaderProgram shaderProgram1;
@@ -191,6 +194,14 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     float rotation = 0.2f;
     float alpha = 0.01f;
     float[] verticies;
+
+    // contains the geometry of our OBJ file monkey head
+    float[] headVerticies;
+    float[] headColor;
+
+    // contains the geometry of our OBJ file monkey eyes
+    float[] eyeVerticies;
+    float[] eyeColor;
 
     //Objectlist from shapedetection
 
@@ -293,7 +304,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         initTonne(gl);
         initDeckel(gl);
         initTanne(gl);
-        initVogel(gl);
         initPlane(gl);
 
         //Alias Objects
@@ -326,244 +336,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     }
 
 
-    private void initBank(GL3 gl){
-        // Loading the vertex and fragment shaders and creation of the shader program.
-        shaderProgram13 = new ShaderProgram(gl);
-        shaderProgram13.loadShaderAndCreateProgram(shaderPath,
-                vertexShaderFileName3, fragmentShaderFileName3);
-        try {
-            verticies = new OBJLoader()
-                    .setLoadNormals(true) // tell the loader to also load normal data
-                    .loadMesh(Resource.file(objFile3)) // actually load the file
-                    .getVertices(); // take the vertices from the loaded mesh
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Switch to this VAO.
-        gl.glBindVertexArray(vaoName[13]);
-        // Activating this buffer as vertex buffer object.
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[13]);
-        // Transferring the vertex data (see above) to the VBO on GPU.
-        // (floats use 4 bytes in Java)
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
-                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
-
-        // Activate and map input for the vertex shader from VBO,
-        // taking care of interleaved layout of vertex data (position and color),
-        // Enable layout position 0
-        gl.glEnableVertexAttribArray(0);
-        // Map layout position 0 to the position information per vertex in the VBO.
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
-        // Enable layout position 1
-        gl.glEnableVertexAttribArray(1);
-        // Map layout position 1 to the color information per vertex in the VBO.
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
-        //End Birdinit
-    }
-
-    private void initBird(GL3 gl){
-        // Loading the vertex and fragment shaders and creation of the shader program.
-        shaderProgram10 = new ShaderProgram(gl);
-        shaderProgram10.loadShaderAndCreateProgram(shaderPath,
-                vertexShaderFileName, fragmentShaderFileName);
-        try {
-            verticies = new OBJLoader()
-                    .setLoadNormals(true) // tell the loader to also load normal data
-                    .loadMesh(Resource.file(objFile)) // actually load the file
-                    .getVertices(); // take the vertices from the loaded mesh
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Switch to this VAO.
-        gl.glBindVertexArray(vaoName[10]);
-        // Activating this buffer as vertex buffer object.
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[10]);
-        // Transferring the vertex data (see above) to the VBO on GPU.
-        // (floats use 4 bytes in Java)
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
-                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
-
-        // Activate and map input for the vertex shader from VBO,
-        // taking care of interleaved layout of vertex data (position and color),
-        // Enable layout position 0
-        gl.glEnableVertexAttribArray(0);
-        // Map layout position 0 to the position information per vertex in the VBO.
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
-        // Enable layout position 1
-        gl.glEnableVertexAttribArray(1);
-        // Map layout position 1 to the color information per vertex in the VBO.
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
-        //End Birdinit
-    }
-
-    private void initWindrad(GL3 gl){
-        // Loading the vertex and fragment shaders and creation of the shader program.
-        shaderProgram11 = new ShaderProgram(gl);
-        shaderProgram11.loadShaderAndCreateProgram(shaderPath,
-                vertexShaderFileName1, fragmentShaderFileName1);
-        try {
-            verticies = new OBJLoader()
-                    .setLoadNormals(true) // tell the loader to also load normal data
-                    .loadMesh(Resource.file(objFile1)) // actually load the file
-                    .getVertices(); // take the vertices from the loaded mesh
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Switch to this VAO.
-        gl.glBindVertexArray(vaoName[11]);
-        // Activating this buffer as vertex buffer object.
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[11]);
-        // Transferring the vertex data (see above) to the VBO on GPU.
-        // (floats use 4 bytes in Java)
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
-                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
-
-        // Activate and map input for the vertex shader from VBO,
-        // taking care of interleaved layout of vertex data (position and color),
-        // Enable layout position 0
-        gl.glEnableVertexAttribArray(0);
-        // Map layout position 0 to the position information per vertex in the VBO.
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
-        // Enable layout position 1
-        gl.glEnableVertexAttribArray(1);
-        // Map layout position 1 to the color information per vertex in the VBO.
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
-        //End Birdinit
-    }
 
 
-    private void initRad(GL3 gl){
-        // Loading the vertex and fragment shaders and creation of the shader program.
-        shaderProgram12 = new ShaderProgram(gl);
-        shaderProgram12.loadShaderAndCreateProgram(shaderPath,
-                vertexShaderFileName2, fragmentShaderFileName2);
-        try {
-            verticies = new OBJLoader()
-                    .setLoadNormals(true) // tell the loader to also load normal data
-                    .loadMesh(Resource.file(objFile2)) // actually load the file
-                    .getVertices(); // take the vertices from the loaded mesh
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Switch to this VAO.
-        gl.glBindVertexArray(vaoName[12]);
-        // Activating this buffer as vertex buffer object.
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[12]);
-        // Transferring the vertex data (see above) to the VBO on GPU.
-        // (floats use 4 bytes in Java)
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
-                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
-
-        // Activate and map input for the vertex shader from VBO,
-        // taking care of interleaved layout of vertex data (position and color),
-        // Enable layout position 0
-        gl.glEnableVertexAttribArray(0);
-        // Map layout position 0 to the position information per vertex in the VBO.
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
-        // Enable layout position 1
-        gl.glEnableVertexAttribArray(1);
-        // Map layout position 1 to the color information per vertex in the VBO.
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
-        //End Birdinit
-    }
-
-    private void initPlane(GL3 gl) {
-        int planeTextureWidth =  planeTexture.cols();
-        int planeTextureHeight = planeTexture.rows();
-
-        planeTextureWidthf = planeTextureWidth;
-        planeTextureHeightf = planeTextureHeight;
-      //  System.out.println("planeTextureWidthf "+planeTextureWidthf);
-    //    System.out.println("planeTextureHeightf "+planeTextureHeightf);
-        // BEGIN: Prepare cube for drawing (object 1)
-        gl.glBindVertexArray(vaoName[9]);
-        shaderProgram9 = new ShaderProgram(gl);
-        // Shader for object 1
-        shaderProgram9.loadShaderAndCreateProgram(shaderPath,
-                vertexShader9FileName, fragmentShader9FileName);
-        House plane = new House(allShapeInfos, 64, 64);
-        float[] color9 = {0.5f, 0.7f, 0f};
-        float[] cubeVertices = House.makeBoxVertices(planeTextureWidthf, planeTextureHeightf, 0.001f, color9);
-        int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
-
-        // activate and initialize vertex buffer object (VBO)
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[9]);
-        // floats use 4 bytes in Java
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, cubeVertices.length * 4,
-                FloatBuffer.wrap(cubeVertices), GL.GL_STATIC_DRAW);
-
-        // activate and initialize index buffer object (IBO)
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[9]);
-        // integers use 4 bytes in Java
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, cubeIndices.length * 4,
-                IntBuffer.wrap(cubeIndices), GL.GL_STATIC_DRAW);
-
-        // Activate and order vertex buffer object data for the vertex shader
-        // The vertex buffer contains: position (3), color (3), normals (3)
-        // Defining input for vertex shader
-        // Pointer for the vertex shader to the position information per vertex
-        gl.glEnableVertexAttribArray(0);
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-        // Pointer for the vertex shader to the color information per vertex
-        gl.glEnableVertexAttribArray(1);
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-        // Pointer for the vertex shader to the normal information per vertex
-        gl.glEnableVertexAttribArray(2);
-        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-        // Pointer for the vertex shader to the texture coordinates information per vertex
-        gl.glEnableVertexAttribArray(3);
-        gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
-        // END: Prepare cube for drawing
-
-        // Fassade (not final)
-        float[] matEmission = {0.2f, 0.2f, 0.2f, 1.1f};
-        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.1f};
-        float[] matDiffuse =  {0.2f, 0.2f, 0.2f, 1.1f};
-        float[] matSpecular = {0.1f, 0.1f, 0.1f,1.0f};
-        float matShininess = 200.0f;
-
-
-        material9 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
-
-        // Load and prepare texture
-        Texture texture = null;
-        try {
-            File textureFile = new File(texturePath+textureFileName1);
-            texture = TextureIO.newTexture(textureFile, true);
-
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (texture != null)
-            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName9);
-        else
-            System.err.println("Error loading textue.");
-        System.out.println("  Texture height: " + texture.getImageHeight());
-        System.out.println("  Texture width: " + texture.getImageWidth());
-        System.out.println("  Texture object: " + texture.getTextureObject(gl));
-        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
-
-        texture.enable(gl);
-        // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE1);
-        // Use texture as 2D texture (might have to go to "display()")
-        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-        // END: Prepare cube for drawing
-    }
-    /**
-     * Initializes the GPU for drawing object0
-     * @param gl OpenGL context
-     */
     private void initBaum(GL3 gl) {
-            // BEGIN: Prepare a sphere for drawing (object 0)
+
             gl.glBindVertexArray(vaoName[0]);
             shaderProgram0 = new ShaderProgram(gl);
             // Shader for object 0
@@ -643,12 +419,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cube for drawing
         }
 
-    /**
-     * Initializes the GPU for drawing object1
-     * @param gl OpenGL context
-     */
+
     private void initHaus(GL3 gl) {
-            // BEGIN: Prepare cube for drawing (object 1)
+
             gl.glBindVertexArray(vaoName[1]);
             shaderProgram1 = new ShaderProgram(gl);
             // Shader for object 1
@@ -729,13 +502,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cube for drawing
         }
 
-    /**
-     * Initializes the GPU for drawing object2
-     * @param gl OpenGL context
-     */
+
     private void initStamm(GL3 gl) {
-            // BEGIN: Prepare cone (frustum) for drawing (object 2)
-            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+
             gl.glBindVertexArray(vaoName[2]);
             shaderProgram2 = new ShaderProgram(gl);
             // Shader for object 2
@@ -814,18 +583,14 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cube for drawing
         }
 
-    /**
-     * Initializes the GPU for drawing object3
-     * @param gl OpenGL context
-     */
+
     private void initDach(GL3 gl) {
-            // BEGIN: Prepare cube for drawing (object 3)
+
             gl.glBindVertexArray(vaoName[3]);
             shaderProgram3 = new ShaderProgram(gl);
             // Shader for object 1
             shaderProgram3.loadShaderAndCreateProgram(shaderPath,
                     vertexShader3FileName, fragmentShader3FileName);
-
 
             float[] color3 = {0.8f, 0.2f, 0f};
             float[] roofVertices = House.makeVertices(38f, 39f, 40f, color3);
@@ -899,19 +664,14 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cube for drawing
         }
 
-    /**
-     * Initializes the GPU for drawing object4
-     * @param gl OpenGL context
-     */
+
     private void initBusch(GL3 gl) {
-            // BEGIN: Prepare a sphere for drawing (object 4)
-            // create sphere data for rendering a sphere using an index array into a vertex array
+
             gl.glBindVertexArray(vaoName[4]);
             shaderProgram4 = new ShaderProgram(gl);
             // Shader for object 4
             shaderProgram4.loadShaderAndCreateProgram(shaderPath,
                     vertexShader4FileName, fragmentShader4FileName);
-
 
             float[] color4 = {0.7f, 0.7f, 0.7f};
             sphere1 = new Sphere(64, 64);
@@ -986,13 +746,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         }
 
 
-    /**
-     * Initializes the GPU for drawing object5
-     * @param gl OpenGL context
-     */
     private void initTonne(GL3 gl) {
-            // BEGIN: Prepare cone (frustum) for drawing (object 5)
-            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+
             gl.glBindVertexArray(vaoName[5]);
             shaderProgram5 = new ShaderProgram(gl);
             // Shader for object 5
@@ -1073,13 +828,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         }
 
 
-    /**
-     * Initializes the GPU for drawing object6
-     * @param gl OpenGL context
-     */
     private void initDeckel(GL3 gl) {
-            // BEGIN: Prepare cone (frustum) for drawing (object 6)
-            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+
             gl.glBindVertexArray(vaoName[6]);
             shaderProgram6 = new ShaderProgram(gl);
             // Shader for object 6
@@ -1160,13 +910,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         }
 
 
-    /**
-     * Initializes the GPU for drawing object7
-     * @param gl OpenGL context
-     */
     private void initTanne(GL3 gl) {
-            // BEGIN: Prepare cone (frustum) for drawing (object 7)
-            // create cone (frustum) data for rendering a cone (frustum) using an index array into a vertex array
+
             gl.glBindVertexArray(vaoName[7]);
             shaderProgram7 = new ShaderProgram(gl);
             // Shader for object 7
@@ -1244,91 +989,238 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cube for drawing
         }
 
-    /**
-     * Initializes the GPU for drawing object8
-     * @param gl OpenGL context
-     */
-    private void initVogel(GL3 gl) {
-            // BEGIN: Prepare a sphere for drawing (object 8)
-            // create sphere data for rendering a sphere using an index array into a vertex array
-            gl.glBindVertexArray(vaoName[8]);
-            // Shader program for object 8
-            shaderProgram8 = new ShaderProgram(gl);
-            // Shader for object 8
-            shaderProgram8.loadShaderAndCreateProgram(shaderPath,
-                    vertexShader8FileName, fragmentShader8FileName);
 
-            float[] color8 = {0f, 0.0f, 1f};
-            sphere2 = new Sphere(64, 64);
-            float[] sphereVertices = sphere2.makeVertices(2f, color8);
-            int[] sphereIndices = sphere2.makeIndicesForTriangleStrip();
+    private void initPlane(GL3 gl) {
 
-            // activate and initialize vertex buffer object (VBO)
-            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[8]);
-            // floats use 4 bytes in Java
-            gl.glBufferData(GL.GL_ARRAY_BUFFER, sphereVertices.length * 4,
-                    FloatBuffer.wrap(sphereVertices), GL.GL_STATIC_DRAW);
+        int planeTextureWidth =  planeTexture.cols();
+        int planeTextureHeight = planeTexture.rows();
 
-            // activate and initialize index buffer object (IBO)
-            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[8]);
-            // integers use 4 bytes in Java
-            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, sphereIndices.length * 4,
-                    IntBuffer.wrap(sphereIndices), GL.GL_STATIC_DRAW);
+        planeTextureWidthf = planeTextureWidth;
+        planeTextureHeightf = planeTextureHeight;
+        //  System.out.println("planeTextureWidthf "+planeTextureWidthf);
+        //    System.out.println("planeTextureHeightf "+planeTextureHeightf);
+        // BEGIN: Prepare cube for drawing (object 1)
+        gl.glBindVertexArray(vaoName[9]);
+        shaderProgram9 = new ShaderProgram(gl);
+        // Shader for object 1
+        shaderProgram9.loadShaderAndCreateProgram(shaderPath,
+                vertexShader9FileName, fragmentShader9FileName);
+        House plane = new House(allShapeInfos, 64, 64);
+        float[] color9 = {0.5f, 0.7f, 0f};
+        float[] cubeVertices = House.makeBoxVertices(planeTextureWidthf, planeTextureHeightf, 0.001f, color9);
+        int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
 
-            // Activate and order vertex buffer object data for the vertex shader
-            // Defining input variables for vertex shader
-            // Pointer for the vertex shader to the position information per vertex
-            gl.glEnableVertexAttribArray(0);
-            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
-            // Pointer for the vertex shader to the color information per vertex
-            gl.glEnableVertexAttribArray(1);
-            gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
-            // Pointer for the vertex shader to the normal information per vertex
-            gl.glEnableVertexAttribArray(2);
-            gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
-            // Pointer for the vertex shader to the texture coordinates information per vertex
-            gl.glEnableVertexAttribArray(3);
-            gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
-            // END: Prepare sphere for drawing
+        // activate and initialize vertex buffer object (VBO)
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[9]);
+        // floats use 4 bytes in Java
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, cubeVertices.length * 4,
+                FloatBuffer.wrap(cubeVertices), GL.GL_STATIC_DRAW);
 
-            // Vogel (not final)
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
-            float matShininess = 200.0f;
+        // activate and initialize index buffer object (IBO)
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[9]);
+        // integers use 4 bytes in Java
+        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, cubeIndices.length * 4,
+                IntBuffer.wrap(cubeIndices), GL.GL_STATIC_DRAW);
 
-            material7 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+        // Activate and order vertex buffer object data for the vertex shader
+        // Defining input for vertex shader
+        // Pointer for the vertex shader to the position information per vertex
+        gl.glEnableVertexAttribArray(0);
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 9*4, 0);
+        // Pointer for the vertex shader to the color information per vertex
+        gl.glEnableVertexAttribArray(1);
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 9*4, 3*4);
+        // Pointer for the vertex shader to the normal information per vertex
+        gl.glEnableVertexAttribArray(2);
+        gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 9*4, 6*4);
+        // Pointer for the vertex shader to the texture coordinates information per vertex
+        gl.glEnableVertexAttribArray(3);
+        gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
+        // END: Prepare cube for drawing
 
-            // Load and prepare texture
-            Texture texture = null;
-            try {
-                File textureFile = new File(texturePath+textureFileName8);
-                texture = TextureIO.newTexture(textureFile, true);
+        // Fassade (not final)
+        float[] matEmission = {0.2f, 0.2f, 0.2f, 1.1f};
+        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.1f};
+        float[] matDiffuse =  {0.2f, 0.2f, 0.2f, 1.1f};
+        float[] matSpecular = {0.1f, 0.1f, 0.1f,1.0f};
+        float matShininess = 200.0f;
 
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (texture != null)
-                System.out.println("Texture loaded successfully from: " + texturePath+textureFileName8);
-            else
-                System.err.println("Error loading textue.");
-            System.out.println("  Texture height: " + texture.getImageHeight());
-            System.out.println("  Texture width: " + texture.getImageWidth());
-            System.out.println("  Texture object: " + texture.getTextureObject(gl));
-            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
 
-            texture.enable(gl);
-            // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE8);
-            // Use texture as 2D texture (might have to go to "display()")
-            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
-            // END: Prepare cube for drawing
+        material9 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+
+        // Load and prepare texture
+        Texture texture = null;
+        try {
+            File textureFile = new File(texturePath+textureFileName1);
+            texture = TextureIO.newTexture(textureFile, true);
+
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+            texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        if (texture != null)
+            System.out.println("Texture loaded successfully from: " + texturePath+textureFileName9);
+        else
+            System.err.println("Error loading textue.");
+        System.out.println("  Texture height: " + texture.getImageHeight());
+        System.out.println("  Texture width: " + texture.getImageWidth());
+        System.out.println("  Texture object: " + texture.getTextureObject(gl));
+        System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+
+        texture.enable(gl);
+        // Activate texture in slot 0 (might have to go to "display()")
+        gl.glActiveTexture(GL_TEXTURE1);
+        // Use texture as 2D texture (might have to go to "display()")
+        gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+        // END: Prepare cube for drawing
+    }
+
+
+    private void initBird(GL3 gl){
+
+        shaderProgram10 = new ShaderProgram(gl);
+        shaderProgram10.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName, fragmentShaderFileName);
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[10]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[10]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+    }
+
+
+    private void initWindrad(GL3 gl){
+
+        shaderProgram11 = new ShaderProgram(gl);
+        shaderProgram11.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName1, fragmentShaderFileName1);
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile1)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[11]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[11]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+    }
+
+
+    private void initRad(GL3 gl){
+
+        shaderProgram12 = new ShaderProgram(gl);
+        shaderProgram12.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName2, fragmentShaderFileName2);
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile2)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[12]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[12]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+    }
+
+
+    private void initBank(GL3 gl){
+
+        shaderProgram13 = new ShaderProgram(gl);
+        shaderProgram13.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName3, fragmentShaderFileName3);
+
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile3)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[13]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[13]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+
+        gl.glEnableVertexAttribArray(1);
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+    }
+
 
 
     /**
@@ -1412,7 +1304,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         //Mülltonne
         for(ObjectInfo shape : allShapeInfos){
-            if(shape.getTyp().equals("pentagon")){
+            if(shape.getTyp().equals("hexagon")){
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -10f);
                 pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
@@ -1430,7 +1322,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         //Tanne
         for(ObjectInfo shape : allShapeInfos){
-            if(shape.getTyp().equals("triangle")){
+            if(shape.getTyp().equals("pentagon")){
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
@@ -1465,7 +1357,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         //Windmühle
         for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("")) {
+            if (shape.getTyp().equals("star")) {
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
@@ -1486,10 +1378,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         //Bank
         for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("star")) {
+            if (shape.getTyp().equals("triangle")) {
 
                 pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
                 displayBank(gl);
                 pmvMatrix.glPopMatrix();
 
@@ -1501,48 +1393,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         displayPlane(gl, lightPos);
         pmvMatrix.glPopMatrix();
 
-       /* for(ObjectInfo shape : allShapeInfos){
-            if(shape.getTyp().equals("star")){
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
-
-                displayHaus(gl, lightPos);
-                pmvMatrix.glPopMatrix();
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
-
-                displayDach(gl, lightPos);
-                pmvMatrix.glPopMatrix();
-            }
-        }
 
 
-        //Tree-Cremer
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(-1.5f, 0.8f, 0f);
-        displayBaum(gl,lightPos);
-        pmvMatrix.glPopMatrix();
 
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(-1.5f, -0.2f, 0f);
-        displayStamm(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        //House-Cremer
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(1f, 0f, 0f);
-        pmvMatrix.glRotatef(45f, 0f, 1f, 0f);
-        displayHaus(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(1f, 1.2f, 0f);
-        pmvMatrix.glRotatef(90f, 0f, 0f, 1f);
-        pmvMatrix.glRotatef(45f, 1f, 0f, 0f);
-        displayDach(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
+        /*
         //Bush-Cremer
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(-0.5f, -0.3f, 1.2f);
@@ -1569,138 +1423,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         displayBusch(gl, lightPos);
         pmvMatrix.glPopMatrix();
 
-        //Bin-Cremer
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(2f, -0.4f, 1f);
-        displayTonne(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(2f, -0.18f, 1f);
-        displayDeckel(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        //Tree2-Cremer
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(2.5f, 0.8f, -1.1f);
-        displayTanne(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(2.5f, -0.2f, -1.1f);
-        displayStamm(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        //Bird-Cremer
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glRotatef(rotation,0f,1f,0f);
-        rotation += delta;
-        pmvMatrix.glTranslatef(1f, 1.5f, 1.5f);
-        displayVogel(gl);
-        pmvMatrix.glPopMatrix();
-
-
-         */
+        */
     }
 
 
-    private void displayBank(GL3 gl) {
-        // Switch to this vertex buffer array for drawing.
-        gl.glBindVertexArray(vaoName[13]);
-        // Activating the compiled shader program.
-        // Could be placed into the init-method for this simple example.
-        gl.glUseProgram(shaderProgram10.getShaderProgramID());
-
-        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
-        // via uniforms
-        // Transfer projection matrix via uniform layout position 0
-        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
-        // Transfer model-view matrix via layout position 1
-        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
-
-        // Use the vertices in the VBO to draw a triangle.
-        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
-    }
-
-        private void displayBird(GL3 gl) {
-        // Switch to this vertex buffer array for drawing.
-        gl.glBindVertexArray(vaoName[10]);
-        // Activating the compiled shader program.
-        // Could be placed into the init-method for this simple example.
-        gl.glUseProgram(shaderProgram10.getShaderProgramID());
-
-        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
-        // via uniforms
-        // Transfer projection matrix via uniform layout position 0
-        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
-        // Transfer model-view matrix via layout position 1
-        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
-
-        // Use the vertices in the VBO to draw a triangle.
-        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
-    }
-
-
-    private void displayWindrad(GL3 gl) {
-        // Switch to this vertex buffer array for drawing.
-        gl.glBindVertexArray(vaoName[11]);
-        // Activating the compiled shader program.
-        // Could be placed into the init-method for this simple example.
-        gl.glUseProgram(shaderProgram11.getShaderProgramID());
-
-        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
-        // via uniforms
-        // Transfer projection matrix via uniform layout position 0
-        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
-        // Transfer model-view matrix via layout position 1
-        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
-
-        // Use the vertices in the VBO to draw a triangle.
-        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
-    }
-
-
-    private void displayRad(GL3 gl) {
-        // Switch to this vertex buffer array for drawing.
-        gl.glBindVertexArray(vaoName[12]);
-        // Activating the compiled shader program.
-        // Could be placed into the init-method for this simple example.
-        gl.glUseProgram(shaderProgram12.getShaderProgramID());
-
-        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
-        // via uniforms
-        // Transfer projection matrix via uniform layout position 0
-        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
-        // Transfer model-view matrix via layout position 1
-        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
-
-        // Use the vertices in the VBO to draw a triangle.
-        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
-    }
-
-    private void displayPlane(GL3 gl, float[] lightPos) {
-        gl.glUseProgram(shaderProgram1.getShaderProgramID());
-        // Transfer the PVM-Matrix (model-view and projection matrix)
-        // to the vertex shader
-        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
-        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
-        gl.glUniformMatrix4fv(2, 1, false, pmvMatrix.glGetMvitMatrixf());
-        // transfer parameters of light source
-        gl.glUniform4fv(3, 1, light0.getPosition(), 0);
-        gl.glUniform4fv(4, 1, light0.getAmbient(), 0);
-        gl.glUniform4fv(5, 1, light0.getDiffuse(), 0);
-        gl.glUniform4fv(6, 1, light0.getSpecular(), 0);
-        // transfer material parameters
-        gl.glUniform4fv(7, 1, material9.getEmission(), 0);
-        gl.glUniform4fv(8, 1, material9.getAmbient(), 0);
-        gl.glUniform4fv(9, 1, material9.getDiffuse(), 0);
-        gl.glUniform4fv(10, 1, material9.getSpecular(), 0);
-        gl.glUniform1f(11, material9.getShininess());
-        gl.glBindVertexArray(vaoName[9]);
-        // Draws the elements in the order defined by the index buffer object (IBO)
-        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, House.noOfIndicesForBox(), GL.GL_UNSIGNED_INT, 0);
-
-    }
     private void displayBaum(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram0.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
@@ -1886,9 +1612,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, cone3.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    private void displayVogel(GL3 gl) {
-        gl.glUseProgram(shaderProgram8.getShaderProgramID());
+    private void displayPlane(GL3 gl, float[] lightPos) {
+        gl.glUseProgram(shaderProgram1.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
+        // to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
         gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
         gl.glUniformMatrix4fv(2, 1, false, pmvMatrix.glGetMvitMatrixf());
@@ -1898,15 +1625,87 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glUniform4fv(5, 1, light0.getDiffuse(), 0);
         gl.glUniform4fv(6, 1, light0.getSpecular(), 0);
         // transfer material parameters
-        gl.glUniform4fv(7, 1, material7.getEmission(), 0);
-        gl.glUniform4fv(8, 1, material7.getAmbient(), 0);
-        gl.glUniform4fv(9, 1, material7.getDiffuse(), 0);
-        gl.glUniform4fv(10, 1, material7.getSpecular(), 0);
-        gl.glUniform1f(11, material7.getShininess());
-        gl.glBindVertexArray(vaoName[8]);
+        gl.glUniform4fv(7, 1, material9.getEmission(), 0);
+        gl.glUniform4fv(8, 1, material9.getAmbient(), 0);
+        gl.glUniform4fv(9, 1, material9.getDiffuse(), 0);
+        gl.glUniform4fv(10, 1, material9.getSpecular(), 0);
+        gl.glUniform1f(11, material9.getShininess());
+        gl.glBindVertexArray(vaoName[9]);
         // Draws the elements in the order defined by the index buffer object (IBO)
-        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, sphere2.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
+        gl.glDrawElements(GL.GL_TRIANGLE_STRIP, House.noOfIndicesForBox(), GL.GL_UNSIGNED_INT, 0);
+    }
 
+
+    private void displayBird(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[10]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram10.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
+    }
+
+    private void displayWindrad(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[11]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram11.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
+    }
+
+    private void displayRad(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[12]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram12.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
+    }
+
+    private void displayBank(GL3 gl) {
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[13]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram13.getShaderProgramID());
+
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
     }
 
     private void collision(){
@@ -1957,6 +1756,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         shaderProgram10.deleteShaderProgram();
         shaderProgram11.deleteShaderProgram();
         shaderProgram12.deleteShaderProgram();
+        shaderProgram13.deleteShaderProgram();
 
 
 
