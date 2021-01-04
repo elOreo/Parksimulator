@@ -1,58 +1,61 @@
 package imageprocessing;
 
 import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ShapeDetection {
 
-
+    //Liste zum speichern aller Formen. Wird an Bildverarbeitung weiter gegeben.
     private ArrayList<ObjectInfo> allShapeInfos = new ArrayList<>();
 
+    //Matrix des Bildes, welches nachher in der GUI ausgegeben wird.
     private Mat img;
 
+    //Einstellungen für CannyEdge Filter.
     private static final int RATIO = 3;
     private static final int KERNEL_SIZE = 3;
     private int lowThresh = 10;
 
+    //Getter für Mat img
     public Mat getImg() {
         return img;
     }
 
+    //Getter für allShapeInfos
     public ArrayList<ObjectInfo> getAllShapeInfos() {
         return allShapeInfos;
     }
 
-
+    //Konstruktor für ShapeDetection. Erstellt man eine ShapeDetection wird automatisch die Formerkennung auf ein Bild, welches man mit einem Pfad angibt, angewendet.
     public ShapeDetection(boolean useCanny, String imgPath){
 
-        // Loading the image.
+        // Es wird zuerst eine Colordetection ausgeführt, damit man ein Bild zurück bekommt, welches nur die Formen beinhaltet
         ColorDetection cd = new ColorDetection(imgPath);
         Mat imgMat = cd.getImg_shapes();
 
 
-        //Turning image into Greyscale image.
+        //Bild in Graustufenbild umwandeln (erleichtert die Formenerkennung)
 
         Mat imgGrey = new Mat();
         Imgproc.cvtColor(imgMat, imgGrey, Imgproc.COLOR_BGR2GRAY);
 
+        //Für die Hough Circle Detection wird ein Blur über das Bild gelegt. Hier in zwei verschiedenen Versionen.
         Mat greyBlur = new Mat();
         Imgproc.GaussianBlur(imgGrey,greyBlur,new Size(1,1), 0);
         Mat medianGreyBlur = new Mat();
         Imgproc.medianBlur(imgGrey, medianGreyBlur, 1);
 
+        //Matrix circles zum abspeichern der erkannten Kreise.
         Mat circles = new Mat();
 
-        //Houghcircle detection for circles.
+        //Houghcircle detection wird hier ausgeführt
         Imgproc.HoughCircles(medianGreyBlur, circles, Imgproc.HOUGH_GRADIENT, 1.0,
                 (double)medianGreyBlur.rows()/16, // change this value to detect circles with different distances to each other
                 100.0, 30.0, 10, 40); // change the last two parameters
         // (min_radius & max_radius) to detect larger circles
 
-        //Adding detected circles to list
+        //Kreise zur Liste mit den Formen hinzufügen
         for (int x = 0; x < circles.cols(); x++) {
             double[] c = circles.get(0, x);
             Point center = new Point(Math.round(c[0]), Math.round(c[1]));
@@ -61,83 +64,27 @@ public class ShapeDetection {
 
         }
 
-        /*
-        src - input array (multiple-channel, 8-bit or 32-bit floating point).
-        dst - output array of the same size and type and the same number of channels as src.
-        thresh - threshold value.
-        maxval - maximum value to use with the #THRESH_BINARY and #THRESH_BINARY_INV thresholding types.
-        type - thresholding type (see #ThresholdTypes).
-        */
 
-        //Histogram Equalization
+        //Um geringe Grauwertunterscheidungen (welche zu Fehlern führen können) auszuschließen wird hier eine Histogram Equalization ausgeführt.
 
         Mat eqHisMat = new Mat();
         Imgproc.equalizeHist(imgGrey, eqHisMat);
 
-        //Threshold binary Matrix
 
+        //Erstellung des Binärbildes mit threshold Methode.
         Mat imgThresh = new Mat();
         Imgproc.threshold(eqHisMat, imgThresh, 200, 255, Imgproc.THRESH_BINARY);
 
+        //Erstellung des Binärbildes mit cannyEdge Methode.
         Mat cannyEdge = new Mat();
         Imgproc.Canny(greyBlur, cannyEdge, lowThresh, lowThresh* RATIO, KERNEL_SIZE, false);
 
-        /*
-
-        Version 1:
-
-        Finds contours in a binary image. The function retrieves contours from the binary image using the algorithm CITE: Suzuki85 .
-        The contours are a useful tool for shape analysis and object detection and recognition. See squares.cpp in the OpenCV sample directory.
-        Note: Since opencv 3.2 source image is not modified by this function.
-
-        Parameters:
-        image - Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero pixels remain 0's, so the image is treated as binary .
-        You can use #compare, #inRange, #threshold , #adaptiveThreshold, #Canny, and others to create a binary image out of a grayscale or color one.
-        If mode equals to #RETR_CCOMP or #RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
-
-        contours - Detected contours. Each contour is stored as a vector of points (e.g. std::vector<std::vector<cv::Point> >).
-
-        hierarchy - Optional output vector (e.g. std::vector<cv::Vec4i>), containing information about the image topology.
-        It has as many elements as the number of contours.
-        For each i-th contour contours[i], the elements hierarchy[i][0] , hierarchy[i][1] , hierarchy[i][2] , and hierarchy[i][3] are set to 0-based indices
-        in contours of the next and previous contours at the same hierarchical level, the first child contour and the parent contour, respectively.
-        If for the contour i there are no next, previous, parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
-
-        mode - Contour retrieval mode, see #RetrievalModes
-
-        method - Contour approximation method, see #ContourApproximationModes contours are extracted from the image ROI and then they should be analyzed in the whole image context.
-
-
-        Version 2:
-
-        Finds contours in a binary image. The function retrieves contours from the binary image using the algorithm CITE: Suzuki85 .
-        The contours are a useful tool for shape analysis and object detection and recognition. See squares.cpp in the OpenCV sample directory.
-        Note: Since opencv 3.2 source image is not modified by this function.
-
-        Parameters:
-        image - Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero pixels remain 0's, so the image is treated as binary .
-        You can use #compare, #inRange, #threshold , #adaptiveThreshold, #Canny, and others to create a binary image out of a grayscale or color one.
-        If mode equals to #RETR_CCOMP or #RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
-
-        contours - Detected contours. Each contour is stored as a vector of points (e.g. std::vector<std::vector<cv::Point> >).
-
-        hierarchy - Optional output vector (e.g. std::vector<cv::Vec4i>), containing information about the image topology.
-        It has as many elements as the number of contours.
-        For each i-th contour contours[i], the elements hierarchy[i][0] , hierarchy[i][1] , hierarchy[i][2] , and hierarchy[i][3] are set to 0-based indices
-        in contours of the next and previous contours at the same hierarchical level, the first child contour and the parent contour, respectively.
-        If for the contour i there are no next, previous, parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
-
-        mode - Contour retrieval mode, see #RetrievalModes
-
-        method - Contour approximation method, see #ContourApproximationModes
-
-        offset - Optional offset by which every contour point is shifted. This is useful if the contours are extracted from the image ROI and then they should be analyzed in the whole image context.
-        */
-
+        //Liste für alle Konturen.
         ArrayList<MatOfPoint> contours = new ArrayList<>();
+
         Mat hierarchy = new Mat();
 
-        // Canny Edge Detection or Binary
+        // Im Konstruktor wird festgelegt, ob man CannyEdge oder Threshhold benutzen möchte. Erfahrungsgemäß funktioniert Threshold besser.
         if (useCanny == false) {
             Imgproc.findContours(imgThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         }
@@ -145,26 +92,14 @@ public class ShapeDetection {
             Imgproc.findContours(cannyEdge, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         }
 
+        //Für Entwicklung zur Überprüfung von Fehlern
         int undefinedCounter = 0;
 
 
-        //Circle through contours to decide which shape is involved.
+        //Schleife durch alle Konturen, um herauszufinden um welche Form es sich handelt.
         for(MatOfPoint cnt : contours){
             //Length of Approx = Count of Vertices in one Shape
-            /*
-            public static void approxPolyDP(MatOfPoint2f curve, MatOfPoint2f approxCurve, double epsilon, boolean closed)
 
-            Approximates a polygonal curve(s) with the specified precision.
-            The function cv::approxPolyDP approximates a curve or a polygon with another curve/polygon with less vertices so that
-            the distance between them is less or equal to the specified precision. It uses the Douglas-Peucker
-            algorithm.
-
-            Parameters:
-            curve - Input vector of a 2D point stored in std::vector or Mat
-            approxCurve - Result of the approximation. The type should match the type of the input curve.
-            epsilon - Parameter specifying the approximation accuracy. This is the maximum distance between the original curve and its approximation.
-            closed - If true, the approximated curve is closed (its first and last vertices are connected). Otherwise, it is not closed.
-             */
             MatOfPoint2f approxOutput = new MatOfPoint2f();
             MatOfPoint2f cnt2f = new MatOfPoint2f(cnt.toArray());
 
@@ -173,7 +108,7 @@ public class ShapeDetection {
             float approxOutputLength = approxOutput.total();
             System.out.println(approxOutputLength);
 
-            //Calculation: Mid of shapes:
+            //Berechnung der Mitte der Formen. Wichtig für die Platzierung in der 3D Welt.
             double xPrepare = 0;
             double yPrepare = 0;
 
@@ -190,42 +125,43 @@ public class ShapeDetection {
             float descriptionCoordinateX = (float) xPrepare/rowCounter;
             float descriptionCoordinateY = (float) yPrepare/rowCounter;
 
-            //Mid of Shape
+            //Mittelpunkt der Form
             Point descriptionCoordinates = new Point(descriptionCoordinateX, descriptionCoordinateY);
 
-            //draw contours around the shapes
+            //Konturen um das Bild für ein aussagekräfigeres Ausgabebild.
             Imgproc.drawContours(imgMat, contours, -1, new Scalar(255,0,0));
-            //decide which kind of shape
 
+            //Ermittlung der Form anhand der Anzahl an Edges/Vertices. Kreise wurden vorher schon ermittelt. Es war einfacher das zu trennen damit nicht Formen mit vielen Ecken als Kreise erkannt wurden.
+
+                //Dreieck
                 if (approxOutputLength == 3){
-                    //triangle
                     Imgproc.putText(imgMat, "Triangle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("triangle", descriptionCoordinateX, descriptionCoordinateY));
                 }
+                //Rechteck
                 else if (approxOutputLength == 4){
-                    //rectangle
                     Imgproc.putText(imgMat, "Rectangle", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("rectangle", descriptionCoordinateX, descriptionCoordinateY));
                 }
+                //Fünfeck
                 else if (approxOutputLength == 5){
-                    //pentagon
                     Imgproc.putText(imgMat, "Pentagon", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("pentagon", descriptionCoordinateX, descriptionCoordinateY));
                 }
+                //Sechseck
                 else if (approxOutputLength == 6){
-                    //hexagon
                     Imgproc.putText(imgMat, "Hexagon", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("hexagon", descriptionCoordinateX, descriptionCoordinateY));
                 }
+                //Stern
                 else if (approxOutputLength > 6 && approxOutputLength < 11){
-                    //star
                     Imgproc.putText(imgMat, "Star", descriptionCoordinates, Imgproc.FONT_HERSHEY_COMPLEX, 0.4, new Scalar(255,0,255));
                     allShapeInfos.add(new ObjectInfo("star", descriptionCoordinateX, descriptionCoordinateY));
                 }
-
+                //Abspeicherung des Endresultates
                 img = imgMat;
 
-                //Overlapping double Object Removal
+                //Zur Sicherheit werden hier Objekte die doppelt erkannt wurden aus der Liste gelöscht. Außerdem Sichert dies gegen zu nahr beeinander platzierte Objekte ab.
                 float xLast = 0;
                 float yLast = 0;
 
@@ -244,7 +180,7 @@ public class ShapeDetection {
                     yLast = yCoord;
                 }
 
-                //Middle Rectangle Deletion
+                //Das ganze Bild wird immer als Rechteck erkannt. Also löschen wir es einfach aus der Liste.
                 for(int i = 0; i < allShapeInfos.size(); i++){
                     if(allShapeInfos.get(i).getxCoordinate() > img.cols()/2 -2 && allShapeInfos.get(i).getxCoordinate() < img.cols()/2 +2
                             && allShapeInfos.get(i).getyCoordinate() > img.rows()/2 -2 && allShapeInfos.get(i).getyCoordinate() < img.rows()/2 +2)
@@ -254,17 +190,17 @@ public class ShapeDetection {
                 }
         }
 
-        //save shaped and shapecoordinates in list and print them out.
+        //Konsolenausgabe der Liste + Counter für nicht identifizierte Objekte
         System.out.println("All Shapes: ");
         for (int x = 0; x < allShapeInfos.size(); x++) {
             System.out.println(allShapeInfos.get(x).getInfo());
         }
         System.out.println("Undefined shapes: "+ undefinedCounter);
     }
-
-
+    //Methode um zur ShapeInfo Liste hinzuzufügen.
     public ArrayList addToShapeInfo(ObjectInfo objectInfo){
         allShapeInfos.add(objectInfo);
         return allShapeInfos;
     }
+
 }
