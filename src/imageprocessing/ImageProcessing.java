@@ -276,7 +276,7 @@ public class ImageProcessing extends JFrame {
         imgPanel3.setImage(Mat2BufferedImage(inputMat));
         pack();
     }
-
+    //Getter für filePathName;
     public String getFilePathName() {
         return filePathName;
     }
