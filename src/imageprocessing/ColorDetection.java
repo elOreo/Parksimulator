@@ -13,9 +13,9 @@ public class ColorDetection {
     private Mat img_shapes;
 
     public ColorDetection(String imagepath){
-        detection(imagepath);
-        detection2(imagepath);
         detection3(imagepath);
+        detection2(imagepath);
+        detection(imagepath);
     }
 
     public void detection3(String imagepath) {
