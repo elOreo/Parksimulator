@@ -43,7 +43,7 @@ public class ImageProcessing extends JFrame {
     private String filePathName;
     //private BufferedImagePanel imgPanel4;
 
-    private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+    private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir") + "/rsc/images");
 
     /**
      * Create object and perform the processing by calling private member functions.
