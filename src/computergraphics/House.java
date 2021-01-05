@@ -108,44 +108,44 @@ public class House {
                 p4[0], p4[1], p4[2],   // position
                 c[0],  c[1],  c[2],    // color
                 nl[0], nl[1], nl[2],   // normal
-                uv01[0], uv01[1],      // texture coordinates
+                uv01[1], uv01[0],      // texture coordinates
                 // index: 9
                 p7[0], p7[1], p7[2],   // position
                 c[0],  c[1],  c[2],   // color
                 nl[0], nl[1], nl[2],   // normal
-                uv00[0], uv00[1],      // texture coordinates
+                uv00[1], uv00[0],      // texture coordinates
                 // index: 10
                 p0[0], p0[1], p0[2],   // position
                 c[0],  c[1],  c[2],   // color
                 nl[0], nl[1], nl[2],   // normal
-                uv11[0], uv11[1],      // texture coordinates
+                uv11[1], uv11[0],      // texture coordinates
                 // index: 11
                 p3[0], p3[1], p3[2],   // position
                 c[0],  c[1],  c[2],   // color
                 nl[0], nl[1], nl[2],   // normal
-                uv10[0], uv10[1],      // texture coordinates
+                uv10[1], uv10[0],      // texture coordinates
 
                 // right surface
                 // index: 12
                 p1[0], p1[1], p1[2],   // position
                 c[0],  c[1],  c[2],    // color
                 nr[0], nr[1], nr[2],   // normal
-                uv01[0], uv01[1],      // texture coordinates
+                uv01[1], uv01[0],      // texture coordinates
                 // index: 13
                 p2[0], p2[1], p2[2],   // position
                 c[0],  c[1],  c[2],   // color
                 nr[0], nr[1], nr[2],   // normal
-                uv00[0], uv00[1],      // texture coordinates
+                uv00[1], uv00[0],      // texture coordinates
                 // index: 14
                 p5[0], p5[1], p5[2],   // position
                 c[0],  c[1],  c[2],   // color
                 nr[0], nr[1], nr[2],   // normal
-                uv11[0], uv11[1],      // texture coordinates
+                uv11[1], uv11[0],      // texture coordinates
                 // index: 15
                 p6[0], p6[1], p6[2],   // position
                 c[0],  c[1],  c[2],   // color
                 nr[0], nr[1], nr[2],   // normal
-                uv10[0], uv10[1],      // texture coordinates
+                uv10[1], uv10[0],      // texture coordinates
 
                 // top surface
                 // index: 16

@@ -143,7 +143,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private final String texturePath = ".\\rsc/shader\\";
     final String textureFileName0 = "GelbGruenPalette.png"; //Baum
 
-    final String textureFileName1 = "Haus.png"; //Haus
+    final String textureFileName1 = "Wand.png"; //Haus
 
     final String textureFileName2 = "StammShade.png"; //Stamm
 
@@ -315,7 +315,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         initTanne(gl);
         initPlane(gl);
 
-        //Alias Objects
+        //Alias Objects Cremer
         initBird(gl);
         initWindrad(gl);
         initRad(gl);
