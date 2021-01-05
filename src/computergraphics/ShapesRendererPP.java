@@ -410,10 +410,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
 
             texture.enable(gl);
-            // Activate texture in slot 0 (might have to go to "display()")
-            //textureCount++;
-            // Use texture as 2D texture (might have to go to "display()")
-
             // END: Prepare cube for drawing
         }
 
@@ -490,10 +486,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             System.out.println("  Estimated memory size of texture: " + texture1.getEstimatedMemorySize());
 
             texture1.enable(gl);
-            // Activate texture in slot 0 (might have to go to "display()")
-            //textureCount++;
-            // Use texture as 2D texture (might have to go to "display()")
-
             // END: Prepare cube for drawing
         }
 
@@ -572,11 +564,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             System.out.println("  Estimated memory size of texture: " + texture2.getEstimatedMemorySize());
 
             texture2.enable(gl);
-            // Activate texture in slot 0 (might have to go to "display()")
-
-            //textureCount++;
-            // Use texture as 2D texture (might have to go to "display()")
-
             // END: Prepare cube for drawing
         }
 
@@ -653,10 +640,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             System.out.println("  Estimated memory size of texture: " + texture3.getEstimatedMemorySize());
 
             texture3.enable(gl);
-            // Activate texture in slot 0 (might have to go to "display()")
-            //textureCount++;
-            // Use texture as 2D texture (might have to go to "display()")
-
             // END: Prepare cube for drawing
         }
 
@@ -918,11 +901,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             System.out.println("  Estimated memory size of texture: " + texture5.getEstimatedMemorySize());
 
             texture5.enable(gl);
-            // Activate texture in slot 0 (might have to go to "display()")
-
-            //textureCount++;
-            // Use texture as 2D texture (might have to go to "display()")
-
             // END: Prepare cube for drawing
         }
 
@@ -944,7 +922,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 vertexShader8FileName, fragmentShader8FileName);
         Plane plane = new Plane(allShapeInfos, 64, 64);
         float[] color7 = {0f,1f, 0f};
-        float[] cubeVertices = Plane.makeBoxVertices(planeTextureWidthf, planeTextureHeightf, 0.001f, color7);
+        float[] cubeVertices = Plane.makeBoxVertices(planeTextureWidthf, planeTextureHeightf, 1f, color7);
         int[] cubeIndices = Plane.makeBoxIndicesForTriangleStrip();
 
         // activate and initialize vertex buffer object (VBO)
@@ -1014,7 +992,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         texture6.enable(gl);
         // Activate texture in slot 0 (might have to go to "display()")
         textureCount++;
-        // Use texture as 2D texture (might have to go to "display()")
 
         // END: Prepare cube for drawing
     }
@@ -1185,7 +1162,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Background color of the canvas
-        gl.glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+        gl.glClearColor(0.7f, 0.7f, 1.0f, 1.0f);
 
 
 
@@ -1311,7 +1288,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
                 pmvMatrix.glPushMatrix();
                 //pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -10f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -13f);
                 displayWindrad(gl);
                 pmvMatrix.glPopMatrix();
 
@@ -1319,7 +1296,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 //pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
                 //pmvMatrix.glRotatef(rotation2, 0f, 0f, 0f);
                 //rotation2 += alpha;
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+1, -7f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+1, -10f);
                 displayRad(gl);
                 pmvMatrix.glPopMatrix();
 
