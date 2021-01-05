@@ -125,9 +125,18 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     final String fragmentShaderFileName2 = "Basic3.frag";
     private static final Path objFile2 = Paths.get("./rsc/objekte/rad.obj");
 
-    final String vertexShaderFileName3 = "Basic4.vert";
-    final String fragmentShaderFileName3 = "Basic4.frag";
-    private static final Path objFile3 = Paths.get("./rsc/objekte/bankbunt.obj");
+    final String vertexShaderFileName3 = "BlinnPhongPoint.vert";
+    final String fragmentShaderFileName3 = "BlinnPhongPoint.frag";
+    private static final Path objFile3 = Paths.get("./rsc/objekte/bank2.obj");
+
+    final String vertexShaderFileName4 = "BlinnPhongPoint1.vert";
+    final String fragmentShaderFileName4 = "BlinnPhongPoint1.frag";
+    private static final Path objFile4 = Paths.get("./rsc/objekte/lampe2.obj");
+
+    final String vertexShaderFileName5 = "BlinnPhongPoint2.vert";
+    final String fragmentShaderFileName5 = "BlinnPhongPoint2.frag";
+    private static final Path objFile5 = Paths.get("./rsc/objekte/licht2.obj");
+
 
 
     // taking texture files from relative path
@@ -167,7 +176,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private ShaderProgram shaderProgram10;
     private ShaderProgram shaderProgram11;
     private ShaderProgram shaderProgram12;
-
+    private ShaderProgram shaderProgram13;
+    private ShaderProgram shaderProgram14;
 
 
     private float planeTextureWidthf;
@@ -179,8 +189,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private int[] iboName;	// Names of index buffer objects
 
     // Define Materials
-    private Material material0, material1, material2, material3, material4,
-                     material5, material6, material7, material8;
+    private Material material0, material1, material2, material3,
+            material4,material5, material6, material7, material8, material9, material10;
 
     // Define light sources
     private LightSource light0;
@@ -264,7 +274,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         // BEGIN: Preparing scene
         // BEGIN: Allocating vertex array objects and buffers for each object
-        int noOfObjects = allShapeInfos.size() + 100;
+        int noOfObjects = allShapeInfos.size()+20;
         // create vertex array objects for noOfObjects objects (VAO)
         vaoName = new int[noOfObjects];
         gl.glGenVertexArrays(noOfObjects, vaoName, 0);
@@ -310,6 +320,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         initWindrad(gl);
         initRad(gl);
         initBank(gl);
+        initLampe(gl);
+        initLicht(gl);
 
         // END: Preparing scene
 
@@ -322,12 +334,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         interactionHandler.setEyeZ(1.0f);
 
         // Switch on back face culling
-        //gl.glEnable(GL.GL_CULL_FACE);
+        gl.glEnable(GL.GL_CULL_FACE);
         gl.glCullFace(GL.GL_BACK);
 //        gl.glCullFace(GL.GL_FRONT);
         // Switch on depth test
         gl.glEnable(GL.GL_DEPTH_TEST);
-
         // defining polygon drawing mode
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, gl.GL_FILL);
         //gl.glPolygonMode(GL.GL_BACK, gl.GL_LINE);
@@ -1139,13 +1150,104 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
 
 
+        // Metallic material
         float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] matSpecular = {0.7f, 0.7f, 0.7f, 1.0f};
+        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
+        float[] matDiffuse =  {0.2f, 0.2f, 0.2f, 1.0f};
+        float[] matSpecular = {0.4f, 0.4f, 0.4f, 1.0f};
         float matShininess = 200.0f;
 
         material8 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+    }
+
+
+    private void initLampe(GL3 gl){
+
+        shaderProgram13 = new ShaderProgram(gl);
+        shaderProgram13.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName4, fragmentShaderFileName4);
+
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile4)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[13]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[13]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+
+        gl.glEnableVertexAttribArray(1);
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+
+
+        // Metallic material
+        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
+        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
+        float[] matDiffuse =  {0.2f, 0.2f, 0.2f, 1.0f};
+        float[] matSpecular = {0.4f, 0.4f, 0.4f, 1.0f};
+        float matShininess = 200.0f;
+
+        material9 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
+
+    }
+
+
+    private void initLicht(GL3 gl){
+
+        shaderProgram14 = new ShaderProgram(gl);
+        shaderProgram14.loadShaderAndCreateProgram(shaderPath,
+                vertexShaderFileName5, fragmentShaderFileName5);
+
+        try {
+            verticies = new OBJLoader()
+                    .setLoadNormals(true) // tell the loader to also load normal data
+                    .loadMesh(Resource.file(objFile5)) // actually load the file
+                    .getVertices(); // take the vertices from the loaded mesh
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[14]);
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[14]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES,
+                FloatBuffer.wrap(verticies), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+
+        gl.glEnableVertexAttribArray(1);
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+
+
+        float[] matEmission = {1.0f, 1.0f, 0.3f, 1.0f};
+        float[] matAmbient =  {0.9f, 0.9f, 0.0f, 1.0f};
+        float[] matDiffuse =  {0.9f, 0.9f, 0.1f, 1.0f};
+        float[] matSpecular = {0.9f, 0.9f, 0.7f, 1.0f};
+        float matShininess = 200.0f;
+
+        material10 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
     }
 
 
@@ -1248,7 +1350,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         }
 
         //Tanne
-        for(ObjectInfo shape : allShapeInfos){
+        /*for(ObjectInfo shape : allShapeInfos){
             if(shape.getTyp().equals("pentagon")){
 
                 pmvMatrix.glPushMatrix();
@@ -1264,7 +1366,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 pmvMatrix.glPopMatrix();
 
             }
-        }
+        }*/
 
         //Vogel
         for(ObjectInfo shape : allShapeInfos) {
@@ -1305,12 +1407,32 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         //Bank
         for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("triangle")) {
+            if (shape.getTyp().equals("pentagon")) {
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
-                displayBank(gl);
+                displayBank(gl,lightPos);
                 pmvMatrix.glPopMatrix();
+
+            }
+        }
+
+        //Lampe
+        for(ObjectInfo shape : allShapeInfos) {
+            if (shape.getTyp().equals("pentagon")) {
+
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
+                displayLampe(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
+                displayLicht(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+
+
 
             }
         }
@@ -1635,7 +1757,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
     }
 
-    private void displayBank(GL3 gl) {
+    private void displayBank(GL3 gl,float[] lightPos) {
 
         gl.glBindVertexArray(vaoName[12]);
         gl.glUseProgram(shaderProgram12.getShaderProgramID());
@@ -1645,6 +1767,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
         // Transfer model-view matrix via layout position 1
         gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+        gl.glUniformMatrix4fv(2, 1, false, pmvMatrix.glGetMvitMatrixf());
 
         gl.glUniform4fv(3, 1, light0.getPosition(), 0);
         gl.glUniform4fv(4, 1, light0.getAmbient(), 0);
@@ -1656,6 +1779,60 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glUniform4fv(9, 1, material8.getDiffuse(), 0);
         gl.glUniform4fv(10, 1, material8.getSpecular(), 0);
         gl.glUniform1f(11, material8.getShininess());
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
+    }
+
+
+    private void displayLampe(GL3 gl, float[] lightPos) {
+
+        gl.glBindVertexArray(vaoName[13]);
+        gl.glUseProgram(shaderProgram13.getShaderProgramID());
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+        gl.glUniformMatrix4fv(2, 1, false, pmvMatrix.glGetMvitMatrixf());
+
+        gl.glUniform4fv(3, 1, light0.getPosition(), 0);
+        gl.glUniform4fv(4, 1, light0.getAmbient(), 0);
+        gl.glUniform4fv(5, 1, light0.getDiffuse(), 0);
+        gl.glUniform4fv(6, 1, light0.getSpecular(), 0);
+        // transfer material parameters
+        gl.glUniform4fv(7, 1, material9.getEmission(), 0);
+        gl.glUniform4fv(8, 1, material9.getAmbient(), 0);
+        gl.glUniform4fv(9, 1, material9.getDiffuse(), 0);
+        gl.glUniform4fv(10, 1, material9.getSpecular(), 0);
+        gl.glUniform1f(11, material9.getShininess());
+        // Use the vertices in the VBO to draw a triangle.
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
+    }
+
+
+    private void displayLicht(GL3 gl,float[] lightPos) {
+
+        gl.glBindVertexArray(vaoName[14]);
+        gl.glUseProgram(shaderProgram14.getShaderProgramID());
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+        gl.glUniformMatrix4fv(2, 1, false, pmvMatrix.glGetMvitMatrixf());
+
+        gl.glUniform4fv(3, 1, light0.getPosition(), 0);
+        gl.glUniform4fv(4, 1, light0.getAmbient(), 0);
+        gl.glUniform4fv(5, 1, light0.getDiffuse(), 0);
+        gl.glUniform4fv(6, 1, light0.getSpecular(), 0);
+        // transfer material parameters
+        gl.glUniform4fv(7, 1, material10.getEmission(), 0);
+        gl.glUniform4fv(8, 1, material10.getAmbient(), 0);
+        gl.glUniform4fv(9, 1, material10.getDiffuse(), 0);
+        gl.glUniform4fv(10, 1, material10.getSpecular(), 0);
+        gl.glUniform1f(11, material10.getShininess());
         // Use the vertices in the VBO to draw a triangle.
         gl.glDrawArrays(GL.GL_TRIANGLES, 0, verticies.length);
     }
@@ -1709,6 +1886,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         shaderProgram10.deleteShaderProgram();
         shaderProgram11.deleteShaderProgram();
         shaderProgram12.deleteShaderProgram();
+        shaderProgram13.deleteShaderProgram();
+        shaderProgram14.deleteShaderProgram();
 
 
 
