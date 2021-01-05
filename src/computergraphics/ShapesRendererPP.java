@@ -140,7 +140,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     final String textureFileName5 = "GelbGruenPalette.png";
 
-    final String textureFileName6 = "GelbGruenPalette.png";
+    final String textureFileName6 = "planeTexture.png";
 
 
     private ShaderProgram shaderProgram0;
@@ -562,6 +562,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             texture2.enable(gl);
             // Activate texture in slot 0 (might have to go to "display()")
             gl.glActiveTexture(GL_TEXTURE2);
+
             // Use texture as 2D texture (might have to go to "display()")
             gl.glBindTexture(GL_TEXTURE_2D, texture2.getTextureObject(gl));
             // END: Prepare cube for drawing
@@ -928,10 +929,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Shader for object 1
         shaderProgram8.loadShaderAndCreateProgram(shaderPath,
                 vertexShader8FileName, fragmentShader8FileName);
-        House plane = new House(allShapeInfos, 64, 64);
-        float[] color7 = {1f,1f, 1f};
-        float[] cubeVertices = House.makeBoxVertices(planeTextureWidthf, planeTextureHeightf, 0.001f, color7);
-        int[] cubeIndices = House.makeBoxIndicesForTriangleStrip();
+        Plane plane = new Plane(allShapeInfos, 64, 64);
+        float[] color7 = {0f,1f, 0f};
+        float[] cubeVertices = Plane.makeBoxVertices(planeTextureWidthf, planeTextureHeightf, 0.001f, color7);
+        int[] cubeIndices = Plane.makeBoxIndicesForTriangleStrip();
 
         // activate and initialize vertex buffer object (VBO)
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[8]);
@@ -974,7 +975,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Load and prepare texture
         Texture texture6 = null;
         try {
-            File textureFile6 = new File(texturePath+textureFileName6);
+            String filePathName = texturePath + "planeTexture.png";
+            Imgcodecs.imwrite(filePathName, planeTexture,
+                    new MatOfInt(Imgcodecs.IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY, Imgcodecs.IMWRITE_PNG_STRATEGY_FIXED));
+
+            File textureFile6 = new File(texturePath+"planeTexture.png");
             texture6 = TextureIO.newTexture(textureFile6, true);
 
             texture6.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
@@ -1562,6 +1567,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glUniform4fv(9, 1, material7.getDiffuse(), 0);
         gl.glUniform4fv(10, 1, material7.getSpecular(), 0);
         gl.glUniform1f(11, material7.getShininess());
+
+        gl.glUniform1i(5, 5);
 
         gl.glBindVertexArray(vaoName[8]);
         // Draws the elements in the order defined by the index buffer object (IBO)
