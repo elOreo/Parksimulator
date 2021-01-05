@@ -161,7 +161,7 @@ public class ShapeDetection {
                 //Abspeicherung des Endresultates
                 img = imgMat;
 
-                //Zur Sicherheit werden hier Objekte die doppelt erkannt wurden aus der Liste gelöscht. Außerdem Sichert dies gegen zu nahr beeinander platzierte Objekte ab.
+                //Zur Sicherheit werden hier Objekte die doppelt erkannt wurden aus der Liste gelöscht. Außerdem Sichert dies gegen zu nah beeinander platzierte Objekte ab.
                 float xLast = 0;
                 float yLast = 0;
 
@@ -172,7 +172,7 @@ public class ShapeDetection {
                     float xDist = xCoord - xLast;
                     float yDist = yCoord - yLast;
 
-                    if(xDist < 4 && xDist > -4 && yDist < 4 && yDist > -4){
+                    if(xDist < 8 && xDist > -8 && yDist < 8 && yDist > -8){
                         allShapeInfos.remove(i);
                     }
 
@@ -191,11 +191,41 @@ public class ShapeDetection {
         }
 
         //Konsolenausgabe der Liste + Counter für nicht identifizierte Objekte
+        int cirCount = 0;
+        int triCount = 0;
+        int rectCount = 0;
+        int pentCount = 0;
+        int hexCount = 0;
+        int starCount = 0;
         System.out.println("All Shapes: ");
         for (int x = 0; x < allShapeInfos.size(); x++) {
             System.out.println(allShapeInfos.get(x).getInfo());
+            if(allShapeInfos.get(x).getTyp().equals("circle")){
+                cirCount++;
+            }
+            if(allShapeInfos.get(x).getTyp().equals("triangle")){
+                triCount++;
+            }
+            if(allShapeInfos.get(x).getTyp().equals("rectangle")){
+                rectCount++;
+            }
+            if(allShapeInfos.get(x).getTyp().equals("pentagon")){
+                pentCount++;
+            }
+            if(allShapeInfos.get(x).getTyp().equals("hexagon")){
+                hexCount++;
+            }
+            if(allShapeInfos.get(x).getTyp().equals("star")){
+                starCount++;
+            }
         }
         System.out.println("Undefined shapes: "+ undefinedCounter);
+        System.out.println("Trees/Cirles: " + cirCount);
+        System.out.println("Bench/Triangle: " + triCount);
+        System.out.println("House/Rectangle: " + rectCount);
+        System.out.println("Lantern/Pentagon: " + pentCount);
+        System.out.println("Trashcan/Hexagon: " + hexCount);
+        System.out.println("Windmill/ Star: " + starCount);
     }
     //Methode um zur ShapeInfo Liste hinzuzufügen.
     public ArrayList addToShapeInfo(ObjectInfo objectInfo){
