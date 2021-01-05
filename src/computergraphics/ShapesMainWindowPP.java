@@ -80,7 +80,7 @@ public class ShapesMainWindowPP extends JFrame {
         GLCapabilities capabilities = new GLCapabilities(profile);
         // Enabling of multisampling
         capabilities.setSampleBuffers(true);
-        capabilities.setNumSamples(allShapeInfos.size() + 10);
+        capabilities.setNumSamples(allShapeInfos.size() + 100);
         // Create the OpenGL rendering canvas
         GLCanvas canvas = new ShapesRendererPP(capabilities, allShapeInfos, planeTexture);
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
