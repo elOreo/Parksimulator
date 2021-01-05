@@ -147,28 +147,36 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
-            case KeyEvent.VK_LEFT:
-                xPosition += xPositionInc;
+
+            case KeyEvent.VK_W:
+                yPosition -= yPositionInc;
+                //xPosition = angleXaxis*xPosition;
                 break;
             case KeyEvent.VK_A:
                 xPosition += xPositionInc;
                 break;
-            case KeyEvent.VK_RIGHT:
-                xPosition -= xPositionInc;
+            case KeyEvent.VK_S:
+                yPosition += yPositionInc;
                 break;
             case KeyEvent.VK_D:
                 xPosition -= xPositionInc;
                 break;
+
+
+
+
+
+
+            case KeyEvent.VK_LEFT:
+                xPosition += xPositionInc;
+                break;
             case KeyEvent.VK_UP:
                 yPosition -= yPositionInc;
                 break;
-            case KeyEvent.VK_W:
-                yPosition -= yPositionInc;
+            case KeyEvent.VK_RIGHT:
+                xPosition -= xPositionInc;
                 break;
             case KeyEvent.VK_DOWN:
-                yPosition += yPositionInc;
-                break;
-            case KeyEvent.VK_S:
                 yPosition += yPositionInc;
                 break;
         }
@@ -298,18 +306,10 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         double deltaX = currentMouseLocation.getX() - lastMouseLocation.getX();
         double deltaY = currentMouseLocation.getY() - lastMouseLocation.getY();
         lastMouseLocation = currentMouseLocation;
-        // holding the left mouse button rotates the scene
-        //if (leftMouseButtonPressed) {
-            angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
-            angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
-        //}
 
+        angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
+        angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
 
-        // holding the right mouse button translates the scene
-        /*if (rightMouseButtonPressed) {
-            xPosition += xPositionInc * mouseTranslationFactor * -deltaX;
-            yPosition += yPositionInc * mouseTranslationFactor * +deltaY;
-        }*/
     }
 
     /**
@@ -331,7 +331,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
         angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
         //}
-        
+
          */
     }
 
