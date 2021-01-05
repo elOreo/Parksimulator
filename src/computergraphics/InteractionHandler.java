@@ -25,8 +25,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     // Variables for scene translation
     private float xPosition = 0f;
     private float yPosition = 0f;
-    private float xPositionInc = 10f;
-    private float yPositionInc= 10f;
+    private float xPositionInc = 3.0f;
+    private float yPositionInc= 3.0f;
     // Variables for keyboard control
     private boolean ctrlKeyPressed = false;
     // Variables for mouse control
@@ -34,11 +34,13 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private boolean rightMouseButtonPressed = false;
     private Point lastMouseLocation;
     // Taking care of the screen size (mapping of mouse coordinates to angle/translation)
-    private final float mouseRotationFactor = 0.1f;
-    private final float mouseTranslationFactor = 0.1f;
+    private final float mouseRotationFactor = 0.01f;
+    private final float mouseTranslationFactor = 0.01f;
     private final float mouseWheelScrollFactor = 10f;
     private final float pressLeftKey = 0.3f;
 
+    private double deltaX = 0;
+    private double deltaY = 0;
     /**
      * Standard constructor for creation of the interaction handler.
      */
@@ -287,6 +289,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     @Override
     public void mouseDragged(MouseEvent e) {
+
         Point currentMouseLocation = e.getLocationOnScreen();
         if (VERBOSE) {
             System.out.print("Mouse dragged event.");
@@ -296,15 +299,17 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         double deltaY = currentMouseLocation.getY() - lastMouseLocation.getY();
         lastMouseLocation = currentMouseLocation;
         // holding the left mouse button rotates the scene
-        if (leftMouseButtonPressed) {
-           angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
+        //if (leftMouseButtonPressed) {
+            angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
             angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
-        }
+        //}
+
+
         // holding the right mouse button translates the scene
-        if (rightMouseButtonPressed) {
-           xPosition += xPositionInc * mouseTranslationFactor * -deltaX;
+        /*if (rightMouseButtonPressed) {
+            xPosition += xPositionInc * mouseTranslationFactor * -deltaX;
             yPosition += yPositionInc * mouseTranslationFactor * +deltaY;
-        }
+        }*/
     }
 
     /**
@@ -312,6 +317,22 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     @Override
     public void mouseMoved(MouseEvent e) {
+        /*
+        Point currentMouseLocation = e.getLocationOnScreen();
+        if (VERBOSE) {
+            System.out.print("Mouse dragged event.");
+            System.out.println(" At mouse location: " + currentMouseLocation);
+        }
+        double deltaX = currentMouseLocation.getX() - lastMouseLocation.getX();
+        double deltaY = currentMouseLocation.getY() - lastMouseLocation.getY();
+        lastMouseLocation = currentMouseLocation;
+        // holding the left mouse button rotates the scene
+        //if (leftMouseButtonPressed) {
+        angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
+        angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
+        //}
+        
+         */
     }
 
     /**
@@ -319,10 +340,6 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (VERBOSE) {
-            System.out.print("Mouse wheel moved event.");
-            System.out.println(" Wheel rotation: " + e.getPreciseWheelRotation());
-        }
-        eyeZ += eyeZInc * mouseWheelScrollFactor * e.getPreciseWheelRotation();
+
     }
 }

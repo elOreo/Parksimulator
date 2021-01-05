@@ -196,7 +196,6 @@ public class ColorDetection {
                 }else {
                     lastcolor = color;
                 }
-
             }
         }/*
         int[][] torep = {{0,0},{0,0},{0,0},{0,0}};
