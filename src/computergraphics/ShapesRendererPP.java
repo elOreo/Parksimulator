@@ -46,6 +46,8 @@ import java.io.File;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import org.opencv.imgcodecs.Imgcodecs;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 
 import static com.jogamp.opengl.GL.*;
 
@@ -102,14 +104,14 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private final String vertexShader4FileName = "BlinnPhongPointTex4.vert";
     private final String fragmentShader4FileName = "BlinnPhongPointTex4.frag";*/
     //Tonne
-    private final String vertexShader5FileName = "BlinnPhongPointTex5.vert";
-    private final String fragmentShader5FileName = "BlinnPhongPointTex5.frag";
+    private final String vertexShader5FileName = "BlinnPhongPoint.vert";
+    private final String fragmentShader5FileName = "BlinnPhongPoint.frag";
     //Tanne
     private final String vertexShader7FileName = "BlinnPhongPointTex7.vert";
     private final String fragmentShader7FileName = "BlinnPhongPointTex7.frag";
 
-    private final String vertexShader8FileName = "Basic.vert";
-    private final String fragmentShader8FileName = "Basic.frag";
+    private final String vertexShader8FileName = "BlinnPhongPointTex8.vert";
+    private final String fragmentShader8FileName = "BlinnPhongPointTex8.frag";
 
     final String vertexShaderFileName = "Basic.vert";
     final String fragmentShaderFileName = "Basic.frag";
@@ -130,7 +132,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     // taking texture files from relative path
     private final String texturePath = ".\\rsc/shader\\";
-    final String textureFileName0 = "Baum.png"; //Baum
+    final String textureFileName0 = "GelbGruenPalette.png"; //Baum
 
     final String textureFileName1 = "Haus.png"; //Haus
 
@@ -377,7 +379,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare sphere for drawing
 
             // Blätter
-            float[] matEmission = {0.1f, 0.8f, 0.1f, 1.0f};
+            float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
             float[] matAmbient =  {0.1f, 0.1f, 0.1f, 1.0f};
             float[] matDiffuse =  {0.1f, 0.1f, 0.1f, 1.0f};
             float[] matSpecular = {0.1f, 0.1f, 0.1f, 1.0f};
@@ -409,8 +411,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             texture.enable(gl);
             // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE0  + textureCount);
-            textureCount++;
+            //textureCount++;
             // Use texture as 2D texture (might have to go to "display()")
 
             // END: Prepare cube for drawing
@@ -457,12 +458,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
             // END: Prepare cube for drawing
 
-            // Fassade
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 0.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
-            float matShininess = 200.0f;
+        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
+        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
+        float[] matDiffuse =  {0.5f, 0.5f, 0.5f, 1.0f};
+        float[] matSpecular = {0.7f, 0.7f, 0.7f, 1.0f};
+        float matShininess = 200.0f;
 
 
         material1 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
@@ -491,8 +491,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             texture1.enable(gl);
             // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE0 + textureCount);
-            textureCount++;
+            //textureCount++;
             // Use texture as 2D texture (might have to go to "display()")
 
             // END: Prepare cube for drawing
@@ -540,7 +539,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare cone (frustum) for drawing
 
             // Wood
-            float[] matEmission = {0.0f, 0.0f, 1.0f, 1.0f};
+            float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
             float[] matAmbient =  {0.3f, 0.1f, 0.3f, 1.0f};
             float[] matDiffuse =  {0.3f, 0.1f, 0.3f, 1.0f};
             float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -574,8 +573,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             texture2.enable(gl);
             // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE0 + textureCount);
-            textureCount++;
+
+            //textureCount++;
             // Use texture as 2D texture (might have to go to "display()")
 
             // END: Prepare cube for drawing
@@ -623,7 +622,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
             // Dachpfannen
-            float[] matEmission = {0.6f, 0f, 0.1f, 1.0f};
+            float[] matEmission = {0.0f, 0f, 0.0f, 1.0f};
             float[] matAmbient =  {0.6f, 0f, 0.1f, 1.0f};
             float[] matDiffuse =  {0.6f, 0f, 0.1f, 1.0f};
             float[] matSpecular = {0.6f, 0.0f, 0.1f, 1.0f};
@@ -655,8 +654,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             texture3.enable(gl);
             // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE0 + textureCount);
-            textureCount++;
+            //textureCount++;
             // Use texture as 2D texture (might have to go to "display()")
 
             // END: Prepare cube for drawing
@@ -803,7 +801,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             shaderProgram6.loadShaderAndCreateProgram(shaderPath,
                     vertexShader5FileName, fragmentShader5FileName);
 
-            float[] color5 = {0.3f, 0.3f, 0.3f};
+            float[] color5 = {0.0f, 0.0f, 0.0f};
             cone2 = new Cone(64);
             float[] coneVertices = cone2.makeVertices(2f, 3.4f, 1.6f, color5);
             int[] coneIndices = cone2.makeIndicesForTriangleStrip();
@@ -889,7 +887,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
             // END: Prepare cone (frustum) for drawing
 
-        float[] matEmission = {0.0f, 0.4f, 0.0f, 1.0f};
+        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
         float[] matAmbient =  {0.1f, 0.1f, 0.1f, 1.0f};
         float[] matDiffuse =  {0.2f, 0.2f, 0.2f, 1.0f};
         float[] matSpecular = {0.0f, 0.4f, 0.0f, 1.0f};
@@ -921,8 +919,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             texture5.enable(gl);
             // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE0 + textureCount++);
-            textureCount++;
+
+            //textureCount++;
             // Use texture as 2D texture (might have to go to "display()")
 
             // END: Prepare cube for drawing
@@ -978,11 +976,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glVertexAttribPointer(3, 2, GL.GL_FLOAT, false, 11*4, 9*4);
         // END: Prepare cube for drawing
 
-        float[] matEmission = {0.8f, 0.8f, 0.8f, 1.0f};
-        float[] matAmbient =  {0.8f, 0.8f, 0.8f, 1.0f};
-        float[] matDiffuse =  {0.8f, 0.8f, 0.8f, 1.0f};
-        float[] matSpecular = {0.8f, 0.8f, 0.8f, 1.0f};
-        float matShininess = 100.0f;
+        float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
+        float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
+        float[] matDiffuse =  {0.5f, 0.5f, 0.5f, 1.0f};
+        float[] matSpecular = {0.7f, 0.7f, 0.7f, 1.0f};
+        float matShininess = 200.0f;
 
         material7 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
@@ -1015,7 +1013,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         texture6.enable(gl);
         // Activate texture in slot 0 (might have to go to "display()")
-        gl.glActiveTexture(GL_TEXTURE0 + textureCount);
         textureCount++;
         // Use texture as 2D texture (might have to go to "display()")
 
@@ -1384,6 +1381,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private void displayBaum(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram0.getShaderProgramID());
 
+        gl.glActiveTexture(GL_TEXTURE0);
         gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
         // Transfer the PVM-Matrix (model-view and projection matrix)
         // to the vertex shader
@@ -1410,6 +1408,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private void displayHaus(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram1.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
+        gl.glActiveTexture(GL_TEXTURE0);
         gl.glBindTexture(GL_TEXTURE_2D, texture1.getTextureObject(gl));
         // to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -1435,6 +1434,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private void displayStamm(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram2.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
+        gl.glActiveTexture(GL_TEXTURE0);
         gl.glBindTexture(GL_TEXTURE_2D, texture2.getTextureObject(gl));
 
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -1459,6 +1459,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     private void displayDach(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram3.getShaderProgramID());
+        gl.glActiveTexture(GL_TEXTURE0);
         gl.glBindTexture(GL_TEXTURE_2D, texture3.getTextureObject(gl));
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -1552,6 +1553,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     private void displayTanne(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram7.getShaderProgramID());
+        gl.glActiveTexture(GL_TEXTURE0);
         gl.glBindTexture(GL_TEXTURE_2D, texture5.getTextureObject(gl));
         // Transfer the PVM-Matrix (model-view and projection matrix) to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
@@ -1575,7 +1577,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     private void displayPlane(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram8.getShaderProgramID());
-
+        gl.glActiveTexture(GL_TEXTURE0);
         gl.glBindTexture(GL_TEXTURE_2D, texture6.getTextureObject(gl));
         // Transfer the PVM-Matrix (model-view and projection matrix)
         // to the vertex shader
