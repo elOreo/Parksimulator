@@ -289,7 +289,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        /*
+
         Point currentMouseLocation = e.getLocationOnScreen();
         if (VERBOSE) {
             System.out.print("Mouse dragged event.");
@@ -303,7 +303,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
             angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
             angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
         //}
-        */
+
 
         // holding the right mouse button translates the scene
         /*if (rightMouseButtonPressed) {
@@ -317,6 +317,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     @Override
     public void mouseMoved(MouseEvent e) {
+        /*
         Point currentMouseLocation = e.getLocationOnScreen();
         if (VERBOSE) {
             System.out.print("Mouse dragged event.");
@@ -330,6 +331,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
         angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
         //}
+        
+         */
     }
 
     /**
