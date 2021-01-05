@@ -19,13 +19,10 @@ public class ColorDetection {
     }
 
     public void detection3(String imagepath) {
-        System.out.println(imagepath);
+
         Mat imagemat = Imgcodecs.imread(imagepath);
 
-        System.out.println("Read image: " + imagemat);
-        System.out.println("  Matrix columns: " + imagemat.cols());
-        System.out.println("  Matrix rows: " + imagemat.rows());
-        System.out.println("  Matrix channels: " + imagemat.channels());
+
 
 
         for (int x = 0; x < imagemat.cols(); x++) {
@@ -33,13 +30,11 @@ public class ColorDetection {
                 double[] color = imagemat.get(y, x);
 
                 if (color[2] > 175 && color[1] > 175 && color[0] > 175) {
-                    //System.out.println(Arrays.toString(color)+ " Ist Weiß");
                     //Weiß
                     double[] newcolor =  {0.0,255.0,0.0};
                     imagemat.put(y,x,newcolor);
                 }
                 else if ((color[2] > 30 && color[2] < 170) && (color[1] > 20 && color[1] < 120) && (color[0] > -1 && color[0] < 40)) {
-                    //System.out.println(Arrays.toString(color)+ " Ist Braun");
                     //Braun
                     double[] newcolor =  {31.0,117.0,156.0};
                     imagemat.put(y,x,newcolor);
@@ -75,7 +70,6 @@ public class ColorDetection {
                 if (color[0] == 252.0 && color[1] == 5.0 && color[2] == 231.0) {
 
                     imagemat.put(y,x,lastcolor);
-                    //System.out.println("Schwarz gefunden setze Farbe: "+Arrays.toString(lastcolor));
 
                 }else {
                     lastcolor = color;
@@ -115,12 +109,10 @@ public class ColorDetection {
                 }
 
                 if (ncnt == 0) {
-                    System.out.println(Arrays.toString(color)+ " Ist Weiß");
                     //Weiß
                     double[] newcolor = {0.0, 255.0, 0.0};
                     imagemat.put(y, x, newcolor);
                 } else if (ncnt == 1) {
-                    System.out.println(Arrays.toString(color)+ " Ist Braun");
                     //Braun
                     double[] newcolor = {31.0, 117.0, 156.0};
                     imagemat.put(y, x, newcolor);
@@ -158,7 +150,6 @@ public class ColorDetection {
                 float[] hsv = new float[3];
                 Color.RGBtoHSB((int)color[2],(int)color[1],(int)color[0],hsv);
                 hsv[0] = 359*hsv[0];
-                //System.out.println(Arrays.toString(hsv));
 
                 if (hsv[2]<0.3) {
                     //Schwarz
@@ -166,12 +157,10 @@ public class ColorDetection {
                     //double[] newcolor =  {252.0,5.0,231.0};
                     imagemat.put(y, x, newcolor);
                 }else if (hsv[1]<0.1) {
-                    //System.out.println(Arrays.toString(color)+ " Ist Weiß");
                     //Weiß
                     double[] newcolor =  {0.0,255.0,0.0};
                     imagemat.put(y,x,newcolor);
                 }else if (hsv[0]>20 && hsv[0]<50) {
-                    //System.out.println(Arrays.toString(color)+ " Ist Braun");
                     //Braun
                     double[] newcolor =  {31.0,117.0,156.0};
                     imagemat.put(y,x,newcolor);
@@ -203,7 +192,6 @@ public class ColorDetection {
                 if ((color[0] == 252.0 && color[1] == 5.0 && color[2] == 231.0) || (color[0] == 0.0 && color[1] == 0.0 && color[2] == 0.0)) {
 
                     imagemat.put(y,x,lastcolor);
-                    //System.out.println("Schwarz gefunden setze Farbe: "+Arrays.toString(lastcolor));
 
                 }else {
                     lastcolor = color;
