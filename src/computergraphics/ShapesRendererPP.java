@@ -1294,7 +1294,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
      //   pmvMatrix.glTranslatef(0, 0, 0f);
 
         //pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 5f);
-        pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 0f, 0f, 1f);
+        pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 0f, 1f);
         pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 5f);
         // Transform for the complete scene
