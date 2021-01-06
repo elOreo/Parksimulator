@@ -46,6 +46,8 @@ import java.io.File;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+
 import static com.jogamp.opengl.GL.GL_TEXTURE0;
 import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
 
@@ -977,8 +979,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         texture6 = null;
 
         try {
+            Mat flippedPlaneTexture = new Mat();
+            Core.flip(planeTexture, flippedPlaneTexture, 1);
             String filePathName = texturePath + "planeTexture.png";
-            Imgcodecs.imwrite(filePathName, planeTexture,
+            Imgcodecs.imwrite(filePathName, flippedPlaneTexture,
                     new MatOfInt(Imgcodecs.IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY, Imgcodecs.IMWRITE_PNG_STRATEGY_FIXED));
 
             File textureFile6 = new File(texturePath+"planeTexture.png");
