@@ -102,9 +102,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     //Dach
     private final String vertexShader3FileName = "BlinnPhongPointTex3.vert";
     private final String fragmentShader3FileName = "BlinnPhongPointTex3.frag";
-    /*//Busch
+    //Busch
     private final String vertexShader4FileName = "BlinnPhongPointTex4.vert";
-    private final String fragmentShader4FileName = "BlinnPhongPointTex4.frag";*/
+    private final String fragmentShader4FileName = "BlinnPhongPointTex4.frag";
     //Tonne
     private final String vertexShader5FileName = "BlinnPhongPoint.vert";
     private final String fragmentShader5FileName = "BlinnPhongPoint.frag";
@@ -151,6 +151,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     final String textureFileName3 = "Dach.png"; //Dach
 
+    final String textureFileName4 = "Tanne.png"; //Busch
+
     final String textureFileName5 = "Tanne.png"; // Tanne
 
     final String textureFileName6 = "planeTexture.png"; // Plane
@@ -160,6 +162,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private Texture texture1;
     private Texture texture2;
     private Texture texture3;
+    private Texture texture4;
     private Texture texture5;
     private Texture texture6;
 
@@ -169,7 +172,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private ShaderProgram shaderProgram1;
     private ShaderProgram shaderProgram2;
     private ShaderProgram shaderProgram3;
-    //private ShaderProgram shaderProgram4;
+    private ShaderProgram shaderProgram4;
     private ShaderProgram shaderProgram5;
     private ShaderProgram shaderProgram6;
     private ShaderProgram shaderProgram7;
@@ -268,6 +271,10 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
 
 
+        for(ObjectInfo shape : allShapeInfos){
+            shape.setRndTree(Math.random()*3);
+        }
+
         // Verify if VBO-Support is available
         if (!gl.isExtensionAvailable("GL_ARB_vertex_buffer_object"))
             System.out.println("Error: VBO support is missing");
@@ -311,7 +318,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         initHaus(gl);
         initStamm(gl);
         initDach(gl);
-        //initBusch(gl);
+        initBusch(gl);
         initTonne(gl);
         initDeckel(gl);
         initTanne(gl);
@@ -657,7 +664,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         }
 
 
-    /*private void initBusch(GL3 gl) {
+    private void initBusch(GL3 gl) {
 
             gl.glBindVertexArray(vaoName[4]);
             shaderProgram4 = new ShaderProgram(gl);
@@ -707,34 +714,31 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             material4 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
             // Load and prepare texture
-            Texture texture = null;
+            texture4 = null;
             try {
                 File textureFile = new File(texturePath+textureFileName4);
-                texture = TextureIO.newTexture(textureFile, true);
+                texture4 = TextureIO.newTexture(textureFile, true);
 
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
-                texture.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
+                texture4.setTexParameteri(gl, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+                texture4.setTexParameteri(gl, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+                texture4.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE);
+                texture4.setTexParameteri(gl, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (texture != null)
+            if (texture4 != null)
                 System.out.println("Texture loaded successfully from: " + texturePath+textureFileName4);
             else
                 System.err.println("Error loading textue.");
-            System.out.println("  Texture height: " + texture.getImageHeight());
-            System.out.println("  Texture width: " + texture.getImageWidth());
-            System.out.println("  Texture object: " + texture.getTextureObject(gl));
-            System.out.println("  Estimated memory size of texture: " + texture.getEstimatedMemorySize());
+            System.out.println("  Texture height: " + texture4.getImageHeight());
+            System.out.println("  Texture width: " + texture4.getImageWidth());
+            System.out.println("  Texture object: " + texture4.getTextureObject(gl));
+            System.out.println("  Estimated memory size of texture: " + texture4.getEstimatedMemorySize());
 
-            texture.enable(gl);
-            // Activate texture in slot 0 (might have to go to "display()")
-            gl.glActiveTexture(GL_TEXTURE0);
-            // Use texture as 2D texture (might have to go to "display()")
-            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureObject(gl));
+            texture4.enable(gl);
+
             // END: Prepare cube for drawing
-        }*/
+        }
 
 
     private void initTonne(GL3 gl) {
@@ -1298,28 +1302,84 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Position of one light for all shapes
         float[] lightPos = {0f, 3f, 0f};
 
-
-
-        //Trees
         for(ObjectInfo shape : allShapeInfos){
-            if(shape.getTyp().equals("circle")){
 
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
-                displayBaum(gl,lightPos);
-                pmvMatrix.glPopMatrix();
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
-                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
-                displayStamm(gl, lightPos);
-                pmvMatrix.glPopMatrix();
-            }
         }
 
-        //Haus
         for(ObjectInfo shape : allShapeInfos){
-            if(shape.getTyp().equals("rectangle")){
+            //Baum wird erstellt
+            if(shape.getTyp().equals("circle")){
+                //double rndTree = Math.random()*3;
+
+                    //Laubbaum
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
+                    displayBaum(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                    pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                    displayStamm(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+
+                    //Tanne
+                    /*
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
+                    pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                    displayTanne(gl,lightPos);
+                    pmvMatrix.glPopMatrix();
+
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                    pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
+                    displayStamm(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+                    */
+
+                    /*
+
+                    //Busch
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(-0.5f, -0.3f, 1.2f);
+                    displayBusch(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(-0.5f, -0.5f, 1f);
+                    displayBusch(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(-0.5f, -0.5f, 1.4f);
+                    displayBusch(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(-0.3f, -0.5f, 1.2f);
+                    displayBusch(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+                    pmvMatrix.glPushMatrix();
+                    pmvMatrix.glTranslatef(-0.7f, -0.5f, 1.2f);
+                    displayBusch(gl, lightPos);
+                    pmvMatrix.glPopMatrix();
+
+
+                    */
+            }
+            //Bank wird erstellt
+            else if(shape.getTyp().equals("triangle")){
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
+                displayBank(gl,lightPos);
+                pmvMatrix.glPopMatrix();
+            }
+            //Haus wird erstellt
+            else if(shape.getTyp().equals("rectangle")){
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
@@ -1331,13 +1391,22 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 pmvMatrix.glRotatef(-90f, 0f, 1f, 0f);
                 displayDach(gl, lightPos);
                 pmvMatrix.glPopMatrix();
-
             }
-        }
+            //Laterne wird erstellt
+            else if (shape.getTyp().equals("pentagon")) {
 
-        //Mülltonne
-        for(ObjectInfo shape : allShapeInfos){
-            if(shape.getTyp().equals("hexagon")){
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
+                displayLampe(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+
+                pmvMatrix.glPushMatrix();
+                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
+                displayLicht(gl, lightPos);
+                pmvMatrix.glPopMatrix();
+            }
+            //Mülleimer wird erstellt
+            else if(shape.getTyp().equals("hexagon")){
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -10f);
                 pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
@@ -1350,32 +1419,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 displayDeckel(gl, lightPos);
                 pmvMatrix.glPopMatrix();
 
-            }
-        }
-
-        //Tanne
-        /*for(ObjectInfo shape : allShapeInfos){
-            if(shape.getTyp().equals("pentagon")){
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
-                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
-                displayTanne(gl,lightPos);
-                pmvMatrix.glPopMatrix();
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
-                pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
-                displayStamm(gl, lightPos);
-                pmvMatrix.glPopMatrix();
-
-            }
-        }*/
-
-        //Vogel
-        for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("hexagon")) {
-
+                //Vogel
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glRotatef(rotation, 0f, 0f, 1f);
                 rotation += alpha;
@@ -1384,13 +1428,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 pmvMatrix.glRotatef(-90f, 0f, 0f, 1f);
                 displayBird(gl);
                 pmvMatrix.glPopMatrix();
-
             }
-        }
-
-        //Windmühle
-        for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("star")) {
+            //Windrad wird erstellt
+            else if (shape.getTyp().equals("star")) {
 
                 pmvMatrix.glPushMatrix();
                 //pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
@@ -1408,39 +1448,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             }
         }
-
-        //Bank
-        for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("pentagon")) {
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
-                displayBank(gl,lightPos);
-                pmvMatrix.glPopMatrix();
-
-            }
-        }
-
-        //Lampe
-        for(ObjectInfo shape : allShapeInfos) {
-            if (shape.getTyp().equals("pentagon")) {
-
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
-                displayLampe(gl, lightPos);
-                pmvMatrix.glPopMatrix();
-
-                pmvMatrix.glPushMatrix();
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -14f);
-                displayLicht(gl, lightPos);
-                pmvMatrix.glPopMatrix();
-
-
-
-            }
-        }
-
+        //Plane wird erstellt
         pmvMatrix.glPushMatrix();
         pmvMatrix.glTranslatef(planeTextureWidthf/2,planeTextureHeightf/2,-15);
         pmvMatrix.glRotatef(180.0f,0,0,0);
@@ -1448,36 +1456,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.glPopMatrix();
 
 
-
-
-        /*
-        //Bush-Cremer
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(-0.5f, -0.3f, 1.2f);
-        displayBusch(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(-0.5f, -0.5f, 1f);
-        displayBusch(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(-0.5f, -0.5f, 1.4f);
-        displayBusch(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(-0.3f, -0.5f, 1.2f);
-        displayBusch(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        pmvMatrix.glPushMatrix();
-        pmvMatrix.glTranslatef(-0.7f, -0.5f, 1.2f);
-        displayBusch(gl, lightPos);
-        pmvMatrix.glPopMatrix();
-
-        */
     }
 
 
@@ -1586,9 +1564,13 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, Roof.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
     }
 
-    /*private void displayBusch(GL3 gl, float[] lightPos) {
+    private void displayBusch(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram4.getShaderProgramID());
         // Transfer the PVM-Matrix (model-view and projection matrix)
+        // Activate texture in slot 0 (might have to go to "display()")
+        gl.glActiveTexture(GL_TEXTURE0);
+        // Use texture as 2D texture (might have to go to "display()")
+        gl.glBindTexture(GL_TEXTURE_2D, texture4.getTextureObject(gl));
         // to the vertex shader
         gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
         gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
@@ -1608,7 +1590,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glBindVertexArray(vaoName[4]);
         // Draws the elements in the order defined by the index buffer object (IBO)
         gl.glDrawElements(GL.GL_TRIANGLE_STRIP, sphere1.getNoOfIndices(), GL.GL_UNSIGNED_INT, 0);
-    }*/
+    }
 
     private void displayTonne(GL3 gl, float[] lightPos) {
         gl.glUseProgram(shaderProgram5.getShaderProgramID());

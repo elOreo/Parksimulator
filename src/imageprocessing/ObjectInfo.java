@@ -9,6 +9,9 @@ public class ObjectInfo {
     //Y Koordinate der Form.
     private float yCoordinate;
 
+    //BaumArt wird in CG festgelegt (ShapesRenderer)
+    private double rndTree;
+
     //Konstruktor mit einfacher Übergabe der Formen.
     public ObjectInfo(String ptyp, float pxCoordinate, float pyCoordinate){
         this.typ = ptyp;
@@ -35,5 +38,13 @@ public class ObjectInfo {
     public String getInfo(){
         String info = "Typ: " + typ + " |x: " + xCoordinate + " |y: " + yCoordinate;
         return info;
+    }
+
+    public double getRndTree() {
+        return rndTree;
+    }
+
+    public void setRndTree(double rndTree) {
+        this.rndTree = rndTree;
     }
 }
