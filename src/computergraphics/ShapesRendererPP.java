@@ -147,11 +147,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     final String textureFileName1 = "Wand.png"; //Haus
 
-    final String textureFileName2 = "StammShade.png"; //Stamm
+    final String textureFileName2 = "Stamm.png"; //Stamm
 
     final String textureFileName3 = "Dach.png"; //Dach
 
-    final String textureFileName4 = "Tanne.png"; //Busch
+    final String textureFileName4 = "Busch.png"; //Busch
 
     final String textureFileName5 = "Tanne.png"; // Tanne
 
@@ -476,9 +476,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         float[] matEmission = {0.0f, 0.0f, 0.0f, 1.0f};
         float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
-        float[] matDiffuse =  {0.5f, 0.5f, 0.5f, 1.0f};
-        float[] matSpecular = {0.7f, 0.7f, 0.7f, 1.0f};
-        float matShininess = 200.0f;
+        float[] matDiffuse =  {0.3f, 0.3f, 0.3f, 1.0f};
+        float[] matSpecular = {0.1f, 0.1f, 0.1f, 1.0f};
+        float matShininess = 100.0f;
 
 
         material1 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
@@ -673,7 +673,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
             float[] color4 = {0.7f, 0.7f, 0.7f};
             sphere1 = new Sphere(64, 64);
-            float[] sphereVertices = sphere1.makeVertices(0.2f, color4);
+            float[] sphereVertices = sphere1.makeVertices(5f, color4);
             int[] sphereIndices = sphere1.makeIndicesForTriangleStrip();
 
             // activate and initialize vertex buffer object (VBO)
@@ -705,11 +705,11 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             // END: Prepare sphere for drawing
 
             // Busch
-            float[] matEmission = {1.0f, 1.0f, 1.0f, 1.0f};
-            float[] matAmbient =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matDiffuse =  {0.0f, 0.0f, 0.0f, 1.0f};
-            float[] matSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
-            float matShininess = 200.0f;
+            float[] matEmission = {0.4f, 0.4f, 0.4f, 1.0f};
+            float[] matAmbient =  {0.2f, 0.2f, 0.2f, 1.0f};
+            float[] matDiffuse =  {0.3f, 0.3f, 0.3f, 1.0f};
+            float[] matSpecular = {0.1f, 0.1f, 0.1f, 1.0f};
+            float matShininess = 100.0f;
 
             material4 = new Material(matEmission, matAmbient, matDiffuse, matSpecular, matShininess);
 
@@ -1323,7 +1323,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 }
 
                     //Tanne
-                if(shape.getRndTree()>=1.5 && shape.getRndTree()<=3) {
+                if(shape.getRndTree()>=1.5 && shape.getRndTree()<2.5) {
                     pmvMatrix.glPushMatrix();
                     pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
                     pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
@@ -1338,37 +1338,38 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 }
 
 
-                    /*
-
+                if(shape.getRndTree()>=2.5 && shape.getRndTree()<=3) {
                     //Busch
                     pmvMatrix.glPushMatrix();
-                    pmvMatrix.glTranslatef(-0.5f, -0.3f, 1.2f);
+                    pmvMatrix.glTranslatef(shape.getxCoordinate()+4, shape.getyCoordinate()+4, -11f);
                     displayBusch(gl, lightPos);
                     pmvMatrix.glPopMatrix();
 
                     pmvMatrix.glPushMatrix();
-                    pmvMatrix.glTranslatef(-0.5f, -0.5f, 1f);
+                    pmvMatrix.glTranslatef(shape.getxCoordinate()-3, shape.getyCoordinate()+4f, -11f);
                     displayBusch(gl, lightPos);
                     pmvMatrix.glPopMatrix();
 
                     pmvMatrix.glPushMatrix();
-                    pmvMatrix.glTranslatef(-0.5f, -0.5f, 1.4f);
+                    pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()+0.5f, -5f);
                     displayBusch(gl, lightPos);
                     pmvMatrix.glPopMatrix();
 
                     pmvMatrix.glPushMatrix();
-                    pmvMatrix.glTranslatef(-0.3f, -0.5f, 1.2f);
+                    pmvMatrix.glTranslatef(shape.getxCoordinate()-4f, shape.getyCoordinate()-4f, -11f);
                     displayBusch(gl, lightPos);
                     pmvMatrix.glPopMatrix();
 
                     pmvMatrix.glPushMatrix();
-                    pmvMatrix.glTranslatef(-0.7f, -0.5f, 1.2f);
+
+                    pmvMatrix.glTranslatef(shape.getxCoordinate()+3f, shape.getyCoordinate()-4f, -11f);
                     displayBusch(gl, lightPos);
                     pmvMatrix.glPopMatrix();
+                }
 
 
-                    */
             }
+
             //Bank wird erstellt
             else if(shape.getTyp().equals("triangle")){
                 pmvMatrix.glPushMatrix();
