@@ -13,7 +13,7 @@ public class ColorDetection {
     private Mat img;
     private Mat img_shapes;
 
-    //
+    //Konstruktor dem der Bildpfad übergeben wird und der dann damit die detection ausführt.
     public ColorDetection(String imagepath){
         detection(imagepath);
     }
