@@ -9,152 +9,34 @@ import java.util.Arrays;
 
 public class ColorDetection {
 
+    // Die Matrix für das Bild und für die Shapes werden angelegt
     private Mat img;
     private Mat img_shapes;
 
+    //
     public ColorDetection(String imagepath){
-        detection3(imagepath);
-        detection2(imagepath);
         detection(imagepath);
     }
-
-    public void detection3(String imagepath) {
-
-        Mat imagemat = Imgcodecs.imread(imagepath);
-
-
-
-
-        for (int x = 0; x < imagemat.cols(); x++) {
-            for (int y = 0; y < imagemat.rows(); y++) {
-                double[] color = imagemat.get(y, x);
-
-                if (color[2] > 175 && color[1] > 175 && color[0] > 175) {
-                    //Weiß
-                    double[] newcolor =  {0.0,255.0,0.0};
-                    imagemat.put(y,x,newcolor);
-                }
-                else if ((color[2] > 30 && color[2] < 170) && (color[1] > 20 && color[1] < 120) && (color[0] > -1 && color[0] < 40)) {
-                    //Braun
-                    double[] newcolor =  {31.0,117.0,156.0};
-                    imagemat.put(y,x,newcolor);
-                }else if ((color[2] > 175 && color[2] < 256) && (color[1] > 160 && color[1] < 256) && (color[0] > -1 && color[0] < 170)){
-                    //Gelb
-                    double[] newcolor =  {31.0,255.0,251.0};
-                    imagemat.put(y,x,newcolor);
-                }else if ((color[2] > -1 && color[2] < 100) && (color[1] > -1 && color[1] < 130) && (color[0] > 80 && color[0] < 256)){
-                    //Blau
-                    double[] newcolor =  {255.0,0.0,0.0};
-                    imagemat.put(y,x,newcolor);
-                }else if ((color[2] > 80 && color[2] < 256) && (color[1] > -1 && color[1] < 130) && (color[0] > -1 && color[0] < 100)){
-                    //Rot
-                    double[] newcolor =  {150.0,150.0,150.0};
-                    imagemat.put(y,x,newcolor);
-                }else if (color[2] < 20 && color[1] < 20 && color[0] < 20) {
-                    //Schwarz
-                    double[] newcolor =  {0.0,0.0,0.0};
-                    imagemat.put(y,x,newcolor);
-                }else{
-                    double[] newcolor =  {252.0,5.0,231.0};
-                    imagemat.put(y,x,newcolor);
-                }
-            }
-
-        }
-
-        double[] lastcolor = {0.0,0.0,0.0};
-        for (int x = 0; x < imagemat.cols(); x++) {
-            for (int y = 0; y < imagemat.rows(); y++) {
-                double[] color = imagemat.get(y, x);
-
-                if (color[0] == 252.0 && color[1] == 5.0 && color[2] == 231.0) {
-
-                    imagemat.put(y,x,lastcolor);
-
-                }else {
-                    lastcolor = color;
-                }
-
-            }
-        }
-        Imgproc.GaussianBlur(imagemat,imagemat,new Size(5,5), 0);
-        img = imagemat;
-    }
-
-    public void detection2(String imagepath) {
-        Mat imagemat = Imgcodecs.imread(imagepath);
-        int[][] colors = {{255,255,255},{156,117,31},{251,255,37},{10,7,244},{234,31,47},{0,0,0}};
-
-        for (int x = 0; x < imagemat.cols(); x++) {
-            for (int y = 0; y < imagemat.rows(); y++) {
-                double[] color = imagemat.get(y, x);
-                Color c1 = new Color((int) color[2], (int) color[1], (int) color[0]);
-                int cnt = 0;
-                int ncnt = 0;
-                double ndist = Double.MAX_VALUE;
-                for (int[] color2 : colors) {
-                    Color c2 = new Color(color2[0], color2[1], color2[2]);
-                    int red1 = c1.getRed();
-                    int red2 = c2.getRed();
-                    int rmean = (red1 + red2) >> 1;
-                    int r = red1 - red2;
-                    int g = c1.getGreen() - c2.getGreen();
-                    int b = c1.getBlue() - c2.getBlue();
-                    double dist = Math.sqrt((((512 + rmean) * r * r) >> 8) + 4 * g * g + (((767 - rmean) * b * b) >> 8));
-                    if (dist < ndist) {
-                        ndist = dist;
-                        ncnt = cnt;
-                    }
-                    ++cnt;
-                }
-
-                if (ncnt == 0) {
-                    //Weiß
-                    double[] newcolor = {0.0, 255.0, 0.0};
-                    imagemat.put(y, x, newcolor);
-                } else if (ncnt == 1) {
-                    //Braun
-                    double[] newcolor = {31.0, 117.0, 156.0};
-                    imagemat.put(y, x, newcolor);
-                } else if (ncnt == 2) {
-                    //Gelb
-                    double[] newcolor = {31.0, 255.0, 251.0};
-                    imagemat.put(y, x, newcolor);
-                } else if (ncnt == 3) {
-                    //Blau
-                    double[] newcolor = {255.0, 0.0, 0.0};
-                    imagemat.put(y, x, newcolor);
-                } else if (ncnt == 4) {
-                    //Rot
-                    double[] newcolor = {150.0, 150.0, 150.0};
-                    imagemat.put(y, x, newcolor);
-                } else if (ncnt == 5){
-                    //Schwarz
-                    double[] newcolor = {0.0, 0.0, 0.0};
-                    imagemat.put(y, x, newcolor);
-                }
-
-            }
-        }
-        img = imagemat;
-    }
-
+    //Hauptmethode zur Farberkennung
     public void detection(String imagepath) {
+        // Das Bild wird geladen und in der Matrix imagemat gespeichert
         Mat imagemat = Imgcodecs.imread(imagepath);
 
+        //for Schleife Pixelabfrage
         for (int x = 0; x < imagemat.cols(); x++) {
             for (int y = 0; y < imagemat.rows(); y++) {
+                //nimmt die Farbe des jetzigen Pixels
                 double[] color = imagemat.get(y, x);
 
-
+                //konvertiert RGB zu HSV
                 float[] hsv = new float[3];
                 Color.RGBtoHSB((int)color[2],(int)color[1],(int)color[0],hsv);
                 hsv[0] = 359*hsv[0];
 
+                //überprüft in welchem Farbbereich der Pixel liegt und weist ihm die dazu passende vordefinierte Farbe zu
                 if (hsv[2]<0.3) {
                     //Schwarz
                     double[] newcolor = {0.0, 0.0, 0.0};
-                    //double[] newcolor =  {252.0,5.0,231.0};
                     imagemat.put(y, x, newcolor);
                 }else if (hsv[1]<0.1) {
                     //Weiß
@@ -183,59 +65,61 @@ public class ColorDetection {
             }
 
         }
+
+        //erstellt eine Kopie von imagemat, damit wir es bearbeiten können
         Mat imagemat2 = imagemat.clone();
+
+        // Variable in der immer die vorherige Farbe in der for Schleife gespeichert wird
         double[] lastcolor = {0.0,0.0,0.0};
+
+        // for Schleife geht Pixel für Pixel ab
         for (int x = 0; x < imagemat.cols(); x++) {
             for (int y = 0; y < imagemat.rows(); y++) {
+                // speichert aktuelle Farbe
                 double[] color = imagemat.get(y, x);
 
+                //überprüft ob Pixel entweder Schwarz(Farbe der Formen) oder rosa(Farbe der Pixel denen keine konkrete Farbe zugewiesen werden konnte) ist
                 if ((color[0] == 252.0 && color[1] == 5.0 && color[2] == 231.0) || (color[0] == 0.0 && color[1] == 0.0 && color[2] == 0.0)) {
-
+                    // ändert die Farbe des Pixels zu der des vorherigen
                     imagemat.put(y,x,lastcolor);
 
                 }else {
+                    // die vorherige Farbe wird mit der aktuellen überschrieben
                     lastcolor = color;
                 }
             }
-        }/*
-        int[][] torep = {{0,0},{0,0},{0,0},{0,0}};
-        double[] delcol = {0,0,0};
-        for(int y = 0; y < imagemat.rows();y++){
-            for (int x = 0; x < imagemat.cols();x++){
-                double[] color = imagemat.get(y, x);
-                if (color != lastcolor){
-                    int[] d = {y,x};
-                    torep[0]= d;
-                    delcol = color;
-                } else if(color == delcol){
-
-                }
-            }
-        }*/
-
+        }
+     
+        //das fertig bearbeitete Bild wird in der Matrix "img" gespeichert
         img = imagemat.clone();
+
+        //geht die Kopie des Bildes Pixel für Pixel durch
         for (int x = 0; x < imagemat2.cols(); x++) {
             for (int y = 0; y < imagemat2.rows(); y++) {
+                //speichert aktuelle Farbe
                 double[] color = imagemat2.get(y, x);
 
+                //falls die Farbe Schwarz ist wird nichts getan
                 if (color[0] == 0.0 && color[1] == 0.0 && color[2] == 0.0) {
 
                 }else{
+                    //falls die Farbe nicht Schwarz ist wird sie durch Weiß ersetzt
                     double[] newcolor = {255.0, 255.0, 255.0};
                     imagemat2.put(y, x, newcolor);
                 }
             }
         }
+        //die bearbeitete Kopie wird in "img_shapes" gespeichert
         img_shapes = imagemat2.clone();
 
     }
 
-
-
+    //Methode um das Bild mit passenden Farben und ohne den Formen zu bekommen
     public Mat getImg() {
         return img;
     }
 
+    //Methode um das Bild mit nur den Formen zu bekommen
     public Mat getImg_shapes() {
         return img_shapes;
     }
