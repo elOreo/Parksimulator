@@ -149,12 +149,12 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         x = (float) Math.sin(Math.toRadians(angleYaxis))*xPositionInc;
-        z = (float) Math.sin(Math.toRadians(angleXaxis))*xPositionInc;
+        z = (float) Math.cos(Math.toRadians(angleYaxis))*xPositionInc;
         switch (keyCode) {
 
             case KeyEvent.VK_W:
-                yPosition += z;
-                xPosition += x;
+                yPosition += -z;
+                xPosition += -x;
                 System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_A:
@@ -163,8 +163,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                 System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_S:
-                yPosition += -z;
-                xPosition += -x;
+                yPosition += z;
+                xPosition += x;
                 System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_D:
