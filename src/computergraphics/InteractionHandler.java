@@ -23,8 +23,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private float angleXaxisInc = 10f;
     private float angleYaxisInc = 10f;
     // Variables for scene translation
-    private float xPosition = 0f;
-    private float yPosition = 0f;
+    private float xPosition = 2f;
+    private float yPosition = 2f;
     private float xPositionInc = 3.0f;
     private float yPositionInc= 3.0f;
     // Variables for keyboard control
@@ -39,6 +39,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private final float mouseWheelScrollFactor = 10f;
     private final float pressLeftKey = 0.3f;
 
+    float x;
+    float z;
     private double deltaX = 0;
     private double deltaY = 0;
     /**
@@ -146,20 +148,29 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
+        x = (float) Math.sin(Math.toRadians(angleYaxis))*xPositionInc;
+        z = (float) Math.sin(Math.toRadians(angleXaxis))*xPositionInc;
         switch (keyCode) {
 
             case KeyEvent.VK_W:
-                yPosition -= yPositionInc;
-                //xPosition = angleXaxis*xPosition;
+                yPosition += z;
+                xPosition += x;
+                System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_A:
-                xPosition += xPositionInc;
+                yPosition += -z;
+                xPosition += x;
+                System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_S:
-                yPosition += yPositionInc;
+                yPosition += -z;
+                xPosition += -x;
+                System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_D:
-                xPosition -= xPositionInc;
+                yPosition += z;
+                xPosition += -x;
+                System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
 
 
