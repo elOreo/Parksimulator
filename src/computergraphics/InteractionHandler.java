@@ -158,8 +158,8 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                 System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_A:
-                yPosition += -z;
-                xPosition += x;
+                yPosition += -x;
+                xPosition += z;
                 System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_S:
@@ -168,8 +168,9 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                 System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_D:
-                yPosition += z;
-                xPosition += -x;
+                yPosition += x;
+                xPosition += -z;
+
                 System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
 
@@ -179,16 +180,20 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
 
 
             case KeyEvent.VK_LEFT:
-                xPosition += xPositionInc;
+                yPosition += -x;
+                xPosition += z;
                 break;
             case KeyEvent.VK_UP:
-                yPosition -= yPositionInc;
+                yPosition += -z;
+                xPosition += -x;
                 break;
             case KeyEvent.VK_RIGHT:
-                xPosition -= xPositionInc;
+                yPosition += x;
+                xPosition += -z;
                 break;
             case KeyEvent.VK_DOWN:
-                yPosition += yPositionInc;
+                yPosition += z;
+                xPosition += x;
                 break;
         }
     }
