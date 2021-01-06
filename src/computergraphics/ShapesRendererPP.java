@@ -1307,9 +1307,9 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         for(ObjectInfo shape : allShapeInfos){
             //Baum wird erstellt
             if(shape.getTyp().equals("circle")){
-                //double rndTree = Math.random()*3;
 
-                    //Laubbaum
+                    //Normaler Baum
+                if(shape.getRndTree()>=0 && shape.getRndTree()<1.5) {
                     pmvMatrix.glPushMatrix();
                     pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
                     displayBaum(gl, lightPos);
@@ -1320,14 +1320,14 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                     pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                     displayStamm(gl, lightPos);
                     pmvMatrix.glPopMatrix();
-
+                }
 
                     //Tanne
-                    /*
+                if(shape.getRndTree()>=1.5 && shape.getRndTree()<=3) {
                     pmvMatrix.glPushMatrix();
                     pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 25f);
                     pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
-                    displayTanne(gl,lightPos);
+                    displayTanne(gl, lightPos);
                     pmvMatrix.glPopMatrix();
 
                     pmvMatrix.glPushMatrix();
@@ -1335,8 +1335,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                     pmvMatrix.glRotatef(90f, 1f, 0f, 0f);
                     displayStamm(gl, lightPos);
                     pmvMatrix.glPopMatrix();
+                }
 
-                    */
 
                     /*
 
