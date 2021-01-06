@@ -10,7 +10,7 @@ public class ObjectInfo {
     private float yCoordinate;
 
     //BaumArt wird in CG festgelegt (ShapesRenderer)
-    private double rndTree;
+    private double rndTree = Math.random() * 3;
 
     //Konstruktor mit einfacher Übergabe der Formen.
     public ObjectInfo(String ptyp, float pxCoordinate, float pyCoordinate){
@@ -36,7 +36,7 @@ public class ObjectInfo {
 
     //Getter für einen String mit allen Sachen. Zur Ausgabe in der Konsole.
     public String getInfo(){
-        String info = "Typ: " + typ + " |x: " + xCoordinate + " |y: " + yCoordinate;
+        String info = "Typ: " + typ + " |x: " + xCoordinate + " |y: " + yCoordinate + " |RandomTree: " + rndTree;
         return info;
     }
 

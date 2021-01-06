@@ -1302,9 +1302,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Position of one light for all shapes
         float[] lightPos = {0f, 3f, 0f};
 
-        for(ObjectInfo shape : allShapeInfos){
 
-        }
 
         for(ObjectInfo shape : allShapeInfos){
             //Baum wird erstellt
