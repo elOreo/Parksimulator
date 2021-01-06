@@ -148,45 +148,47 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        x = (float) (Math.sin(Math.toRadians(angleYaxis))*xPositionInc);
+        x = (float) Math.sin(Math.toRadians(angleYaxis))*xPositionInc;
         z = (float) Math.cos(Math.toRadians(angleYaxis))*xPositionInc;
         switch (keyCode) {
 
             case KeyEvent.VK_W:
                 yPosition += -z;
                 xPosition += -x;
-
+                System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_A:
-                yPosition += -x;
-                xPosition += z;
-
+                yPosition += -z;
+                xPosition += x;
+                System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_S:
                 yPosition += z;
                 xPosition += x;
-
+                System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
             case KeyEvent.VK_D:
-                yPosition += x;
-                xPosition += -z;
+                yPosition += z;
+                xPosition += -x;
+                System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
                 break;
 
+
+
+
+
+
             case KeyEvent.VK_LEFT:
-                yPosition += -x;
-                xPosition += z;
+                xPosition += xPositionInc;
                 break;
             case KeyEvent.VK_UP:
-                yPosition += -z;
-                xPosition += -x;
+                yPosition -= yPositionInc;
                 break;
             case KeyEvent.VK_RIGHT:
-                yPosition += x;
-                xPosition += -z;
+                xPosition -= xPositionInc;
                 break;
             case KeyEvent.VK_DOWN:
-                yPosition += z;
-                xPosition += x;
+                yPosition += yPositionInc;
                 break;
         }
     }
@@ -313,13 +315,11 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
             System.out.println(" At mouse location: " + currentMouseLocation);
         }
         double deltaX = currentMouseLocation.getX() - lastMouseLocation.getX();
-
         double deltaY = currentMouseLocation.getY() - lastMouseLocation.getY();
         lastMouseLocation = currentMouseLocation;
 
         angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
         angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
-
 
     }
 
@@ -328,7 +328,6 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     @Override
     public void mouseMoved(MouseEvent e) {
-
         /*
         Point currentMouseLocation = e.getLocationOnScreen();
         if (VERBOSE) {
