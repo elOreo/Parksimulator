@@ -182,8 +182,8 @@ public class ShapeDetection {
 
                 //Das ganze Bild wird immer als Rechteck erkannt. Also löschen wir es einfach aus der Liste.
                 for(int i = 0; i < allShapeInfos.size(); i++){
-                    if(allShapeInfos.get(i).getxCoordinate() > img.cols()/2 -2 && allShapeInfos.get(i).getxCoordinate() < img.cols()/2 +2
-                            && allShapeInfos.get(i).getyCoordinate() > img.rows()/2 -2 && allShapeInfos.get(i).getyCoordinate() < img.rows()/2 +2)
+                    if(allShapeInfos.get(i).getTyp().equals("rectangle") && allShapeInfos.get(i).getxCoordinate() > img.cols()/2 -3 && allShapeInfos.get(i).getxCoordinate() < img.cols()/2 +3
+                            && allShapeInfos.get(i).getyCoordinate() > img.rows()/2 -3 && allShapeInfos.get(i).getyCoordinate() < img.rows()/2 +3)
                     {
                         allShapeInfos.remove(i);
                     }
