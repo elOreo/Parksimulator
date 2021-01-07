@@ -1447,16 +1447,16 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
             else if (shape.getTyp().equals("star")) {
 
                 pmvMatrix.glPushMatrix();
-                //pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), -13f);
+                pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
                 displayWindrad(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
                 pmvMatrix.glPushMatrix();
-                //pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
                 //pmvMatrix.glRotatef(rotation2, 0f, 0f, 0f);
-                //rotation2 += alpha;
-                pmvMatrix.glTranslatef(shape.getxCoordinate()-9, shape.getyCoordinate()+8, -14f);
+                //rotation += alpha;
+                pmvMatrix.glTranslatef(shape.getxCoordinate()-13, shape.getyCoordinate()+12, -14f);
+                pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
                 displayRad(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
