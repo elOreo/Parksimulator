@@ -80,14 +80,15 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     //Plane Texture Mat from Color Detection
     private Mat planeTexture;
 
+    //rect1 = Kamera-Collider-Viereck; rect2 = Objekt-Collider-Viereck
     public static Rectangle getRect1() {
         return rect1;
     }
-
     public static Rectangle getRect2() {
         return rect2;
     }
 
+    //x und y Koordinaten für den HausCollider
     private float hausx;
     private float hausy;
 
@@ -182,8 +183,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     private ShaderProgram shaderProgram14;
 
 
-    // Gerrit
-    private int textureCount = 0;
+
+    //Variablen zur Speicherung des Formats der eingeladenen Map
     private float planeTextureWidthf;
     private float planeTextureHeightf;
 
@@ -230,7 +231,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Create the canvas with the requested OpenGL capabilities
         super(capabilities);
 
-        // Gerrit
+        //planeTexture = eingeladene Map; allShapeInfos = Array mit den Objekten auf der Map
         this.planeTexture = planeTexture;
         this.allShapeInfos = allShapeInfos;
 
@@ -904,7 +905,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
     }
 
     private void initPlane(GL3 gl) {
-
+        //Höhe und Breite der eingeladenen Map
         int planeTextureWidth =  planeTexture.cols();
         int planeTextureHeight = planeTexture.rows();
 
@@ -991,7 +992,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
         texture6.enable(gl);
         // Activate texture in slot 0 (might have to go to "display()")
-        textureCount++;
+
+
 
         // END: Prepare cube for drawing
     }
@@ -1286,17 +1288,19 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Using the PMV-Tool for geometric transforms
         pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
         pmvMatrix.glLoadIdentity();
-        // Setting the camera position, based on user input
+        // Kameragrundausrichtung
         pmvMatrix.gluLookAt(0.0f, -0.99f, 0.01f,
                 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f);
-        rect1 = new Rectangle(interactionHandler.getxPosition(),interactionHandler.getyPosition(),0.1f,0.1f);
-        rect2= new Rectangle(-hausx-30,-hausy-30,60,60);
-        //pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 5f);
+
+        //Bewegungen der Kamera über den InteractionHandler
         pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 0f, 1f);
         pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 5f);
-        // Transform for the complete scene
+
+        //Erstellung der Collider-Rechtecke
+        rect1 = new Rectangle(interactionHandler.getxPosition(),interactionHandler.getyPosition(),0.1f,0.1f);
+        rect2= new Rectangle(-hausx-30,-hausy-30,60,60);
 
         // Position of one light for all shapes
         float[] lightPos = {0f, 3f, 0f};
@@ -1704,7 +1708,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         gl.glUniform4fv(10, 1, material7.getSpecular(), 0);
         gl.glUniform1f(11, material7.getShininess());
 
-        // Gerrit
         gl.glUniform1i(5, 5);
 
         gl.glBindVertexArray(vaoName[8]);
