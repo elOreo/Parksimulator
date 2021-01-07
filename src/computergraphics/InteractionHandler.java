@@ -39,8 +39,10 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private final float mouseWheelScrollFactor = 10f;
     private final float pressLeftKey = 0.3f;
 
+    //Variablen zur Ausrichtung der Kamera
     float x;
     float z;
+
     private double deltaX = 0;
     private double deltaY = 0;
     /**
@@ -49,96 +51,24 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     public InteractionHandler() {
     }
 
-    public float getEyeZ() {
-        return eyeZ;
-    }
-
     public void setEyeZ(float eyeZ) {
         this.eyeZ = eyeZ;
-    }
-
-    public float getEyeZInc() {
-        return eyeZInc;
-    }
-
-    public void setEyeZInc(float eyeZInc) {
-        this.eyeZInc = eyeZInc;
     }
 
     public float getAngleXaxis() {
         return angleXaxis;
     }
 
-    public void setAngleXaxis(float angleXaxis) {
-        this.angleXaxis = angleXaxis;
-    }
-
     public float getAngleYaxis() {
         return angleYaxis;
-    }
-
-    public void setAngleYaxis(float angleYaxis) {
-        this.angleYaxis = angleYaxis;
-    }
-
-    public float getAngleXaxisInc() {
-        return angleXaxisInc;
-    }
-
-    public void setAngleXaxisInc(float angleXaxisInc) {
-        this.angleXaxisInc = angleXaxisInc;
-    }
-
-    public float getAngleYaxisInc() {
-        return angleYaxisInc;
-    }
-
-    public void setAngleYaxisInc(float angleYaxisInc) {
-        this.angleYaxisInc = angleYaxisInc;
     }
 
     public float getxPosition() {
         return xPosition;
     }
 
-    public void setxPosition(float xPosition) {
-        this.xPosition = xPosition;
-    }
-
     public float getyPosition() {
         return yPosition;
-    }
-
-    public void setyPosition(float yPosition) {
-        this.yPosition = yPosition;
-    }
-
-    public float getxPositionInc() {
-        return xPositionInc;
-    }
-
-    public void setxPositionInc(float xPositionInc) {
-        this.xPositionInc = xPositionInc;
-    }
-
-    public float getyPositionInc() {
-        return yPositionInc;
-    }
-
-    public void setyPositionInc(float yPositionInc) {
-        this.yPositionInc = yPositionInc;
-    }
-
-    public float getMouseRotationFactor() {
-        return mouseRotationFactor;
-    }
-
-    public float getMouseTranslationFactor() {
-        return mouseTranslationFactor;
-    }
-
-    public float getMouseWheelScrollFactor() {
-        return mouseWheelScrollFactor;
     }
 
     @Override
@@ -148,12 +78,13 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
+        //Berechnung der Sinus und Cosinus Werte zur Ausrichtung der Kamera
         x = (float) Math.sin(Math.toRadians(angleYaxis))*xPositionInc;
         z = (float) Math.cos(Math.toRadians(angleYaxis))*xPositionInc;
         switch (keyCode) {
 
             case KeyEvent.VK_W:
-
+                //Kollisionsabfrage
                 if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
                         ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
                         ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
@@ -165,10 +96,9 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                    }
                 else { yPosition += -z;
                     xPosition += -x;}
-
-
                 break;
             case KeyEvent.VK_A:
+                //Kollisionsabfrage
                 if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
                         ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
                         ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
@@ -180,17 +110,56 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                 }
                 else {    yPosition += -x;
                     xPosition += z;}
-
-
-
                 break;
             case KeyEvent.VK_S:
-
                 yPosition += z;
                 xPosition += x;
-
                 break;
             case KeyEvent.VK_D:
+                //Kollisionsabfrage
+                if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
+                        ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
+                        ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
+                        ShapesRendererPP.getRect1().y + ShapesRendererPP.getRect1().height > ShapesRendererPP.getRect2().y) {
+                    System.out.println("KOLLISION");
+                    yPosition += -x*0;
+                    xPosition += z*0;
+                }
+                else {
+                    yPosition += x;
+                    xPosition += -z;
+                }
+                break;
+            case KeyEvent.VK_LEFT:
+                //Kollisionsabfrage
+                if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
+                        ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
+                        ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
+                        ShapesRendererPP.getRect1().y + ShapesRendererPP.getRect1().height > ShapesRendererPP.getRect2().y) {
+                    System.out.println("KOLLISION");
+                    yPosition += -x*0;
+                    xPosition += z*0;
+                    xPosition += z;
+                }
+                else {    yPosition += -x;
+                    xPosition += z;}
+                break;
+            case KeyEvent.VK_UP:
+                //Kollisionsabfrage
+                if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
+                        ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
+                        ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
+                        ShapesRendererPP.getRect1().y + ShapesRendererPP.getRect1().height > ShapesRendererPP.getRect2().y) {
+                    System.out.println("KOLLISION");
+                    yPosition += -z*0;
+                    xPosition += -x*0;
+                    xPosition+= x;
+                }
+                else { yPosition += -z;
+                    xPosition += -x;}
+                break;
+            case KeyEvent.VK_RIGHT:
+                //Kollisionsabfrage
                 if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
                         ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
                         ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
@@ -204,25 +173,6 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
                     yPosition += x;
                     xPosition += -z;
                 }
-
-                break;
-
-
-
-
-
-
-            case KeyEvent.VK_LEFT:
-                yPosition += -x;
-                xPosition += z;
-                break;
-            case KeyEvent.VK_UP:
-                yPosition += -z;
-                xPosition += -x;
-                break;
-            case KeyEvent.VK_RIGHT:
-                yPosition += x;
-                xPosition += -z;
                 break;
             case KeyEvent.VK_DOWN:
                 yPosition += z;
@@ -366,22 +316,6 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      */
     @Override
     public void mouseMoved(MouseEvent e) {
-        /*
-        Point currentMouseLocation = e.getLocationOnScreen();
-        if (VERBOSE) {
-            System.out.print("Mouse dragged event.");
-            System.out.println(" At mouse location: " + currentMouseLocation);
-        }
-        double deltaX = currentMouseLocation.getX() - lastMouseLocation.getX();
-        double deltaY = currentMouseLocation.getY() - lastMouseLocation.getY();
-        lastMouseLocation = currentMouseLocation;
-        // holding the left mouse button rotates the scene
-        //if (leftMouseButtonPressed) {
-        angleYaxis += angleYaxisInc * mouseRotationFactor * -deltaX;
-        angleXaxis += angleXaxisInc * mouseRotationFactor * -deltaY;
-        //}
-
-         */
     }
 
     /**
