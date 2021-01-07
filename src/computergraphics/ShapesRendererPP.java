@@ -1298,7 +1298,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         pmvMatrix.gluLookAt(0.0f, -0.99f, 0.01f,
                 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f);
-
+        rect1 = new Rectangle(interactionHandler.getxPosition(),interactionHandler.getyPosition(),0.1f,0.1f);
+        rect2= new Rectangle(-hausx-30,-hausy-30,60,60);
         //pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 5f);
         pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 0f, 1f);
