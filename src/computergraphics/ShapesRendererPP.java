@@ -81,11 +81,22 @@ import static com.jogamp.opengl.GL.*;
 public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     private static final long serialVersionUID = 1L;
-
+    private static Rectangle rect2;
+    private static Rectangle rect1;
     //Plane Texture Mat from Color Detection
     private Mat planeTexture;
 
+    public static Rectangle getRect1() {
+        return rect1;
+    }
 
+    public static Rectangle getRect2() {
+        return rect2;
+    }
+
+
+    private float hausx;
+    private float hausy;
    // private int planeTextureHeight = planeTexture.rows();
 
     // taking shader source code files from relative path;
@@ -1301,6 +1312,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // Background color of the canvas
         gl.glClearColor(0.7f, 0.7f, 1.0f, 1.0f);
 
+       rect1 = new Rectangle(interactionHandler.getxPosition(),interactionHandler.getyPosition(),0.1f,0.1f);
+       rect2= new Rectangle(-hausx-30,-hausy-30,60,60);
 
 
      /*   // For monitoring the interaction settings
@@ -1408,6 +1421,8 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
                 pmvMatrix.glPushMatrix();
                 pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate(), 0f);
+                hausx = shape.getxCoordinate();
+                hausy = shape.getyCoordinate();
                 displayHaus(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 

@@ -23,10 +23,10 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     private float angleXaxisInc = 10f;
     private float angleYaxisInc = 10f;
     // Variables for scene translation
-    private float xPosition = 2f;
-    private float yPosition = 2f;
-    private float xPositionInc = 3.0f;
-    private float yPositionInc= 3.0f;
+    private float xPosition = 0f;
+    private float yPosition = 0f;
+    private float xPositionInc = 5.0f;
+    private float yPositionInc= 5.0f;
     // Variables for keyboard control
     private boolean ctrlKeyPressed = false;
     // Variables for mouse control
@@ -153,25 +153,58 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         switch (keyCode) {
 
             case KeyEvent.VK_W:
-                yPosition += -z;
-                xPosition += -x;
-                System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
+
+                if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
+                        ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
+                        ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
+                        ShapesRendererPP.getRect1().y + ShapesRendererPP.getRect1().height > ShapesRendererPP.getRect2().y) {
+                    System.out.println("KOLLISION");
+                    yPosition += -z*0;
+                    xPosition += -x*0;
+                    xPosition+= x;
+                   }
+                else { yPosition += -z;
+                    xPosition += -x;}
+
+
                 break;
             case KeyEvent.VK_A:
-                yPosition += -x;
-                xPosition += z;
-                System.out.println("X: "+ x +" Z: "+ z +" XPos: "+ xPosition+" YPos: "+ yPosition);
+                if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
+                        ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
+                        ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
+                        ShapesRendererPP.getRect1().y + ShapesRendererPP.getRect1().height > ShapesRendererPP.getRect2().y) {
+                    System.out.println("KOLLISION");
+                    yPosition += -x*0;
+                    xPosition += z*0;
+                    xPosition += z;
+                }
+                else {    yPosition += -x;
+                    xPosition += z;}
+
+
+
                 break;
             case KeyEvent.VK_S:
+
                 yPosition += z;
                 xPosition += x;
-                System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
+
                 break;
             case KeyEvent.VK_D:
-                yPosition += x;
-                xPosition += -z;
+                if (ShapesRendererPP.getRect1().x < ShapesRendererPP.getRect2().x + ShapesRendererPP.getRect2().width &&
+                        ShapesRendererPP.getRect1().x + ShapesRendererPP.getRect1().width > ShapesRendererPP.getRect2().x &&
+                        ShapesRendererPP.getRect1().y < ShapesRendererPP.getRect2().y + ShapesRendererPP.getRect2().height &&
+                        ShapesRendererPP.getRect1().y + ShapesRendererPP.getRect1().height > ShapesRendererPP.getRect2().y) {
+                    System.out.println("KOLLISION");
+                    yPosition += -x*0;
+                    xPosition += z*0;
+                }
+                else {
 
-                System.out.println("X: "+ x +" Z: "+ z+ " XPos: "+ xPosition+" YPos: "+ yPosition);
+                    yPosition += x;
+                    xPosition += -z;
+                }
+
                 break;
 
 

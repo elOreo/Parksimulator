@@ -9,6 +9,7 @@ public class ObjectInfo {
     //Y Koordinate der Form.
     private float yCoordinate;
 
+
     //BaumArt wird in CG festgelegt (ShapesRenderer)
     private double rndTree = Math.random() * 3;
 
