@@ -1456,7 +1456,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
                 //pmvMatrix.glScalef(1.5f,1.5f, 1.5f);
                 //pmvMatrix.glRotatef(rotation2, 0f, 0f, 0f);
                 //rotation2 += alpha;
-                pmvMatrix.glTranslatef(shape.getxCoordinate(), shape.getyCoordinate()-1, -10f);
+                pmvMatrix.glTranslatef(shape.getxCoordinate()-9, shape.getyCoordinate()+8, -14f);
                 displayRad(gl,lightPos);
                 pmvMatrix.glPopMatrix();
 
