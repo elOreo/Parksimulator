@@ -29,8 +29,6 @@ package computergraphics;
  */
 import de.hshl.obj.loader.OBJLoader;
 import de.hshl.obj.loader.Resource;
-import de.hshl.obj.loader.objects.Surface;
-import de.hshl.obj.loader.objects.SurfaceObject;
 import org.opencv.core.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -46,14 +44,10 @@ import java.io.File;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
 import static com.jogamp.opengl.GL.GL_TEXTURE0;
 import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
-
 import static com.jogamp.opengl.GL.*;
-
-
 
 /**
  * Performs the OpenGL graphics processing using the Programmable Pipeline and the
@@ -96,7 +90,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
     private float hausx;
     private float hausy;
-   // private int planeTextureHeight = planeTexture.rows();
 
 
     // taking shader source code files from relative path;
@@ -733,7 +726,6 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
         // END
     }
 
-
     private void initTonne(GL3 gl) {
         // BEGIN: Prepare Tonne for drawing
         gl.glBindVertexArray(vaoName[5]);
@@ -1311,7 +1303,7 @@ public class ShapesRendererPP extends GLCanvas implements GLEventListener {
 
 
         // Objekt Erstellung
-        // for Schleife für Koordinatenübergabe und Circle Detection
+        // for Schleife für Koordinatenübergabe und Shape Detection
         for(ObjectInfo shape : allShapeInfos){
             //Baum wird erstellt
             if(shape.getTyp().equals("circle")){
